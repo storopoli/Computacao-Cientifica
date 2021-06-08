@@ -135,7 +135,7 @@ md"""
 
 # ╔═╡ 3f76407f-463f-42d3-80ed-3c33fd440864
 md"""
-## Função ODE `seitd()`
+## Função ODE `SEITD!()`
 """
 
 # ╔═╡ a27d24a7-1b9e-4528-aa2d-a526d17a6f70
@@ -155,7 +155,7 @@ end
 
 # ╔═╡ 99701602-d6da-40d4-b971-225491ab5915
 md"""
-## Função ODE `seeiittd()`
+## Função ODE `SE₁E₂I₁I₂T₁T₂D!()`
 """
 
 # ╔═╡ 44d8d1a3-9446-4414-8427-45970329eb74
