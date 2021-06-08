@@ -32,6 +32,8 @@ you might not want. Indicate directories by ending the name with a `/`.
                    """
 @def author     = "Jose Storopoli"
 
+@def prepath = "Computacao-Cientifica"
+
 <!--  NAVBAR SPECS
   NOTE:
   - add_docs:  whether to add a pointer to your docs website
@@ -42,8 +44,6 @@ you might not want. Indicate directories by ending the name with a `/`.
   - nav_logo_path: where the logo is
 -->
 @def add_docs  = false
-@def docs_url  = "https://franklinjl.org/"
-@def docs_name = "Docs"
 
 @def add_nav_logo   = true
 @def nav_logo_path  = "/assets/logo.svg"
