@@ -4,8 +4,6 @@ using Franklin, JSON
 
 using Markdown, Dates
 
-include("youtube_videos.jl")
-
 const DATEFMT = dateformat"yyyy-mm-dd HH:MMp"
 const TZ = "America/New_York"
 
@@ -47,7 +45,7 @@ function hfun_plutonotebookpage(params)
         }
     }
     </style>
-    
+
     <iframe width="100%" height="100%"
     src="$(path_to_html)"
     class="plutopage"
