@@ -2,9 +2,9 @@
 
 Bem-vindo à Disciplina de **Computação Científica com Julia** da [UNINOVE](https://uninove.br)
 
-~~~
 
 ## Informações da Disciplina
+
 \blurb{Esta é uma disciplina do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br). A disciplina é ministrada usando a linguagem de programação [Julia](https://www.julialang.org) bla bla bla}
 
 A disciplina abordará os seguintes tópicos:
@@ -14,7 +14,7 @@ A disciplina abordará os seguintes tópicos:
 - Bla Bla
 - Bla Bla
 
-> Veja também o repositório da disciplina [github.com/storopoli/Computacao-Cientifica](https://github.com/storopoli/Computacao-Cientifica).
+> Veja também o repositório da disciplina [`github.com/storopoli/Computacao-Cientifica`](https://github.com/storopoli/Computacao-Cientifica).
 
 ## Professor
 
