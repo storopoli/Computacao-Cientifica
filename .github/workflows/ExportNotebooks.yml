@@ -8,10 +8,14 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
+        env:
+          JULIA_NUM_THREADS: 2
         steps:
-            - name: Checkout master source
+            - name: Checkout master
               uses: actions/checkout@v2
-
+            - name: Install Node
+              uses: actions/setup-node@v2
+            - run: npm install highlight.js
             - name: Set up notebook state cache
               uses: actions/cache@v2
               with:
@@ -23,7 +27,7 @@ jobs:
             - name: Install Julia
               uses: julia-actions/setup-julia@v1
               with:
-                  version: 1.6.1
+                  version: 1.6
             - name: Run Pluto notebooks
               run: julia --project=pluto-deployment-environment -e '
                   import Pkg;
@@ -54,5 +58,9 @@ jobs:
               uses: JamesIves/github-pages-deploy-action@releases/v3
               with:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  BRANCH: Spring21-franklin-output
-                  FOLDER: website/__site2
+                  BRANCH: gh-pages
+                  FOLDER: website/__site
+                  # To reduce state.
+                  CLEAN: true
+                  # To save space; we don't really need older versions.
+                  SINGLE_COMMIT: true
