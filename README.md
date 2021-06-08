@@ -55,7 +55,7 @@ Or in BibTeX format (LaTeX):
 
     @misc{storopoli2021computacaocientificajulia,
       author = {Storopoli, Jose},
-      title = {Ciência de Dados com Julia},
+      title = {Computação Científica com Julia},
       url = {https://storopoli.io/Computacao-Cientifica},
       year = {2021}
     }
