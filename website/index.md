@@ -1,7 +1,7 @@
 # Computação Científica com Julia
 
 ~~~
-<img src="[/assets/uninove-white-logo.svg](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)" style="width: 120px; height: auto; display: inline">
+<img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" style="width: 120px; height: auto; display: inline">
 ~~~
 
 \blurb{Bem-vindo à Disciplina de **Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
