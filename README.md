@@ -31,7 +31,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 4. executar operações e decomposições de álgebra linear com [`LinearAlgebra.jl`](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)
 5. manipular dados tabulares com [`DataFrames.jl`](https://dataframes.juliadata.org/stable/)
 6. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/) e [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
-7. criar, manipular e analisar grafos e redes com [1LightGraphs.jl`](https://juliagraphs.org/LightGraphs.jl/latest/)
+7. criar, manipular e analisar grafos e redes com [`LightGraphs.jl`](https://juliagraphs.org/LightGraphs.jl/latest/)
 8. especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
 9. treinar algoritmos demachine learning com [`MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/)
 10. especificar modelos probabilísticos Bayesianos e executar amostradores *Markov Chain Monte Carlo* (MCMC) com [`Turing.jl`](https://turing.ml)
