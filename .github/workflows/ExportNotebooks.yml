@@ -38,11 +38,7 @@ jobs:
             - name: Franklin
               run: julia -e '
                   using Pkg;
-                  Pkg.add([
-                  Pkg.PackageSpec(name="NodeJS", version="1.1.1"),
-                  Pkg.PackageSpec(name="JSON", version="0.21.1"),
-                  Pkg.PackageSpec(name="Franklin", version="0.10.28"),
-                  ]);
+                  Pkg.add(["NodeJS", "JSON", "Franklin"]);
                   using NodeJS;
 
                   "== Run Franklin ==";
@@ -53,7 +49,13 @@ jobs:
                   optimize();
 
                   "== Place rendered notebooks in the website folder ==";
-                  cp("../notebooks", "__site/notebooks");'
+                  cp("../notebooks", "__site/notebooks");
+                  write("__site/index.html", """
+                      <!DOCTYPE html>
+                      <html>
+                      <head><meta charset="utf-8"><script>
+                      window.location.href=\"\"</script></head>
+                      <body></body></html>""");'
             - name: Build and Deploy
               uses: JamesIves/github-pages-deploy-action@releases/v3
               with:
