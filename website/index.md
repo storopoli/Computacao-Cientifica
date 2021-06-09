@@ -1,7 +1,7 @@
 # Computação Científica com Julia
 
 ~~~
-<img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" style="width: 120px; height: auto; display: inline">
+<img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" style="width: 180px; height: auto;">
 ~~~
 
 \blurb{Bem-vindo à Disciplina de **Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
@@ -60,3 +60,7 @@ Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [O
 ## Como usar esse conteúdo?
 
 Este conteúdo possui *licença livre para uso* (CC BY-SA). Você é mais do que bem-vindo para contribuir com [issues](https://www.github.com/storopoli/Computacao-Cientifica/issues) e [pull requests](https://github.com/storopoli/Computacao-Cientifica/pulls).
+
+~~~
+<img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" style="width: 180px; height: auto;">
+~~~
