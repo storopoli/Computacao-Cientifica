@@ -44,7 +44,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 4. [**Operações de Álgebra Linear com LinearAlgebra.jl**](/4_LinearAlgebra/)
 5. [***Input* e *Output* e Manipulação de Dados Tabulares com DataFrames.jl**](/5_DataFrames_IO/) (White et al., 2020)
 6. [**Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com DataFrames.jl**](/6_DataFrames_Ops/) (White et al., 2020)
-7. [**Visualização de Dados com Plots.jl e StatsPlots.j`**](/7_Plots/) (Breloff et al., 2021)
+7. [**Visualização de Dados com Plots.jl e StatsPlots.jl**](/7_Plots/) (Breloff et al., 2021)
 8. [**Grafos e Análise Redes com LightGraphs.jl**](/8_LightGraphs/) (Bromberger & Contributors, 2017)
 9. [**Modelagem e Otimizações Matemáticas com JuMP.jl**](/9_JuMP/) (Dunning et al., 2017)
 10. [***Machine Learning* com MLJ.jl**](/10_MLJ/) (Blaom et al., 2020)
