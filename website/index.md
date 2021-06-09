@@ -1,4 +1,4 @@
-# Computação Científica com Julia ~~~<img src="/assets/julia-small-logo.svg" style="margin-left:1em; width: 40px; height: auto; display: inline">~~~
+# Computação Científica com Julia <img src="/assets/julia-small-logo.svg" style="margin-left:0em; width: 20px; height: auto; display: inline">
 
 Bem-vindo à Disciplina de **Computação Científica com Julia** da [UNINOVE](https://uninove.br)
 
