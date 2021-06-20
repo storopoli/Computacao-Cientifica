@@ -33,7 +33,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 6. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/) e [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
 7. criar, manipular e analisar grafos e redes com [`LightGraphs.jl`](https://juliagraphs.org/LightGraphs.jl/latest/)
 8. especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
-9. treinar algoritmos demachine learning com [`MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/)
+9. treinar algoritmos de machine learning com [`MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/)
 10. especificar modelos probabilísticos Bayesianos e executar amostradores *Markov Chain Monte Carlo* (MCMC) com [`Turing.jl`](https://turing.ml)
 11. criar e treinar redes neurais usando [`Flux.jl`](https://fluxml.ai/)
 
