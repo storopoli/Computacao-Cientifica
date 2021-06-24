@@ -1,5 +1,9 @@
 ## Referências
 
+* Besard, T., Churavy, V., Edelman, A. & Sutter, B. D. (2019). Rapid Software Prototypingfor Heterogeneous and Distributed Platforms.Advances in Engineering Software,132,29–46. https://doi.org/10.1016/j.advengsoft.2019.02.002
+
+* Besard, T., Foket, C. & De Sutter, B. (2019). Effective Extensible Programming: UnleashingJulia on GPUs.IEEE Transactions on Parallel and Distributed Systems,30(4), 827–841. https://doi.org/10.1109/TPDS.2018.287206
+
 * Bezanson, J., Edelman, A., Karpinski, S. & Shah, V. B. (2017). Julia: A Fresh Approach to Numerical Computing. *SIAM review, 59*(1), 65–98.
 
 * Blaom, A. D., Kiraly, F., Lienart, T., Simillides, Y., Arenas, D. & Vollmer, S. J. (2020). MLJ: A Julia Package for Composable Machine Learning. *Journal of Open Source Software, 5*(55), 2704. https://doi.org/10.21105/joss.02704
@@ -16,7 +20,11 @@
 
 * Ge, H., Xu, K. & Ghahramani, Z. (2018). Turing: A Language for Flexible Probabilistic Inference. *International Conference on Artificial Intelligence and Statistics*, 1682–1690.
 
+* Huijzer, R. & Storopoli, J. (2021).Julia Data Science. https://juliadatascience.io
+
 * Innes, M., Saba, E., Fischer, K., Gandhi, D., Rudilosso, M. C., Joy, N. M., Karmali, T.,Pal, A. & Shah, V. (2018). Fashionable Modelling with Flux. *CoRR,abs/1811.01457*. https://arxiv.org/abs/1811.01457
+
+* Laurie, H. (2021). Julia Programming for Nervous Beginners. https://juliaacademy.com/p/julia-programming-for-nervous-beginner
 
 * Innes, M. (2018). Flux: Elegant Machine Learning with Julia. *Journal of Open Source Software*. https://doi.org/10.21105/joss.00602
 
@@ -27,6 +35,7 @@
 * Sengupta, A. & Edelman, A. (2019). *Julia High Performance: Optimizations, Distributed Computing, Multithreading, and GPU Programming with Julia 1.0 and beyond*, 2nd Edition. Packt Publishing.
 
 * Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
+
 * TEDx Talks. (2020). A Programming Language to Heal the Planet Together: Julia | AlanEdelman | TEDxMIT.
 
 * The Julia Programming Language. (2019). JuliaCon 2019 | The Unreasonable Effectivenessof Multiple Dispatch | Stefan Karpinski.
