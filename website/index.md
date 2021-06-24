@@ -64,6 +64,23 @@ Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [O
 
 Este conteúdo possui *licença livre para uso* (CC BY-SA). Você é mais do que bem-vindo para contribuir com [issues](https://www.github.com/storopoli/Computacao-Cientifica/issues) e [pull requests](https://github.com/storopoli/Computacao-Cientifica/pulls).
 
+Para citar este conteúdo, use:
+
+```plaintext
+Storopoli (2021). Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
+```
+
+Ou em formato BibTeX para $\LaTeX$:
+
+```plaintext
+@misc{storopoli2021programacaojulia,
+      author = {Storopoli, Jose},
+      title = {Computação Científica com Julia},
+      url = {https://storopoli.io/Computacao-Cientifica},
+      year = {2021}
+}
+```
+
 ~~~
 <img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" style="width: 180px; height: auto;">
 ~~~
