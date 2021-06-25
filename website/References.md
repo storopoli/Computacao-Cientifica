@@ -20,8 +20,6 @@
 
 * Ge, H., Xu, K. & Ghahramani, Z. (2018). Turing: A Language for Flexible Probabilistic Inference. *International Conference on Artificial Intelligence and Statistics*, 1682–1690.
 
-* Huijzer, R. & Storopoli, J. (2021).Julia Data Science. https://juliadatascience.io
-
 * Innes, M., Saba, E., Fischer, K., Gandhi, D., Rudilosso, M. C., Joy, N. M., Karmali, T.,Pal, A. & Shah, V. (2018). Fashionable Modelling with Flux. *CoRR,abs/1811.01457*. https://arxiv.org/abs/1811.01457
 
 * Laurie, H. (2021). Julia Programming for Nervous Beginners. https://juliaacademy.com/p/julia-programming-for-nervous-beginner
@@ -35,6 +33,8 @@
 * Sengupta, A. & Edelman, A. (2019). *Julia High Performance: Optimizations, Distributed Computing, Multithreading, and GPU Programming with Julia 1.0 and beyond*, 2nd Edition. Packt Publishing.
 
 * Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
+
+* Storopoli, J. & Huijzer, R. (2021).Julia Data Science. https://juliadatascience.io
 
 * TEDx Talks. (2020). A Programming Language to Heal the Planet Together: Julia | AlanEdelman | TEDxMIT.
 

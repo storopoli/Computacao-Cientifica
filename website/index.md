@@ -21,7 +21,7 @@
 * [**The Unreasonable Effectiveness of Multiple Dispatch**](https://youtu.be/kc9HwsxE1OY). (The Julia Programming Language, 2019): um vídeo no YouTube de um dos criadores da linguagem [Julia](https://www.julialang.org), [Stefan Karpinski](https://karpinski.org/), sobre um dos principais diferenciais da linguagem, [**Despacho Múltiplo**](https://en.wikipedia.org/wiki/Multiple_dispatch) (*Multiple Dispatch*).
 * **Notebooks [Pluto](https://plutojl.org/)**: o conteúdo da disciplina é todo feito com Notebooks [Pluto](https://plutojl.org/) que são ambientes reativos e dinâmicos de fácil demonstração e exploração de código [Julia](https://www.julialang.org).
 * [**Julia Programming for Nervous Beginners**](https://juliaacademy.com/p/julia-programming-for-nervous-beginners) (Laurie, 2021): um curso de 4 semanas da [JuliaAcademy](https://juliaacademy.com/) que ensina desde o zero de computação até o básico da linguagem [Julia](https://www.julialang.org).
-* [**Julia Data Science**](https://juliadatascience.io) (Huijzer & Storopoli, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
+* [**Julia Data Science**](https://juliadatascience.io) (Storopoli & Huijzer, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
 
 ## Objetivos da Disciplina:
 
@@ -47,8 +47,8 @@ Ao completar essa disciplina, alunos estarão aptos à:
 3. [**Estruturas de Dados (`Array` e `Dict`) de Julia**](/3_Data_Structures/)
 4. [**Operações de Álgebra Linear com `LinearAlgebra.jl`**](/4_LinearAlgebra/)
 5. [**Execução Paralela na CPU e na GPU com `CUDA.jl`**](5_Parallel/) (Besard, Churavy et al., 2019; Besard, Foket et al., 2019)
-6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](/6_DataFrames/) (White et al., 2020; Huijzer & Storopoli, 2021)
-7. [**Visualização de Dados com `Plots.jl` e `StatsPlots.jl`**](/7_Plots/) (Breloff et al., 2021; Huijzer & Storopoli, 2021)
+6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](/6_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
+7. [**Visualização de Dados com `Plots.jl` e `StatsPlots.jl`**](/7_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
 8. [**Grafos e Análise Redes com `LightGraphs.jl`**](/8_LightGraphs/) (Bromberger & Contributors, 2017)
 9. [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/9_JuMP/) (Dunning et al., 2017)
 10. [**_Machine Learning_ com `MLJ.jl`**](/10_MLJ/) (Blaom et al., 2020)
