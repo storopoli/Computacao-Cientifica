@@ -47,7 +47,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 3. [**Estruturas de Dados (`Array` e `Dict`) de Julia**](https://storopoli.io/Computacao-Cientifica/3_Data_Structures/)
 4. [**Operações de Álgebra Linear com `LinearAlgebra.jl`**](https://storopoli.io/Computacao-Cientifica/4_LinearAlgebra/)
 5. [**Execução Paralela na CPU e na GPU com `CUDA.jl`**](https://storopoli.io/Computacao-Cientifica/5_Parallel/) (Besard, Churavy et al., 2019; Besard, Foket et al., 2019)
-6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](/6_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
+6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/6_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
 7. [**Visualização de Dados com `Plots.jl` e `StatsPlots.jl`**](https://storopoli.io/Computacao-Cientifica/7_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
 8. [**Grafos e Análise Redes com `LightGraphs.jl`**](https://storopoli.io/Computacao-Cientifica/8_LightGraphs/) (Bromberger & Contributors, 2017)
 9. [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.io/Computacao-Cientifica/9_JuMP/) (Dunning et al., 2017)
