@@ -72,12 +72,12 @@ Storopoli (2021). Computação Científica com Julia. https://storopoli.io/Compu
 
 Ou em formato BibTeX para $\LaTeX$:
 
-```plaintext
+```bibtex
 @misc{storopoli2021programacaojulia,
-      author = {Storopoli, Jose},
-      title = {Computação Científica com Julia},
-      url = {https://storopoli.io/Computacao-Cientifica},
-      year = {2021}
+  author = {Storopoli, Jose},
+  title = {Computação Científica com Julia},
+  url = {https://storopoli.io/Computacao-Cientifica},
+  year = {2021}
 }
 ```
 
