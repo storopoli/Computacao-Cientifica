@@ -6,7 +6,7 @@
 
 \blurb{Bem-vindo à Disciplina de **Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
 
-Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a live online Julia/Pluto textbook, https://computationalthinking.mit.edu".
+Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a live online Julia/Pluto textbook, <https://computationalthinking.mit.edu>".
 
 ## Julia
 
