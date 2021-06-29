@@ -12,7 +12,7 @@ begin
 			"PlutoUI"
 			])
 	using PlutoUI
-end			
+end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 begin
@@ -27,7 +27,7 @@ TableOfContents(aside=true)
 
 # ╔═╡ 7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 md"""
-# Introdução à Julia
+# Linguagem Julia e Estrutura de Dados Nativas
 """
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13

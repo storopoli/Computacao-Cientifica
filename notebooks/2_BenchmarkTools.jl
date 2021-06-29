@@ -27,7 +27,7 @@ TableOfContents(aside=true)
 
 # ╔═╡ 7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 md"""
-# Como fazer benchmarks de código Julia com `BenchmarkTools.jl`
+# Algoritmos e *Benchmarks* com `BenchmarkTools.jl`
 """
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13

@@ -54,7 +54,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/8_JuMP/) (Dunning et al., 2017)
 9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
 10. [**_Machine Learning_ com `MLJ.jl`**](/10_MLJ/) (Blaom et al., 2020)
-11. [**Redes Neurais com `Flux.jl`**](/11_Flux/) (Innes et al., 2018; Innes, 2018)
+11. [**_Deep Learning_ com `Flux.jl`**](/11_Flux/) (Innes et al., 2018; Innes, 2018)
 
 
 ## Autor
