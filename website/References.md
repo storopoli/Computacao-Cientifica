@@ -1,9 +1,5 @@
 ## Referências
 
-* Besard, T., Churavy, V., Edelman, A. & Sutter, B. D. (2019). Rapid Software Prototypingfor Heterogeneous and Distributed Platforms.Advances in Engineering Software,132,29–46. https://doi.org/10.1016/j.advengsoft.2019.02.002
-
-* Besard, T., Foket, C. & De Sutter, B. (2019). Effective Extensible Programming: UnleashingJulia on GPUs.IEEE Transactions on Parallel and Distributed Systems,30(4), 827–841. https://doi.org/10.1109/TPDS.2018.287206
-
 * Bezanson, J., Edelman, A., Karpinski, S. & Shah, V. B. (2017). Julia: A Fresh Approach to Numerical Computing. *SIAM review, 59*(1), 65–98.
 
 * Blaom, A. D., Kiraly, F., Lienart, T., Simillides, Y., Arenas, D. & Vollmer, S. J. (2020). MLJ: A Julia Package for Composable Machine Learning. *Journal of Open Source Software, 5*(55), 2704. https://doi.org/10.21105/joss.02704

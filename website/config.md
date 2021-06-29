@@ -25,10 +25,10 @@ you might not want. Indicate directories by ending the name with a `/`.
              `prepath` to an empty string. Finally, adjust this if you want the
              deployed page to be in a subfolder e.g.: `YourPackage.jl/web/`.
 -->
-@def title       = "Computação Científica com Julia"
+@def title       = "Ciência de Dados e Computação Científica com Julia"
 @def website_url = "https://storopoli.io/Computacao-Cientifica/"
 @def description = """
-                   Computação Científica com Julia. Website da Disciplina
+                   Ciência de Dados e Computação Científica com Julia. Website da Disciplina
                    """
 @def author     = "Jose Storopoli"
 

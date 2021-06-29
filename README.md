@@ -1,4 +1,4 @@
-Computação Científica com [Julia](https://julialang.org/)
+Ciência de Dados e Computação Científica com [Julia](https://julialang.org/)
 ================
 
 [![CC BY-SA
@@ -12,7 +12,7 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 
 [**Julia**](https://www.julialang.org) é uma linguagem rápida de tipagem dinâmica que compila just-in-time (JIT) em código nativo binário usando LLVM. Ela ["roda como C mas escreve como Python"](https://www.nature.com/articles/d41586-019-02310-3), isto quer dizer que é *extremamente* rápida, de fácil prototipagem e leitura/escrita de código. Além disso, ela é multi-paradigma combinando as características de programação imperativa, funcional, e orientada a objetos.
 
-**Pré-requisito(s):** lógica de programação e simples conceitos teóricos sobre álgebra linear, dados tabulares, grafos e redes, otimização matemática, machine learning, estatística Bayesiana e redes neurais.
+**Pré-requisito(s):** lógica de programação e simples conceitos teóricos sobre dados tabulares, grafos e redes, otimização matemática, machine learning, estatística Bayesiana e redes neurais.
 
 ### Sobre Julia:
 
@@ -29,33 +29,32 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 
 Ao completar essa disciplina, alunos estarão aptos à:
 
-1. programar algoritmos em [Julia](https://julialang.org/)
-2. fazer benchmark correto de código [Julia](https://julialang.org/) com [`BenchmarkTools.jl`](https://juliaci.github.io/BenchmarkTools.jl/dev/)
-3. utilizar estrutura de dados de [Julia](https://julialang.org/)
-4. executar operações e decomposições de álgebra linear com [`LinearAlgebra.jl`](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)
-5. executar operações em paralelo tanto na CPU usando `SIMD` com [`LoopVectorization.jl`](https://juliasimd.github.io/LoopVectorization.jl/stable/) quanto na GPU com [`CUDA.jl`](https://cuda.juliagpu.org/stable/)
+1. programar em [Julia](https://julialang.org/)
+2. programar algoritmos em [Julia](https://julialang.org/)
+3. fazer *benchmark* correto de código [Julia](https://julialang.org/) com [`BenchmarkTools.jl`](https://juliaci.github.io/BenchmarkTools.jl/dev/)
+4. utilizar estrutura de dados de [Julia](https://julialang.org/)
+5. executar operações em paralelo na CPU usando [`Threads.jl`](https://docs.julialang.org/en/v1/base/multi-threading/), [`ThreadsX.jl`](https://tkf.github.io/ThreadsX.jl/dev/) e `SIMD` com [`LoopVectorization.jl`](https://juliasimd.github.io/LoopVectorization.jl/stable/)
 6. manipular dados tabulares com [`DataFrames.jl`](https://dataframes.juliadata.org/stable/)
-7. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/) e [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
+7. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/), [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl) e [`AlgebraOfGraphics.jl`](http://juliaplots.org/AlgebraOfGraphics.jl/stable/)
 8. criar, manipular e analisar grafos e redes com [`LightGraphs.jl`](https://juliagraphs.org/LightGraphs.jl/latest/)
-9. especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
+9.  especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
 10. treinar algoritmos de machine learning com [`MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/)
 11. especificar modelos probabilísticos Bayesianos e executar amostradores *Markov Chain Monte Carlo* (MCMC) com [`Turing.jl`](https://turing.ml)
 12. criar e treinar redes neurais usando [`Flux.jl`](https://fluxml.ai/)
 
 ## Tópicos
 
-1. [**Introdução à Julia**](https://storopoli.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
-2. [**Como fazer benchmarks de código Julia com `BenchmarkTools.jl`**](https://storopoli.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
-3. [**Estruturas de Dados (`Array` e `Dict`) de Julia**](https://storopoli.io/Computacao-Cientifica/3_Data_Structures/)
-4. [**Operações de Álgebra Linear com `LinearAlgebra.jl`**](https://storopoli.io/Computacao-Cientifica/4_LinearAlgebra/)
-5. [**Execução Paralela na CPU e na GPU com `CUDA.jl`**](https://storopoli.io/Computacao-Cientifica/5_Parallel/) (Besard, Churavy et al., 2019; Besard, Foket et al., 2019)
-6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/6_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
-7. [**Visualização de Dados com `Plots.jl` e `StatsPlots.jl`**](https://storopoli.io/Computacao-Cientifica/7_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
-8. [**Grafos e Análise Redes com `LightGraphs.jl`**](https://storopoli.io/Computacao-Cientifica/8_LightGraphs/) (Bromberger & Contributors, 2017)
-9. [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.io/Computacao-Cientifica/9_JuMP/) (Dunning et al., 2017)
+1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
+2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
+3. [**_Performance_ e Operações Paralelas**](https://storopoli.io/Computacao-Cientifica/3_Parallel/)
+4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli & Huijzer, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
+7. [**Grafos e Análise Redes com `LightGraphs.jl`**](https://storopoli.io/Computacao-Cientifica/7_LightGraphs/) (Bromberger & Contributors, 2017)
+8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.io/Computacao-Cientifica/8_JuMP/) (Dunning et al., 2017)
+9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.io/Computacao-Cientifica/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
 10. [**_Machine Learning_ com `MLJ.jl`**](https://storopoli.io/Computacao-Cientifica/10_MLJ/) (Blaom et al., 2020)
-11. [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.io/Computacao-Cientifica/11_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
-12. [**Redes Neurais com `Flux.jl`**](https://storopoli.io/Computacao-Cientifica/12_Flux/) (Innes et al., 2018; Innes, 2018)
+11. [**Redes Neurais com `Flux.jl`**](https://storopoli.io/Computacao-Cientifica/11_Flux/) (Innes et al., 2018; Innes, 2018)
 
 ## Autor
 
@@ -83,22 +82,18 @@ Para configurar um ambiente local:
 
 Para citar o conteúdo use:
 
-    Storopoli (2021). Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
+    Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
 
 Or in BibTeX format (LaTeX):
 
     @misc{storopoli2021computacaocientificajulia,
       author = {Storopoli, Jose},
-      title = {Computação Científica com Julia},
+      title = {Ciência de Dados e Computação Científica com Julia},
       url = {https://storopoli.io/Computacao-Cientifica},
       year = {2021}
     }
 
 ## Referências
-
-* Besard, T., Churavy, V., Edelman, A. & Sutter, B. D. (2019). Rapid Software Prototypingfor Heterogeneous and Distributed Platforms.Advances in Engineering Software,132,29–46. https://doi.org/10.1016/j.advengsoft.2019.02.002
-
-* Besard, T., Foket, C. & De Sutter, B. (2019). Effective Extensible Programming: UnleashingJulia on GPUs.IEEE Transactions on Parallel and Distributed Systems,30(4), 827–841. https://doi.org/10.1109/TPDS.2018.287206
 
 * Bezanson, J., Edelman, A., Karpinski, S. & Shah, V. B. (2017). Julia: A Fresh Approach to Numerical Computing. *SIAM review, 59*(1), 65–98.
 

@@ -1,10 +1,10 @@
-# Computação Científica com Julia
+# Ciência de Dados e Computação Científica com Julia
 
 ~~~
 <img src="https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg" style="width: 180px; height: auto;">
 ~~~
 
-\blurb{Bem-vindo à Disciplina de **Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
+\blurb{Bem-vindo à Disciplina de **Ciência de Dados e Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
 
 Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a live online Julia/Pluto textbook, <https://computationalthinking.mit.edu>".
 
@@ -12,7 +12,7 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 
 [**Julia**](https://www.julialang.org) é uma linguagem rápida de tipagem dinâmica que compila just-in-time (JIT) em código nativo binário usando LLVM. Ela ["roda como C mas escreve como Python"](https://www.nature.com/articles/d41586-019-02310-3), isto quer dizer que é *extremamente* rápida, de fácil prototipagem e leitura/escrita de código. Além disso, ela é multi-paradigma combinando as características de programação imperativa, funcional, e orientada a objetos.
 
-**Pré-requisito(s):** lógica de programação e simples conceitos teóricos sobre álgebra linear, dados tabulares, grafos e redes, otimização matemática, machine learning, estatística Bayesiana e redes neurais.
+**Pré-requisito(s):** lógica de programação e simples conceitos teóricos sobre  dados tabulares, grafos e redes, otimização matemática, machine learning, estatística Bayesiana e redes neurais.
 
 ### Sobre Julia:
 
@@ -29,33 +29,32 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 
 Ao completar essa disciplina, alunos estarão aptos à:
 
-1. programar algoritmos em [Julia](https://julialang.org/)
-2. fazer benchmark correto de código [Julia](https://julialang.org/) com [`BenchmarkTools.jl`](https://juliaci.github.io/BenchmarkTools.jl/dev/)
-3. utilizar estrutura de dados de [Julia](https://julialang.org/)
-4. executar operações e decomposições de álgebra linear com [`LinearAlgebra.jl`](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)
-5. executar operações em paralelo tanto na CPU usando `SIMD` com [`LoopVectorization.jl`](https://juliasimd.github.io/LoopVectorization.jl/stable/) quanto na GPU com [`CUDA.jl`](https://cuda.juliagpu.org/stable/)
+1. programar em [Julia](https://julialang.org/)
+2. programar algoritmos em [Julia](https://julialang.org/)
+3. fazer *benchmark* correto de código [Julia](https://julialang.org/) com [`BenchmarkTools.jl`](https://juliaci.github.io/BenchmarkTools.jl/dev/)
+4. utilizar estrutura de dados de [Julia](https://julialang.org/)
+5. executar operações em paralelo na CPU usando [`Threads.jl`](https://docs.julialang.org/en/v1/base/multi-threading/), [`ThreadsX.jl`](https://tkf.github.io/ThreadsX.jl/dev/) e `SIMD` com [`LoopVectorization.jl`](https://juliasimd.github.io/LoopVectorization.jl/stable/)
 6. manipular dados tabulares com [`DataFrames.jl`](https://dataframes.juliadata.org/stable/)
-7. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/) e [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
+7. plotar dados com [`Plots.jl`](http://docs.juliaplots.org/latest/), [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl) e [`AlgebraOfGraphics.jl`](http://juliaplots.org/AlgebraOfGraphics.jl/stable/)
 8. criar, manipular e analisar grafos e redes com [`LightGraphs.jl`](https://juliagraphs.org/LightGraphs.jl/latest/)
-9. especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
+9.  especificar, modelar e otimizar matematicamente problemas complexos com [`JuMP.jl`](https://jump.dev/)
 10. treinar algoritmos de machine learning com [`MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/)
 11. especificar modelos probabilísticos Bayesianos e executar amostradores *Markov Chain Monte Carlo* (MCMC) com [`Turing.jl`](https://turing.ml)
 12. criar e treinar redes neurais usando [`Flux.jl`](https://fluxml.ai/)
 
 ## Tópicos
 
-1. [**Introdução à Julia**](/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
-2. [**Como fazer benchmarks de código Julia com `BenchmarkTools.jl`**](/2_BenchmarkTools/) (Chen & Revels, 2016)
-3. [**Estruturas de Dados (`Array` e `Dict`) de Julia**](/3_Data_Structures/)
-4. [**Operações de Álgebra Linear com `LinearAlgebra.jl`**](/4_LinearAlgebra/)
-5. [**Execução Paralela na CPU e na GPU com `CUDA.jl`**](5_Parallel/) (Besard, Churavy et al., 2019; Besard, Foket et al., 2019)
-6. [**_Input_ e *Output*, Manipulação, Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`**](/6_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
-7. [**Visualização de Dados com `Plots.jl` e `StatsPlots.jl`**](/7_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
-8. [**Grafos e Análise Redes com `LightGraphs.jl`**](/8_LightGraphs/) (Bromberger & Contributors, 2017)
-9. [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/9_JuMP/) (Dunning et al., 2017)
+1. [**Linguagem Julia e Estrutura de Dados Nativas**](/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
+2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](/2_BenchmarkTools/) (Chen & Revels, 2016)
+3. [**_Performance_ e Operações Paralelas**](/3_Parallel/)
+4. [**Dados Tabulares com `DataFrames.jl`**](/4_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](/5_TimeSeries/)(White et al., 2020; Storopoli & Huijzer, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](/6_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
+7. [**Grafos e Análise Redes com `LightGraphs.jl`**](/7_LightGraphs/) (Bromberger & Contributors, 2017)
+8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/8_JuMP/) (Dunning et al., 2017)
+9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
 10. [**_Machine Learning_ com `MLJ.jl`**](/10_MLJ/) (Blaom et al., 2020)
-11. [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](/11_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
-12. [**Redes Neurais com `Flux.jl`**](/12_Flux/) (Innes et al., 2018; Innes, 2018)
+11. [**Redes Neurais com `Flux.jl`**](/11_Flux/) (Innes et al., 2018; Innes, 2018)
 
 
 ## Autor
@@ -69,7 +68,7 @@ Este conteúdo possui *licença livre para uso* (CC BY-SA). Você é mais do que
 Para citar este conteúdo, use:
 
 ```plaintext
-Storopoli (2021). Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
+Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
 ```
 
 Ou em formato BibTeX para $\LaTeX$:
@@ -77,7 +76,7 @@ Ou em formato BibTeX para $\LaTeX$:
 ```plaintext
 @misc{storopoli2021programacaojulia,
   author = {Storopoli, Jose},
-  title = {Computação Científica com Julia},
+  title = {Ciência de Dados e Computação Científica com Julia},
   url = {https://storopoli.io/Computacao-Cientifica},
   year = {2021}
 }

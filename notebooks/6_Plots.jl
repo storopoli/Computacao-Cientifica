@@ -27,7 +27,7 @@ TableOfContents(aside=true)
 
 # ╔═╡ 7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 md"""
-# *Input* e *Output*, Manipulação Agregações (*groupby*), Sumarizações e *joins* de Dados Tabulares com `DataFrames.jl`
+# Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics`
 """
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
