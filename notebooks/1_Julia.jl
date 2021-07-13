@@ -27,7 +27,7 @@ TableOfContents(aside=true)
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
 # ╔═╡ a0f907f5-1d81-451e-b34b-8d622e5e47a2
-Resource("https://julialang.org/assets/benchmarks/benchmarks.svg")
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/benchmarks.svg?raw=true")
 
 # ╔═╡ 98ead09d-8ca9-41a4-95cf-fc07bd34db16
 sizeof(1) # 8 bytes
@@ -372,11 +372,29 @@ end
 
 """
 
+# ╔═╡ 36603633-5af5-4cdf-b6c9-9d87c23492e2
+md"""
+
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/language_comparisons.svg?raw=true"))
+"""
+
+# ╔═╡ ac147d47-71eb-482a-a52d-ab3b6bf33db3
+md"""
+Outra coisa a observar que acho bastante surpreendente é que os pacotes de Julia são todos escritos em Julia. Isso não acontece em outras linguagens de computação científica. Por exemplo, todo o ecossistema `{tidyverse}` de pacotes R é baseado em C++. `NumPy` e `SciPy` são uma mistura de FORTRAN e C. `Scikit-Learn` também é codificado em C.
+"""
+
+# ╔═╡ 1b79ac6f-7be3-4c5b-903e-be26e134be87
+md"""
+#### Python my a**! (Arrays)
+
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/Array_code_breakdown.svg?raw=true"))
+"""
+
 # ╔═╡ b6acb557-1a04-4021-a103-4be3a066be38
 md"""
 #### Python my a**! (Deep Learning)
 
-$(Resource("https://storopoli.io/Bayesian-Julia/pages/images/ML_code_breakdown.svg"))
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/ML_code_breakdown.svg?raw=true"))
 """
 
 # ╔═╡ a3ba253e-fbda-471e-ab82-c2ddeaf3ddf9
@@ -923,6 +941,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─cf994c69-7adb-4461-8273-165574072582
 # ╟─a0f907f5-1d81-451e-b34b-8d622e5e47a2
 # ╟─3c911397-cb1d-4929-b0e8-4aff516331b5
+# ╟─36603633-5af5-4cdf-b6c9-9d87c23492e2
+# ╟─ac147d47-71eb-482a-a52d-ab3b6bf33db3
+# ╟─1b79ac6f-7be3-4c5b-903e-be26e134be87
 # ╟─b6acb557-1a04-4021-a103-4be3a066be38
 # ╟─a3ba253e-fbda-471e-ab82-c2ddeaf3ddf9
 # ╟─a6a7bccf-4012-450c-ac02-9fdef68f0c9e
@@ -989,7 +1010,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═62dd87d5-8a13-47eb-9a90-a10556e99b08
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
-# ╠═23974dfc-7412-4983-9dcc-16e7a3e7dcc4
+# ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
 # ╟─8aa46a2a-e675-41c6-830e-0e16818c24c3
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
