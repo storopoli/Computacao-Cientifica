@@ -72,7 +72,7 @@ sizeof(1) # 8 bytes
 typeof(UInt(1) + 1)
 
 # ╔═╡ fc833387-ae84-4220-9086-ee5dedb11d9d
-abstract type Things end # We'll come back to this line
+abstract type Things end
 
 # ╔═╡ 3b64cd4e-f9cf-4a57-b971-58ea76b748c9
 struct Foo <: Things end
@@ -510,7 +510,7 @@ getsizeof(1)
 
 # ╔═╡ e30005e0-540a-48ec-92ef-351c07c86912
 md"""
-#### `UInt` + `UInt` = `UInt`?
+#### `UInt` + `Int` Positivo = `UInt`?
 """
 
 # ╔═╡ fcb0a3f9-ebdd-40e5-968c-2f3644dcc095
