@@ -26,8 +26,44 @@ TableOfContents(aside=true)
 # ╔═╡ e4dbc9c7-cc0d-4305-ac6a-c562b233d965
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ 32b4273d-06d9-4450-97d0-23740cf7bd88
+function summed(a)
+	result = 0
+  for x in a
+    result += x
+  end
+  return result
+end
+
+# ╔═╡ 673ec92c-e813-424a-b4d9-4ff36bb887d2
+a = randn(42_000)
+
+# ╔═╡ 584973af-9d1c-4c79-ad0b-f4c8f8b39ee3
+@benchmark summed($a)
+
+# ╔═╡ bdbe2067-2101-4f36-a64d-442afc9c20dc
+function sumsimd(a)
+	result = zero(eltype(a))
+	@simd for x in a
+    result += x
+  end
+  return result
+end
+
+# ╔═╡ 6be5724f-78ed-49e4-8ac5-07caea58a4ee
+@benchmark sumsimd($a) # 🚀
+
 # ╔═╡ a0f907f5-1d81-451e-b34b-8d622e5e47a2
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/benchmarks.svg?raw=true")
+
+# ╔═╡ de862c54-cd85-493e-9140-4682c8c25d9a
+√2
+
+# ╔═╡ 3e20679b-04d5-48c0-b788-958fcfcd97c3
+π
+
+# ╔═╡ 1768f19a-4158-4597-9110-450f81a67986
+ℯ
 
 # ╔═╡ 98ead09d-8ca9-41a4-95cf-fc07bd34db16
 sizeof(1) # 8 bytes
@@ -214,7 +250,7 @@ $(Resource("https://www.julia-vscode.org/img/newscreen1.png", :width => 500))
 
 # ╔═╡ 0659cb16-eea6-4ef7-90e7-27a50deee15f
 md"""
-### Velocidade 🏎
+## Velocidade 🏎
 """
 
 # ╔═╡ 3712de35-d34e-4f6f-9041-cac2efb2730a
@@ -223,9 +259,56 @@ md"""
 	Julia funciona assim: ela pega o **código em Julia e expõe em linguagem de montagem (*Assembly*) para o compilador LLVM** fazer o que sabe melhor: otimizar o código como quiser.
 """
 
+# ╔═╡ 9b8cac39-97ed-465c-bacb-1841c6926280
+md"""
+### Loops são rápidos!
+"""
+
+# ╔═╡ d9b7c5bc-2f99-4721-8910-41497e307689
+md"""
+#### Enquanto isso em Python
+
+
+```python
+def summed(a):
+  result = 0
+  for x in a:
+    result += x
+  return result
+
+import random
+a = [ random.random() for _ in range(42000) ]
+
+%timeit summed(a)
+```
+
+> 909 µs ± 18.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+"""
+
+# ╔═╡ ec8aa40e-a6d4-46db-8d76-99e53f876fdd
+md"""
+#### Ou em `NumPy`
+
+```python
+import numpy as np
+
+a = np.random.randn(42000)
+n = 1000
+
+%timeit a.sum()
+```
+
+> 12.5 µs ± 885 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
+"""
+
+# ╔═╡ c9be26cf-08d1-4927-b2da-a3cf4d1023ee
+md"""
+E se colocarmos paralelismo [SIMD](https://en.wikipedia.org/wiki/SIMD) pois as operações no loop são associativas:
+"""
+
 # ╔═╡ d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
 md"""
-#### Alguns Projetos Interessantes:
+### Alguns Projetos Interessantes:
 
 1. NASA usa Julia em super computador para analisar o ["maior conjunto de Planetas do tamanho da Terra já encontrados"](https://exoplanets.nasa.gov/news/1669/seven-rocky-trappist-1-planets-may-be-made-of-similar-stuff/) e conseguiu impressionantes **acelerações 1,000x** em catalogar 188 milhões de objetos astronômicos em 15 minutos!
 
@@ -251,7 +334,7 @@ Se isso não for suficiente, há mais estudos de caso no [site da Julia Computin
 
 # ╔═╡ 9104cac0-b5a8-4a54-a636-6475c0d3489f
 md"""
-#### Um exemplo prático com dados tabulares
+### Um exemplo prático com dados tabulares
 
 ##### Julia `DataFrames.jl`:
 ```julia
@@ -307,7 +390,7 @@ bench::mark(
 
 # ╔═╡ cf994c69-7adb-4461-8273-165574072582
 md"""
-##### Resultados:
+#### Resultados:
 
 * **Julia: 0.368ms** 🚀
 
@@ -319,11 +402,14 @@ md"""
 
 # ╔═╡ 3c911397-cb1d-4929-b0e8-4aff516331b5
 md"""
-### Facilidade de Codificação
+## Facilidade de Codificação
 
 !!! tip "💡 Unicode"
     Veja o suporte à unicode e $\LaTeX$.
+"""
 
+# ╔═╡ 7659200b-163c-4127-be46-93ed949fb8ae
+md"""
 ```julia
 using Statistics, LinearAlgebra
 
@@ -369,7 +455,6 @@ function metropolis(S, ρ; μ_x=0.0, μ_y=0.0, σ_x=1.0, σ_y=1.0)
     return draws
 end
 ```
-
 """
 
 # ╔═╡ 36603633-5af5-4cdf-b6c9-9d87c23492e2
@@ -385,26 +470,32 @@ Outra coisa a observar que acho bastante surpreendente é que os pacotes de Juli
 
 # ╔═╡ 1b79ac6f-7be3-4c5b-903e-be26e134be87
 md"""
-#### Python my a**! (Arrays)
+### Python my a**! (Arrays)
 
 $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/Array_code_breakdown.svg?raw=true"))
 """
 
 # ╔═╡ b6acb557-1a04-4021-a103-4be3a066be38
 md"""
-#### Python my a**! (Deep Learning)
+### Python my a**! (Deep Learning)
 
 $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/ML_code_breakdown.svg?raw=true"))
 """
 
+# ╔═╡ a2ba234a-ff84-498f-84df-778dc3c5c6c8
+md"""
+### Qual o propósito de Python?
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/python_meme.jpg?raw=true", :width => 400))
+"""
+
 # ╔═╡ a3ba253e-fbda-471e-ab82-c2ddeaf3ddf9
 md"""
-#### Pequeno Interlúdio para falar mal de Python
+### Pequeno Interlúdio para falar mal de Python
 """
 
 # ╔═╡ a6a7bccf-4012-450c-ac02-9fdef68f0c9e
 md"""
-##### Int64 são 8 bytes né? #sqn
+#### Int64 são 8 bytes né? #sqn
 """
 
 # ╔═╡ e4e6e448-eac0-40ec-ac91-c79c3c4f040e
@@ -419,7 +510,7 @@ getsizeof(1)
 
 # ╔═╡ e30005e0-540a-48ec-92ef-351c07c86912
 md"""
-##### `UInt` + `UInt` = `UInt`?
+#### `UInt` + `UInt` = `UInt`?
 """
 
 # ╔═╡ fcb0a3f9-ebdd-40e5-968c-2f3644dcc095
@@ -434,7 +525,7 @@ type(np.uint(1) + 1)
 
 # ╔═╡ 6a45dd9a-1117-4591-b284-80cac24bb541
 md"""
-### Despacho Múltiplo
+## Despacho Múltiplo
 
 !!! danger "⚠️ Conhecimento Técnico"
     Esse conteúdo parte do pressuposto que você saiba o que é programação orientada a objetos. Em especial, vamos expor código C++ e Python.
@@ -452,7 +543,7 @@ Esta é uma generalização do **polimorfismo de despacho único**, em que uma f
 # ╔═╡ e0057d14-f306-4eaa-9ac3-e83500c8be59
 md"""
 
-#### Tentativa em Python
+### Tentativa em Python
 
 ```python
 >>> class Foo:
@@ -487,12 +578,12 @@ Just Foo
 
 # ╔═╡ 01949b8b-702f-4e82-9c48-3619b67133fa
 md"""
-#### Agora em Julia
+### Agora em Julia ⚡
 """
 
 # ╔═╡ b4938cbd-27bc-4999-919a-a32e503dadb0
 md"""
-#### Tentativa em C++
+### Tentativa em C++
 
 ```c++
 #include <iostream>
@@ -506,7 +597,7 @@ class Pet {
         string name;
 };
 
-string meets(Pet a, Pet b) { return "FALLBACK"; } // If we use `return meets(a, b)` doesn't work
+string meets(Pet a, Pet b) { return "FALLBACK"; } // `return meets(a, b)` não funciona
 
 void encounter(Pet a, Pet b) {
     string verb = meets(a, b);
@@ -550,12 +641,12 @@ Spots meets Fido and FALLBACK
 
 # ╔═╡ c2875c4e-e49e-42e6-ad88-bddc790550b9
 md"""
-#### Agora em Julia
+### Agora em Julia ⚡
 """
 
 # ╔═╡ 81ae472d-7195-4525-87ae-1429972b8816
 md"""
-#### Exemplo: One-Hot Vector
+### Exemplo: One-Hot Vector
 
 Um one-hot vector é um **vetor de inteiros em que todos os elementos são zero (0) exceto para um único elemento que é um (1)**.
 
@@ -646,6 +737,29 @@ begin
 	*(A::AbstractMatrix, v::OneHotVector) = A[:, v.ind]
 end
 
+# ╔═╡ 43f8ee8b-7d74-4ef3-88fe-41c44f0a0eee
+quadratic(a, sqr_term, b) = (-b + sqr_term) / 2a
+
+# ╔═╡ 5b87ddf1-4f76-46ed-a954-e2b814dcc7a8
+with_terminal() do
+	@code_warntype quadratic(42.0, 42.0, 42.0)
+end
+
+# ╔═╡ ce5e7964-9b19-4968-89e6-6deb429fa554
+with_terminal() do 
+	@code_llvm quadratic(42.0, 42.0, 42.0)
+end
+
+# ╔═╡ efc03594-5c0f-4841-b6d1-22cb3cdeca4b
+with_terminal() do 
+	@code_llvm quadratic(42, 42, 42)
+end
+
+# ╔═╡ f530d914-e940-4be2-9d00-688faa6a13a1
+with_terminal() do
+	@code_native quadratic(42, 42.0, 42.0)
+end
+
 # ╔═╡ 238e3cc9-6ea1-4f23-8a4a-0a58de6fd014
 inner(v, A, w) = dot(v, A * w) # very general definition
 
@@ -721,9 +835,108 @@ inner_sum(A, onehot)
 # ╔═╡ 62dd87d5-8a13-47eb-9a90-a10556e99b08
 @benchmark inner_sum($A, $onehot)
 
+# ╔═╡ 39ddde6a-9030-430c-ae39-1033720fd43a
+md"""
+# Sintaxe da Linguagem Julia
+
+CamelCase são `type`s, `struct`s, `module`s e `package`s
+
+snake_case é o resto: funções, métodos ou variáveis instanciadas
+"""
+
+# ╔═╡ 8e63e4f2-ef86-4a9d-ab21-4194965c32ba
+md"""
+## Variáveis
+"""
+
+# ╔═╡ b2814c7f-4d92-496b-8312-c3c96cd196dc
+md"""
+## Tipos Definidos pelo Usuário: `struct`
+"""
+
+# ╔═╡ f489f0e2-b49c-4a44-a088-e1414dc1f0f1
+md"""
+## Operadores Booleanos e Comparações Numéricas
+"""
+
+# ╔═╡ 00243765-bc99-4ac0-a29d-b2e4a25b8308
+md"""
+## Funções
+"""
+
+# ╔═╡ 925dc80e-c594-457a-b2c9-288673ece8bc
+md"""
+## Condicionais `if`-`else`-`elseif`
+"""
+
+# ╔═╡ a38739cb-1838-4957-80c6-ff8469358e05
+md"""
+## `for`-Loops
+"""
+
+# ╔═╡ 624afde0-6e92-4be0-b944-ac9adaf72ece
+md"""
+## `while`-Loops
+"""
+
+# ╔═╡ af3299d2-3802-4cb5-8175-8ad26a7451aa
+md"""
+# Estrutura de Dados Nativas
+"""
+
+# ╔═╡ bd654c6b-31eb-440f-b56d-8baa6e3be45c
+md"""
+## Broadcast de Operadores e Funções
+"""
+
+# ╔═╡ fb925ccb-7e31-435b-91f5-84cf0467ae2d
+md"""
+## `String`
+"""
+
+# ╔═╡ db838095-2cc8-47ed-951e-1017d62c73dc
+md"""
+## `Tuple`
+"""
+
+# ╔═╡ cb3c0d7a-5d56-4970-af6b-4e98af1961bc
+md"""
+## `NamedTuple`
+"""
+
+# ╔═╡ 51326bad-c0f3-4d0d-89a5-29ba3bf2834d
+md"""
+## `UnitRange`
+"""
+
+# ╔═╡ 4fe2bba3-b244-4c25-965c-fd39c8495014
+md"""
+## `Array`
+"""
+
+# ╔═╡ e20176c6-3a39-4ca0-8be7-379dcca98bd2
+md"""
+## `Pair`
+"""
+
+# ╔═╡ 95168671-e9b0-4f43-8782-bd083511fdf6
+md"""
+## `Dict`
+"""
+
+# ╔═╡ 6233afd4-78c3-4750-b3b9-96af0bc861df
+md"""
+## `Symbol`
+"""
+
+# ╔═╡ 367e7fb2-445d-467c-9a46-78e34f0a95d7
+md"""
+# Sistema de Arquivos
+"""
+
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
-## Ambiente
+# Ambiente
 """
 
 # ╔═╡ 23974dfc-7412-4983-9dcc-16e7a3e7dcc4
@@ -738,7 +951,7 @@ end
 
 # ╔═╡ 8aa46a2a-e675-41c6-830e-0e16818c24c3
 md"""
-## Licença
+# Licença
 
 Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Internacional](http://creativecommons.org/licenses/by-sa/4.0/).
 
@@ -936,15 +1149,34 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─3e2441b6-1545-4f34-a418-f61b2dbf61e9
 # ╟─0659cb16-eea6-4ef7-90e7-27a50deee15f
 # ╟─3712de35-d34e-4f6f-9041-cac2efb2730a
+# ╠═43f8ee8b-7d74-4ef3-88fe-41c44f0a0eee
+# ╠═5b87ddf1-4f76-46ed-a954-e2b814dcc7a8
+# ╠═ce5e7964-9b19-4968-89e6-6deb429fa554
+# ╠═efc03594-5c0f-4841-b6d1-22cb3cdeca4b
+# ╠═f530d914-e940-4be2-9d00-688faa6a13a1
+# ╟─9b8cac39-97ed-465c-bacb-1841c6926280
+# ╠═32b4273d-06d9-4450-97d0-23740cf7bd88
+# ╠═673ec92c-e813-424a-b4d9-4ff36bb887d2
+# ╠═584973af-9d1c-4c79-ad0b-f4c8f8b39ee3
+# ╟─d9b7c5bc-2f99-4721-8910-41497e307689
+# ╟─ec8aa40e-a6d4-46db-8d76-99e53f876fdd
+# ╟─c9be26cf-08d1-4927-b2da-a3cf4d1023ee
+# ╠═bdbe2067-2101-4f36-a64d-442afc9c20dc
+# ╠═6be5724f-78ed-49e4-8ac5-07caea58a4ee
 # ╟─d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
 # ╟─9104cac0-b5a8-4a54-a636-6475c0d3489f
 # ╟─cf994c69-7adb-4461-8273-165574072582
 # ╟─a0f907f5-1d81-451e-b34b-8d622e5e47a2
 # ╟─3c911397-cb1d-4929-b0e8-4aff516331b5
+# ╠═de862c54-cd85-493e-9140-4682c8c25d9a
+# ╠═3e20679b-04d5-48c0-b788-958fcfcd97c3
+# ╠═1768f19a-4158-4597-9110-450f81a67986
+# ╟─7659200b-163c-4127-be46-93ed949fb8ae
 # ╟─36603633-5af5-4cdf-b6c9-9d87c23492e2
 # ╟─ac147d47-71eb-482a-a52d-ab3b6bf33db3
 # ╟─1b79ac6f-7be3-4c5b-903e-be26e134be87
 # ╟─b6acb557-1a04-4021-a103-4be3a066be38
+# ╟─a2ba234a-ff84-498f-84df-778dc3c5c6c8
 # ╟─a3ba253e-fbda-471e-ab82-c2ddeaf3ddf9
 # ╟─a6a7bccf-4012-450c-ac02-9fdef68f0c9e
 # ╠═98ead09d-8ca9-41a4-95cf-fc07bd34db16
@@ -1008,6 +1240,25 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─f6042d46-94bf-45ad-aa23-f5e256c67571
 # ╠═fa434fbe-0999-4c45-8ae2-87f5652c1b52
 # ╠═62dd87d5-8a13-47eb-9a90-a10556e99b08
+# ╠═39ddde6a-9030-430c-ae39-1033720fd43a
+# ╠═8e63e4f2-ef86-4a9d-ab21-4194965c32ba
+# ╠═b2814c7f-4d92-496b-8312-c3c96cd196dc
+# ╠═f489f0e2-b49c-4a44-a088-e1414dc1f0f1
+# ╠═00243765-bc99-4ac0-a29d-b2e4a25b8308
+# ╠═925dc80e-c594-457a-b2c9-288673ece8bc
+# ╠═a38739cb-1838-4957-80c6-ff8469358e05
+# ╠═624afde0-6e92-4be0-b944-ac9adaf72ece
+# ╠═af3299d2-3802-4cb5-8175-8ad26a7451aa
+# ╠═bd654c6b-31eb-440f-b56d-8baa6e3be45c
+# ╠═fb925ccb-7e31-435b-91f5-84cf0467ae2d
+# ╠═db838095-2cc8-47ed-951e-1017d62c73dc
+# ╠═cb3c0d7a-5d56-4970-af6b-4e98af1961bc
+# ╠═51326bad-c0f3-4d0d-89a5-29ba3bf2834d
+# ╠═4fe2bba3-b244-4c25-965c-fd39c8495014
+# ╠═e20176c6-3a39-4ca0-8be7-379dcca98bd2
+# ╠═95168671-e9b0-4f43-8782-bd083511fdf6
+# ╠═6233afd4-78c3-4750-b3b9-96af0bc861df
+# ╠═367e7fb2-445d-467c-9a46-78e34f0a95d7
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
