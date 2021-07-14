@@ -26,6 +26,9 @@ TableOfContents(aside=true)
 # ╔═╡ e4dbc9c7-cc0d-4305-ac6a-c562b233d965
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ 6f1bec92-7703-4911-8ff5-668618185bf4
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/llvm_julia_meme.jpg?raw=true", :width => 400)
+
 # ╔═╡ 32b4273d-06d9-4450-97d0-23740cf7bd88
 function summed(a)
 	result = 0
@@ -847,22 +850,397 @@ snake_case é o resto: funções, métodos ou variáveis instanciadas
 # ╔═╡ 8e63e4f2-ef86-4a9d-ab21-4194965c32ba
 md"""
 ## Variáveis
+
+* Números Inteiros: `Int64`
+* Números Reais: `Float64`
+* Booleanas: `Bool`
+* Strings: `String`
+"""
+
+# ╔═╡ 6dfc1289-63ce-418f-be4e-8e0d56b548a8
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/julia_types.png?raw=true")
+
+# ╔═╡ 335f192a-c6df-40a0-85ad-632df6effb7b
+typeof(1)
+
+# ╔═╡ 0a4c0174-2237-44a2-8b40-2660aeca5301
+typeof(1.0)
+
+# ╔═╡ ccf84f8a-34f2-4cae-879e-d9d4db0d6e79
+typeof(true)
+
+# ╔═╡ 40de7a64-f189-4ed6-87ac-f92d585a1d7c
+typeof("Julia é melhor que Python")
+
+# ╔═╡ 23aad319-3599-45c2-b4ce-4ae1a65a5efc
+supertypes(Float64)
+
+# ╔═╡ c897c959-16fe-4c69-89ac-13b1f7c68532
+subtypes(Number)
+
+# ╔═╡ 31388efd-ece4-4e8b-b912-0c7ef4504cee
+subtypes(AbstractFloat)
+
+# ╔═╡ b4abf678-9647-4b0d-91e2-f72824594eeb
+md"""
+### Operações Matemáticas
+
+* `+`: Adição
+* `-`: Subtração
+* `*`: Multiplicação
+* `/`: Divisão
+* `÷`: Divisão Truncado para Inteiro
+* `^`: Exponenciação
+* `%`: Resto da Divisão
+"""
+
+# ╔═╡ dfb1f5d7-4b42-43d4-b485-a69aa501506f
+1 + 2
+
+# ╔═╡ 4f69ed81-c1bf-4ecc-b98b-28ecf5d23339
+1 - 2
+
+# ╔═╡ 6cf71676-068b-4ab8-995f-0018d160c670
+1 * 3
+
+# ╔═╡ dd55eea5-f90c-40bf-852a-804eef13ccc5
+1 / 3
+
+# ╔═╡ 1bbe7c18-9305-4dd0-9de0-93692860c30c
+10 ÷ 3 # \div TAB
+
+# ╔═╡ dba22aea-f08f-48a4-aa58-baedbc15a226
+2^3
+
+# ╔═╡ 9890d50b-84eb-448a-b6d8-63b9b630bd40
+10 % 3
+
+# ╔═╡ 1523aa7c-311a-40db-b8fe-e901618d8941
+md"""
+### Operações In-Place
+
+* `+=`: Adição
+* `-=`: Subtração
+* `*=`: Multiplicação
+* `/=`: Divisão
+* `÷=`: Divisão Truncado para Inteiro
+* `^=`: Exponenciação
+* `%=`: Resto da Divisão
 """
 
 # ╔═╡ b2814c7f-4d92-496b-8312-c3c96cd196dc
 md"""
 ## Tipos Definidos pelo Usuário: `struct`
+
+Em Julia, podemos definir tipo de dados estruturados com um `struct` (também conhecido como tipos compostos). Dentro de cada `struct`, há um **conjunto opcional de campos, _fields_**.
+
+Eles diferem dos tipos primitivos (por exemplo, `Int` e `Float`) que são definidos por padrão já dentro do núcleo da linguagem Julia. Como a maioria dos `struct`s são **definidos pelo usuário**, eles são conhecidos como **tipos definidos pelo usuário**.
 """
+
+# ╔═╡ 15168171-d7db-4a53-ba90-aa066786f007
+struct Language
+    name::String
+    title::String
+    year_of_birth::Int64
+    fast::Bool
+end
+
+# ╔═╡ bde7cb11-003d-4686-8864-9f07ba2dfc44
+fieldnames(Language)
+
+# ╔═╡ 44712c46-020a-4ab3-827c-2ca0aa1fdbe7
+md"""
+Por padrão temos o construtor do `struct` já definido por Julia
+"""
+
+# ╔═╡ c776f970-668f-491c-ae8b-d59f0125586c
+julia = Language("Julia", "Rapidus", 2012, true)
+
+# ╔═╡ be427637-8a55-45fb-87f3-a3740fccef82
+python = Language("Python", "Letargicus", 1991, false)
+
+# ╔═╡ 5b2a3041-b135-4f49-8939-d817a3c93931
+md"""
+Uma coisa a ser observada com relação aos `struct`s é que não podemos alterar seus valores uma vez que sejam instanciados. Podemos resolver isso com um `mutable struct`. 
+
+Objetos **mutáveis** geralmente serão mais **lentos** e mais sujeitos a **erros**. **Sempre que possível, torne tudo _imutável_**.
+"""
+
+# ╔═╡ 307f8eb1-be1d-4ddd-be36-602fc18e3542
+mutable struct MutableLanguage
+    name::String
+    title::String
+    year_of_birth::Int64
+    fast::Bool
+end
+
+# ╔═╡ bbb61634-0b8a-4c1d-bccb-f96aea7ad8ab
+MutableLanguage("Julia", "Rapidus", 2012, true)
+
+# ╔═╡ b41e4303-dcfa-4839-851f-4054b13e7a0d
+julia_mutable = MutableLanguage("Julia", "Rapidus", 2012, true)
+
+# ╔═╡ 5d83fd98-1d88-4d29-9fe2-3e506b147b85
+md"""
+Suponha que queremos mudar o título de `julia_mutable`. Agora podemos fazer isso, já que `julia_mutable` é um `mutable struct` instanciado:
+"""
+
+# ╔═╡ c22d7fbd-91a0-4c5c-89ad-88ad6c635f7f
+julia_mutable.title = "Python Obliteratus"
+
+# ╔═╡ fcf95c93-5896-430e-9c57-392acbd0452d
+julia_mutable
 
 # ╔═╡ f489f0e2-b49c-4a44-a088-e1414dc1f0f1
 md"""
 ## Operadores Booleanos e Comparações Numéricas
+
+* `!`: NOT
+* `&&`: AND
+* `||`: OR
 """
+
+# ╔═╡ 878dd181-a981-4bc3-8c7a-bcfcbf1c599b
+!true
+
+# ╔═╡ aea8516b-2a8c-466a-bf60-c539666a327d
+(false && true) || (!false)
+
+# ╔═╡ 22d9a2df-2199-4233-aa54-e9909224984c
+(6 isa Int64) && (6 isa Real)
+
+# ╔═╡ 3d2da59d-df8b-42cb-9f3a-19e605f9c274
+md"""
+1. **Igualdade**:
+   * `==`: igual
+   * `!=` ou `≠`: diferente (\neq TAB)
+
+
+2. **Menor**:
+   * `<`: menor que
+   * `<=` ou `≤`: menor ou igual a (\leq TAB)
+
+
+3. **Maior**:
+   * `>`: maior que
+   * `>=` ou `≥`: maior ou igual a (\geq TAB)
+"""
+
+# ╔═╡ f7308afc-5477-4a51-ad9a-c7e1b421bf50
+1 == 1
+
+# ╔═╡ c5bf57a4-2a17-42a8-ab6c-e9793a75924b
+1 >= 10
+
+# ╔═╡ 5c7c3816-2b36-4397-9ce3-518f4766a523
+md"""
+Funciona também para tipos diferentes:
+"""
+
+# ╔═╡ 9dcf470b-dbdc-4903-8119-ab21412a2733
+1 == 1.0
+
+# ╔═╡ c696e5f1-17a4-4775-98a8-013e4ebd6a6d
+md"""
+Também dá para fazer um bem-bolado com operadores booleanos:
+"""
+
+# ╔═╡ f9575009-eecf-4f65-a149-b81ff9e25078
+(1 != 10) || (3.14 <= 2.71)
+
+# ╔═╡ af3f1666-441f-49aa-8275-f2b027adb840
+md"""
+Também funciona para tipos abstratos:
+"""
+
+# ╔═╡ 962d8216-adf9-4dc1-9b0d-68156a93d6fb
+2.0 isa AbstractFloat
 
 # ╔═╡ 00243765-bc99-4ac0-a29d-b2e4a25b8308
 md"""
 ## Funções
+
+Agora que já sabemos como definir variáveis e tipos personalizados como `struct`, vamos voltar nossa atenção para as funções.
+
+Em Julia, uma função é um **objeto que mapeia os valores do argumento para um valor de retorno**. A sintaxe básica é mais ou menos assim:
+
+```julia
+function f_nome(arg1, arg2)
+    computações = manipulações com arg1 e arg2
+    return computações
+end
+```
 """
+
+# ╔═╡ fc401271-a696-45d2-886d-25ff03d852aa
+md"""
+Também a sintaxe **compacta de designação** (*compact assignment form*):
+
+```julia
+f_nome(arg1, arg2) = manipulações com arg1 e arg2
+```
+"""
+
+# ╔═╡ fd0059dc-316d-495a-8745-d1c6de3213ba
+md"""
+### Criando Novas Funções
+"""
+
+# ╔═╡ 6642f04b-997f-4bcb-842c-0229d1c2e0a6
+function add_numbers(x, y)
+    return x + y
+end
+
+# ╔═╡ 746c4392-f927-4737-9b4f-2d8e9e2dc1ef
+add_numbers(17, 29)
+
+# ╔═╡ 9f16d36a-4535-4878-9f54-e1b83ed966e9
+md"""
+Também funciona com `Float`s:
+"""
+
+# ╔═╡ 8736d279-d6a4-455a-8147-da54b6a8b7cb
+add_numbers(3.14, 2.72)
+
+# ╔═╡ a92afdd8-4caf-4b93-9ff0-a1c2a4d8e10f
+md"""
+Também podemos definir o comportamento personalizado especificando declarações de tipos.
+
+Suponha que queremos uma função `round_number` que se comporte de maneira diferente se seu argumento for `Float64` ou `Int64`:
+"""
+
+# ╔═╡ 2c5764ff-eb58-4bbc-8516-a1b85e3d39d2
+function round_number(x::Float64)
+    return round(x)
+end
+
+# ╔═╡ 672dea18-7531-41fe-9664-1e54760b84cc
+function round_number(x::Int64)
+    return x
+end
+
+# ╔═╡ c1eae7f9-02d1-46a1-8d55-27e84d4270ab
+md"""
+Há um problema: o que acontece se quisermos arredondar um `Float32` de 32 bits? Ou um inteiro de 8 bits `Int8`?
+
+Se você deseja que algo funcione em todos os tipos `Float` e `Int`, você pode usar um tipo abstrato como assinatura de tipo, como `AbstractFloat` ou `Integer`:
+"""
+
+# ╔═╡ 47b462f6-cf75-4ec2-b99c-9481e09a611a
+function round_number(x::AbstractFloat)
+    return round(x)
+end
+
+# ╔═╡ 5885a920-a492-4f43-855e-f609e52d44c8
+methods(round_number)
+
+# ╔═╡ e6f84787-a190-4758-871e-b5b22d95e528
+x_32 = Float32(1.1)
+
+# ╔═╡ 78d63c1b-1424-4a5d-a8a4-a3d463a8df4b
+round_number(x_32)
+
+# ╔═╡ 30ff79b3-c6e3-47cb-8e1a-60c785bfcaeb
+md"""
+Vamos voltar ao nosso `struct` de linguagem que definimos acima. Este é um exemplo de **despacho múltiplo**. Vamos estender a função `Base.show` que imprime a saída de tipos e `struct` instanciados.
+
+Por padrão, uma estrutura tem uma saída básica, que você viu acima no caso de `python` e `julia`. Podemos definir a função `Base.show` para nosso tipo de linguagem, de modo que tenhamos uma boa impressão para nossas instâncias de linguagens de programação.
+
+Queremos comunicar claramente os nomes, títulos e idades das linguagens de programação em anos de idade. A função `Base.show` aceita como argumentos um tipo de `IO` chamado `io` seguido pelo tipo que você deseja definir o comportamento personalizado:
+"""
+
+# ╔═╡ 8a101cdf-ef38-4be1-800e-91288e3a30c1
+Base.show(io::IO, l::Language) = print(
+    io, l.name, " ",
+    2021 - l.year_of_birth, ", anos de idade, ",
+    "tem os seguintes títulos: ", l.title
+)
+
+# ╔═╡ 6f08a8e7-55be-41fc-865e-3ef26ffd94a7
+python
+
+# ╔═╡ 8a2dbca6-36db-4c2d-bd6f-e07d3cd84a3d
+julia
+
+# ╔═╡ 8a02b02c-3bfd-405f-9163-b6b2b8880382
+md"""
+### Múltiplos Valores de Retorno
+
+Uma função também pode retornar dois ou mais valores. Veja a nova função `add_multiply` abaixo:
+"""
+
+# ╔═╡ da1f1312-d3e4-42ae-aef6-eb14d3b0fee8
+function add_multiply(x, y)
+    addition = x + y
+    multiplication = x * y
+    return addition, multiplication
+end
+
+# ╔═╡ e752e5bf-9a8a-4fd1-8e4b-f39b3fad6410
+md"""
+Podemos fazer duas coisas:
+
+1. desempacotar os valores de retorno
+"""
+
+# ╔═╡ e9e34c57-36f2-4f10-b16f-8ba34c38c957
+return_1, return_2 = add_multiply(1, 2)
+
+# ╔═╡ 9bbb809a-27c5-47db-a5a0-ae836318868d
+md"""
+2. definir uma única variável para os valores de retorno e acessar com indexação ou `first`, `last` etc...
+"""
+
+# ╔═╡ 6d0a36ab-0cd4-4502-973f-85f90aa0fc03
+all_returns = add_multiply(1, 2)
+
+# ╔═╡ dc13a6c0-3b40-43a9-9627-babfb0899e7f
+last(all_returns)
+
+# ╔═╡ 3a3f2e64-941a-4abe-bc6b-d4fb9a53a1f5
+md"""
+### Argumentos por Palavras-Chave (*Keywords*)
+
+Algumas funções podem aceitar **argumentos de palavras-chave** em vez de argumentos posicionais.
+
+Esses argumentos são como argumentos regulares, exceto que eles são **definidos após os argumentos da função regular e separados por um ponto e vírgula `;`**.
+
+Outra diferença é que devemos fornecer um **valor padrão para cada argumento de palavra-chave**.
+
+Por exemplo, vamos definir uma função de `logarithm` que, por padrão, usa base ℯ (2.718281828459045) como um argumento de palavra-chave. Observe que aqui estamos usando o tipo abstrato `Real` de modo que cobrimos todos os tipos derivados de `Integer` e `AbstractFloat`, sendo ambos subtipos de `Real`:
+"""
+
+# ╔═╡ a9134413-8ac2-4d70-ad87-5ce35bc74bda
+(AbstractFloat <: Real) && (Integer <: Real)
+
+# ╔═╡ 0329e55d-2845-4ba0-a10d-f91103559d60
+function logarithm(x::Real; base::Real=2.7182818284590)
+    return log(base, x)
+end
+
+# ╔═╡ 53ddf7fc-9886-4f64-973d-f62b9563943b
+md"""
+Funciona sem especificar o argumento `base`:
+"""
+
+# ╔═╡ 6f2c5ff8-1015-4e57-87cb-1f79c2c0aed6
+logarithm(10)
+
+# ╔═╡ 7fac9fb9-1d6d-49c3-854a-e02a05473f1c
+md"""
+E também com o argumento de palavra-chave `base` diferente de seu valor padrão:
+"""
+
+# ╔═╡ d48cbefb-8993-4807-b370-c815048c613b
+logarithm(10; base=2)
+
+# ╔═╡ d39fe930-1547-491d-a17b-570d44fde35d
+md"""
+### Funções Anônimas
+"""
+
+# ╔═╡ a6c58949-56b3-4a4a-a496-099c6e6ab35e
+
 
 # ╔═╡ 925dc80e-c594-457a-b2c9-288673ece8bc
 md"""
@@ -1148,6 +1526,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─6c5d8d8f-b08f-4550-bc1b-9f19a6152bd4
 # ╟─3e2441b6-1545-4f34-a418-f61b2dbf61e9
 # ╟─0659cb16-eea6-4ef7-90e7-27a50deee15f
+# ╟─6f1bec92-7703-4911-8ff5-668618185bf4
 # ╟─3712de35-d34e-4f6f-9041-cac2efb2730a
 # ╠═43f8ee8b-7d74-4ef3-88fe-41c44f0a0eee
 # ╠═5b87ddf1-4f76-46ed-a954-e2b814dcc7a8
@@ -1241,10 +1620,85 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═fa434fbe-0999-4c45-8ae2-87f5652c1b52
 # ╠═62dd87d5-8a13-47eb-9a90-a10556e99b08
 # ╠═39ddde6a-9030-430c-ae39-1033720fd43a
-# ╠═8e63e4f2-ef86-4a9d-ab21-4194965c32ba
-# ╠═b2814c7f-4d92-496b-8312-c3c96cd196dc
-# ╠═f489f0e2-b49c-4a44-a088-e1414dc1f0f1
-# ╠═00243765-bc99-4ac0-a29d-b2e4a25b8308
+# ╟─8e63e4f2-ef86-4a9d-ab21-4194965c32ba
+# ╟─6dfc1289-63ce-418f-be4e-8e0d56b548a8
+# ╠═335f192a-c6df-40a0-85ad-632df6effb7b
+# ╠═0a4c0174-2237-44a2-8b40-2660aeca5301
+# ╠═ccf84f8a-34f2-4cae-879e-d9d4db0d6e79
+# ╠═40de7a64-f189-4ed6-87ac-f92d585a1d7c
+# ╠═23aad319-3599-45c2-b4ce-4ae1a65a5efc
+# ╠═c897c959-16fe-4c69-89ac-13b1f7c68532
+# ╠═31388efd-ece4-4e8b-b912-0c7ef4504cee
+# ╟─b4abf678-9647-4b0d-91e2-f72824594eeb
+# ╠═dfb1f5d7-4b42-43d4-b485-a69aa501506f
+# ╠═4f69ed81-c1bf-4ecc-b98b-28ecf5d23339
+# ╠═6cf71676-068b-4ab8-995f-0018d160c670
+# ╠═dd55eea5-f90c-40bf-852a-804eef13ccc5
+# ╠═1bbe7c18-9305-4dd0-9de0-93692860c30c
+# ╠═dba22aea-f08f-48a4-aa58-baedbc15a226
+# ╠═9890d50b-84eb-448a-b6d8-63b9b630bd40
+# ╟─1523aa7c-311a-40db-b8fe-e901618d8941
+# ╟─b2814c7f-4d92-496b-8312-c3c96cd196dc
+# ╠═15168171-d7db-4a53-ba90-aa066786f007
+# ╠═bde7cb11-003d-4686-8864-9f07ba2dfc44
+# ╟─44712c46-020a-4ab3-827c-2ca0aa1fdbe7
+# ╠═c776f970-668f-491c-ae8b-d59f0125586c
+# ╠═be427637-8a55-45fb-87f3-a3740fccef82
+# ╟─5b2a3041-b135-4f49-8939-d817a3c93931
+# ╠═307f8eb1-be1d-4ddd-be36-602fc18e3542
+# ╠═bbb61634-0b8a-4c1d-bccb-f96aea7ad8ab
+# ╠═b41e4303-dcfa-4839-851f-4054b13e7a0d
+# ╟─5d83fd98-1d88-4d29-9fe2-3e506b147b85
+# ╠═c22d7fbd-91a0-4c5c-89ad-88ad6c635f7f
+# ╠═fcf95c93-5896-430e-9c57-392acbd0452d
+# ╟─f489f0e2-b49c-4a44-a088-e1414dc1f0f1
+# ╠═878dd181-a981-4bc3-8c7a-bcfcbf1c599b
+# ╠═aea8516b-2a8c-466a-bf60-c539666a327d
+# ╠═22d9a2df-2199-4233-aa54-e9909224984c
+# ╟─3d2da59d-df8b-42cb-9f3a-19e605f9c274
+# ╠═f7308afc-5477-4a51-ad9a-c7e1b421bf50
+# ╠═c5bf57a4-2a17-42a8-ab6c-e9793a75924b
+# ╟─5c7c3816-2b36-4397-9ce3-518f4766a523
+# ╠═9dcf470b-dbdc-4903-8119-ab21412a2733
+# ╟─c696e5f1-17a4-4775-98a8-013e4ebd6a6d
+# ╠═f9575009-eecf-4f65-a149-b81ff9e25078
+# ╟─af3f1666-441f-49aa-8275-f2b027adb840
+# ╠═962d8216-adf9-4dc1-9b0d-68156a93d6fb
+# ╟─00243765-bc99-4ac0-a29d-b2e4a25b8308
+# ╟─fc401271-a696-45d2-886d-25ff03d852aa
+# ╟─fd0059dc-316d-495a-8745-d1c6de3213ba
+# ╠═6642f04b-997f-4bcb-842c-0229d1c2e0a6
+# ╠═746c4392-f927-4737-9b4f-2d8e9e2dc1ef
+# ╟─9f16d36a-4535-4878-9f54-e1b83ed966e9
+# ╠═8736d279-d6a4-455a-8147-da54b6a8b7cb
+# ╟─a92afdd8-4caf-4b93-9ff0-a1c2a4d8e10f
+# ╠═2c5764ff-eb58-4bbc-8516-a1b85e3d39d2
+# ╠═672dea18-7531-41fe-9664-1e54760b84cc
+# ╠═5885a920-a492-4f43-855e-f609e52d44c8
+# ╟─c1eae7f9-02d1-46a1-8d55-27e84d4270ab
+# ╠═47b462f6-cf75-4ec2-b99c-9481e09a611a
+# ╠═e6f84787-a190-4758-871e-b5b22d95e528
+# ╠═78d63c1b-1424-4a5d-a8a4-a3d463a8df4b
+# ╟─30ff79b3-c6e3-47cb-8e1a-60c785bfcaeb
+# ╠═8a101cdf-ef38-4be1-800e-91288e3a30c1
+# ╠═6f08a8e7-55be-41fc-865e-3ef26ffd94a7
+# ╠═8a2dbca6-36db-4c2d-bd6f-e07d3cd84a3d
+# ╟─8a02b02c-3bfd-405f-9163-b6b2b8880382
+# ╠═da1f1312-d3e4-42ae-aef6-eb14d3b0fee8
+# ╠═e752e5bf-9a8a-4fd1-8e4b-f39b3fad6410
+# ╠═e9e34c57-36f2-4f10-b16f-8ba34c38c957
+# ╠═9bbb809a-27c5-47db-a5a0-ae836318868d
+# ╠═6d0a36ab-0cd4-4502-973f-85f90aa0fc03
+# ╠═dc13a6c0-3b40-43a9-9627-babfb0899e7f
+# ╟─3a3f2e64-941a-4abe-bc6b-d4fb9a53a1f5
+# ╠═a9134413-8ac2-4d70-ad87-5ce35bc74bda
+# ╠═0329e55d-2845-4ba0-a10d-f91103559d60
+# ╟─53ddf7fc-9886-4f64-973d-f62b9563943b
+# ╠═6f2c5ff8-1015-4e57-87cb-1f79c2c0aed6
+# ╟─7fac9fb9-1d6d-49c3-854a-e02a05473f1c
+# ╠═d48cbefb-8993-4807-b370-c815048c613b
+# ╠═d39fe930-1547-491d-a17b-570d44fde35d
+# ╠═a6c58949-56b3-4a4a-a496-099c6e6ab35e
 # ╠═925dc80e-c594-457a-b2c9-288673ece8bc
 # ╠═a38739cb-1838-4957-80c6-ff8469358e05
 # ╠═624afde0-6e92-4be0-b944-ac9adaf72ece
