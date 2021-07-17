@@ -205,6 +205,14 @@ md"""
 	#ChupaMatlab
 """
 
+# ╔═╡ d5c8264f-defe-4e4c-b072-093c580a19af
+md"""
+!!! tip "💡 O Estado de Julia (Julho/2021)"
+    - 6.008 [pacotes](https://juliahub.com/ui/Packages)
+	- 9,003 perguntas no [StackOverflow](https://stackoverflow.com/questions/tagged/julia)
+	- 34.4K Estrelas GitHub [`JuliaLang/julia`](https://github.com/JuliaLang/julia)
+"""
+
 # ╔═╡ 89dbf386-2216-400e-ab36-05599e1fb4c7
 md"""
 ## Como eu uso Júlia?
@@ -2773,6 +2781,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─92216109-f448-495d-8114-d7e4c6e2b5f0
 # ╟─c0212d94-246c-4129-b2c7-65a3b107d951
 # ╟─165e0a37-dd2c-4dae-8cc6-b80615af6e30
+# ╟─d5c8264f-defe-4e4c-b072-093c580a19af
 # ╟─89dbf386-2216-400e-ab36-05599e1fb4c7
 # ╟─575a6998-032b-40fb-9942-6ec39b1b69d7
 # ╟─6c5d8d8f-b08f-4550-bc1b-9f19a6152bd4
