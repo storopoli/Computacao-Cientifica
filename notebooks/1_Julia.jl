@@ -56,6 +56,9 @@ end
 # ╔═╡ 6be5724f-78ed-49e4-8ac5-07caea58a4ee
 @benchmark sumsimd($vec_a) # 🚀
 
+# ╔═╡ 959e2288-ee21-4541-9ce0-537716190733
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/toasty.jpg?raw=true")
+
 # ╔═╡ a0f907f5-1d81-451e-b34b-8d622e5e47a2
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/benchmarks.svg?raw=true")
 
@@ -2803,6 +2806,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─c9be26cf-08d1-4927-b2da-a3cf4d1023ee
 # ╠═bdbe2067-2101-4f36-a64d-442afc9c20dc
 # ╠═6be5724f-78ed-49e4-8ac5-07caea58a4ee
+# ╟─959e2288-ee21-4541-9ce0-537716190733
 # ╟─d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
 # ╟─9104cac0-b5a8-4a54-a636-6475c0d3489f
 # ╟─cf994c69-7adb-4461-8273-165574072582
