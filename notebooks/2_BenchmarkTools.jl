@@ -17,6 +17,7 @@ end
 begin
 	using BenchmarkPlots
 	using BenchmarkTools
+	using Cthulhu
 	using LaTeXStrings
 	using Plots
 	using Profile
@@ -393,7 +394,7 @@ end
 
 # ╔═╡ 2409fff2-8ddd-4619-86de-6267d01c3cda
 md"""
-# Inspecionando funções com [`TimerOutputs.jl`](https://github.com/KristofferC/TimerOutputs.jl)
+# Inspecionando Funções com [`TimerOutputs.jl`](https://github.com/KristofferC/TimerOutputs.jl)
 
 O uso é bem simples: só enfiar o macro `@timeit` dentro da função nas partes que você quer que seja cronometrada.
 
@@ -479,6 +480,45 @@ to_nested
 md"""
 !!! danger "⚠️ Alocações"
     Dá para ver que o problema do `merge_sort` é que ele contem diversas alocações. Uma boa ideia seria evitar essas alocações com um função com efeitos colaterais `merge_sort!`.
+"""
+
+# ╔═╡ b561e80e-a013-4b2f-81e8-d4a7676e1619
+md"""
+# Inspecionando Funções com [`Cthulhu.jl`](https://github.com/JuliaDebug/Cthulhu.jl)
+"""
+
+# ╔═╡ 47f5dea4-ca33-4ee4-ab69-6bef181dee22
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/cthulhu_logo.gif?raw=true", :width => 300)
+
+# ╔═╡ 0b936e23-64d7-41e7-8eb9-b9b5c7b76011
+md"""
+O uso também é bem simples: basta anotar o código com o macro `@descend` para descer às "trevas" da representação mais baixo-nível possível da sua função
+"""
+
+# ╔═╡ 39a43e8a-fe93-4afc-84ae-348390656d6b
+md"""
+```julia
+@descend merge_sort(A)
+```
+"""
+
+# ╔═╡ a046ac85-196c-41e4-8e19-8b1dba373255
+md"""
+```plaintext
+                        v  %163  = invoke merge_sort(::Vector{Float64})
+      From worker 2:	│ ─ %-1  = invoke merge_sort(::Vector{Float64})::Union{Vector{Any}, Vector{Float64}}
+      From worker 2:	CodeInfo(
+      From worker 2:	     @ /home/storopoli/Documents/Julia/Computacao-Cientifica/notebooks/2_BenchmarkTools.jl#==#f6d96868-9614-4301-8b27-397e1c37d0b0:2 within `merge_sort'
+      From worker 2:	    ┌ @ array.jl:197 within `length'
+      From worker 2:	1 ──│ %1   = Base.arraylen(X)::Int64
+      From worker 2:	│   └
+      From worker 2:	│    @ /home/storopoli/Documents/Julia/Computacao-Cientifica/notebooks/2_BenchmarkTools.jl#==#f6d96868-9614-4301-8b27-397e1c37d0b0:3 within `merge_sort'
+      From worker 2:	│   ┌ @ int.jl:442 within `<='
+      From worker 2:	│   │ %2   = Base.sle_int(%1, 1)::Bool
+      From worker 2:	│   └
+      From worker 2:	└───        goto #3 if not %2
+
+```
 """
 
 # ╔═╡ c81ada97-6dab-42e7-acf0-39a786e014c6
@@ -575,6 +615,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 BenchmarkPlots = "ab8c0f59-4072-4e0d-8f91-a91e1495eb26"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Cthulhu = "f68482b8-f384-11e8-15f7-abe071a5a75f"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -589,6 +630,7 @@ TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 [compat]
 BenchmarkPlots = "~0.1.0"
 BenchmarkTools = "~1.1.1"
+Cthulhu = "~1.6.1"
 LaTeXStrings = "~1.2.1"
 Plots = "~1.19.2"
 PlutoUI = "~0.7.9"
@@ -681,6 +723,12 @@ git-tree-sha1 = "75479b7df4167267d75294d14b58244695beb2ac"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 version = "0.14.2"
 
+[[CodeTracking]]
+deps = ["InteractiveUtils", "UUIDs"]
+git-tree-sha1 = "8ad457cfeb0bca98732c97958ef81000a543e73e"
+uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
+version = "1.0.5"
+
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random", "StaticArrays"]
 git-tree-sha1 = "ed268efe58512df8c7e224d2e170afd76dd6a417"
@@ -714,6 +762,12 @@ deps = ["StaticArrays"]
 git-tree-sha1 = "9f02045d934dc030edad45944ea80dbd1f0ebea7"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.5.7"
+
+[[Cthulhu]]
+deps = ["CodeTracking", "FoldingTrees", "InteractiveUtils", "REPL", "UUIDs", "Unicode"]
+git-tree-sha1 = "5e65dfced9daeae7fee72deab634f8a635442b8a"
+uuid = "f68482b8-f384-11e8-15f7-abe071a5a75f"
+version = "1.6.1"
 
 [[DataAPI]]
 git-tree-sha1 = "ee400abb2298bd13bfc3df1c412ed228061a2385"
@@ -835,6 +889,12 @@ deps = ["AbstractTrees", "Colors", "FileIO", "FixedPointNumbers", "IndirectArray
 git-tree-sha1 = "99c43a8765095efa6ef76233d44a89e68073bd10"
 uuid = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 version = "0.2.5"
+
+[[FoldingTrees]]
+deps = ["AbstractTrees", "REPL"]
+git-tree-sha1 = "e0c730b2d920d29edf8c381695e16c0a28055466"
+uuid = "1eca21be-9b9b-4ed8-839a-6d8ae26b1781"
+version = "1.0.1"
 
 [[Fontconfig_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Expat_jll", "FreeType2_jll", "JLLWrappers", "Libdl", "Libuuid_jll", "Pkg", "Zlib_jll"]
@@ -1767,6 +1827,11 @@ version = "0.9.1+5"
 # ╠═a41de564-299b-4ea5-a1df-8b2e3c7f5d2a
 # ╠═b22807f6-3449-4b5b-902f-e6699e9f7292
 # ╟─3bc698c5-2cc5-4940-9aca-d37053fb7cbd
+# ╟─b561e80e-a013-4b2f-81e8-d4a7676e1619
+# ╟─47f5dea4-ca33-4ee4-ab69-6bef181dee22
+# ╟─0b936e23-64d7-41e7-8eb9-b9b5c7b76011
+# ╟─39a43e8a-fe93-4afc-84ae-348390656d6b
+# ╟─a046ac85-196c-41e4-8e19-8b1dba373255
 # ╟─c81ada97-6dab-42e7-acf0-39a786e014c6
 # ╠═e8b762a6-e8d8-4ada-b7e2-35c05c67efc4
 # ╠═642aacf6-ad3f-4c21-8fc0-494471d76b05
