@@ -71,7 +71,8 @@ md"""
 
 Eu poderia já entrar em coisas malucas como Markov chain Monte Carlo (MCMC), decomposição de matrizes etc. Mas o propósito não é esse... Vamos focar em algo simples.
 
-**Algoritmos de ordenação são algoritmos de manipulação de dados, que coloca os elementos de uma dada sequência em uma certa ordem -- em outras palavras, efetua sua ordenação completa ou parcial**.
+!!! tip "💡 Algoritmos de Ordenação"
+	**Algoritmos de ordenação são algoritmos de manipulação de dados, que coloca os elementos de uma dada sequência em uma certa ordem -- em outras palavras, efetua sua ordenação completa ou parcial**.
 """
 
 # ╔═╡ 1edba463-9d82-413a-b870-97b719e94a10
@@ -535,7 +536,7 @@ Para usar é o anotar sua função com o macro `@profile`
 """
 
 # ╔═╡ e8b762a6-e8d8-4ada-b7e2-35c05c67efc4
-pf = @profile merge_sort(vec_a)
+@profile merge_sort(vec_a)
 
 # ╔═╡ 642aacf6-ad3f-4c21-8fc0-494471d76b05
 with_terminal() do
