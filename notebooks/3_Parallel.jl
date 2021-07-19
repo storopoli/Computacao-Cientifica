@@ -9,6 +9,9 @@ begin
 	using Pkg
 	using PlutoUI
 	
+	using BenchmarkTools
+	using StaticArrays
+	using Statistics: mean
 	# Para printar as cores do Terminal
 	using ANSIColoredPrinters
 end
@@ -32,6 +35,11 @@ md"""
 # ╔═╡ 365e3617-b3e8-4128-956b-56ba047814ec
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ b232987d-bcc3-492d-850f-2a62768f3942
+md"""
+## *Performance*
+"""
+
 # ╔═╡ c6e7e56c-39c5-4330-83c4-5120e8bf5c99
 md"""
 Checklist básico para *performance*:
@@ -45,7 +53,7 @@ Checklist básico para *performance*:
 
 # ╔═╡ dd475167-987c-462e-b296-67e61e2ccf64
 md"""
-## Instabilidade de Tipo
+### Instabilidade de Tipo
 
 !!! info "💁"
 	O tipo de saída de uma função é **imprevisível** a partir dos tipos de entradas. Em particular, isso significa que o tipo de saída **pode variar** dependendo dos valores das entradas.
@@ -70,7 +78,7 @@ md"""
 
 # ╔═╡ d4bf050e-bad2-4df9-95c9-926a940a1be6
 md"""
-### [`@code_warntype`](https://docs.julialang.org/en/v1/manual/performance-tips/#man-code-warntype)
+#### [`@code_warntype`](https://docs.julialang.org/en/v1/manual/performance-tips/#man-code-warntype)
 
 Aí que entra a macro [`@code_warntype`](https://docs.julialang.org/en/v1/manual/performance-tips/#man-code-warntype) que avalia a função com o argumento e printa um *Abstract Syntax Tree* (AST).
 
@@ -101,6 +109,15 @@ function positivo_stable(x::Integer)
 	end
 end
 
+# ╔═╡ ae350740-f49b-437f-aad5-da4b71bf8f57
+x = rand(1_000)
+
+# ╔═╡ a9f4b7a2-dcf8-4dba-a7c0-133310802a26
+@benchmark positivo.($x)
+
+# ╔═╡ 87f3d1aa-9803-4b97-a05e-fb5cd6610048
+@benchmark positivo_stable.($x)
+
 # ╔═╡ c5b42cd9-ff11-4118-93de-809eba145bce
 md"""
 !!! tip "💡 Tipos Abstratos "
@@ -111,7 +128,7 @@ md"""
 
 # ╔═╡ 3ae994ee-35d4-4f6f-964e-82022690f573
 md"""
-### Tipos Paramétricos
+#### Tipos Paramétricos
 
 São introduzidos com as chaves `{}` e usando a palavra-chave `where`
 
@@ -149,28 +166,154 @@ meus_zeros([1, 0, 3])
 
 # ╔═╡ 8bf79817-1e93-4c24-b228-2de2a255bcf2
 md"""
-# Variáveis Globais vs Locais
+## Variáveis Globais vs Locais
+
+Qual o problema aqui? Com variáveis globais o compilador LLVM tem dificuldades em otimizar o código Assembly.
+
+Veja um exemplo:
+"""
+
+# ╔═╡ 2fd61b27-b252-42d7-a367-4ade2871a2f2
+function sum_global()
+    s = 0.0
+    for i in x
+        s += i
+    end
+    return s
+end
+
+# ╔═╡ b99fe12f-f2fb-4900-9e08-09ecded57a87
+@benchmark sum_global()
+
+# ╔═╡ df453cda-acc3-4b26-ae95-a22e6cda2564
+function sum_arg(x)
+   s = 0.0
+   for i in x
+	   s += i
+   end
+   return s
+end
+
+# ╔═╡ a6997d0f-a95d-452a-8c0a-f75a744a8e0b
+@benchmark sum_arg($x)
+
+# ╔═╡ d6cf53d0-3317-4cc2-8423-317636d1f173
+md"""
+> ≈ 70x de perda de *performance*
+"""
+
+# ╔═╡ a2656e94-58d5-4c48-90ff-d1e3909174db
+md"""
+### Se você tiver que usar variáveis globais use `const`
+"""
+
+# ╔═╡ beb9bf90-e578-4cb4-b8c4-08f7825e0a66
+const const_x = rand(1_000)
+
+# ╔═╡ 43eba429-f3c0-4a05-b240-a381552bd381
+function sum_const_global()
+	s = 0.0
+    for i in const_x
+        s += i
+    end
+    return s
+end
+
+# ╔═╡ 962cbdff-8503-4b4e-ac3a-35247fd947b7
+@benchmark sum_const_global()
+
+# ╔═╡ e2b1f4c4-abf6-4729-a93c-66fa2c8aa407
+md"""
+!!! danger "⚠️ Nunca use variáveis globais"
+    Mas quando precisar faça elas imutáveis com `const`.
 """
 
 # ╔═╡ d38c963d-c101-4399-8a3f-22b70c5a9f52
 md"""
-# Fazer tudo imutável
+## Fazer tudo imutável
+
+Mesma ideia. Tudo que é mutável faz com que o compilador LLVM não saiba o que vem pela frente e não consiga otimizar.
 """
 
 # ╔═╡ 1882404a-ed82-4e7c-a0b2-2dde255a9788
 md"""
-## Tuplas vs Arrays
+### Tuplas vs Arrays
+
+Tuplas são **imutáveis** e Arrays podem ser modificadas após a instanciação.
+
+Veja um exemplo com pontos 2-D:
 """
+
+# ╔═╡ 714c2992-16f9-47f6-9c45-44fb2310a8d8
+rand_tuple_point()  = (rand(), rand())
+
+# ╔═╡ 1ff11963-4ca4-4154-8df4-5724c2760599
+rand_vector_point() = [rand(), rand()]
+
+# ╔═╡ 11436681-78ba-4697-81d1-4b76e57074e0
+tuple_points  = [rand_tuple_point()  for _ ∈ 1:500]
+
+# ╔═╡ e194d2f0-8ec9-41a2-addd-4b20124c14fd
+vector_points = [rand_vector_point() for _ ∈ 1:500]
+
+# ╔═╡ 463f85c5-62b6-42b8-81a1-df16d7ca1632
+function difference_matrix(points)
+	return [p1 .- p2 for p1 in points, p2 ∈ points]
+end
+
+# ╔═╡ eaea8739-a1f9-41e0-b196-86a7eee92a30
+@benchmark difference_matrix($tuple_points) seconds=1
+
+# ╔═╡ 056fdaf1-03e8-4565-b2dc-8f9ea5621812
+@benchmark difference_matrix($vector_points) seconds=1
 
 # ╔═╡ 3c5ad253-4964-48b2-871b-1daae0601848
 md"""
-## `struct` vs `mutable struct`
+### `struct` vs `mutable struct`
+
+Mesma ideia.
+
+* 👍 Imutável
+* 👎 Mutável
 """
+
+# ╔═╡ 633afbb7-8cf3-42d6-985c-edc5e52a8c93
+abstract type Point end
+
+# ╔═╡ b076bc83-a944-4a2e-86cd-352ee9ac686c
+struct ImmutablePoint <: Point
+   x::Float64
+   y::Float64
+end
+
+# ╔═╡ 40817c95-b202-4730-8cf8-0ee12c8f132a
+mutable struct MutablePoint <: Point
+   x::Float64
+   y::Float64
+end
+
+# ╔═╡ ce92ab2d-4362-44a5-b14a-d0d2e85f0e40
+function mean_point(p::Point)
+	return mean([p.x, p.y]) 
+end
+
+# ╔═╡ bf934236-4b43-423c-9e1e-55fad85d62ad
+@benchmark mean_point.([ImmutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
+
+# ╔═╡ f6cfd1f1-be06-412e-9aba-9766bb98a91e
+@benchmark mean_point.([MutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
 
 # ╔═╡ 3b7c1b4d-aa15-4aba-8f0a-bebf0cc7422e
 md"""
-## [`StaticArrays.jl`](https://juliaarrays.github.io/StaticArrays.jl/latest/)
+### [`StaticArrays.jl`](https://juliaarrays.github.io/StaticArrays.jl/latest/)
 
+**Arrays estáticas em Julia**.
+
+Uso simples:
+
+* `StaticArray{Size, T, Dims} <: AbstractArray{T, Dims}`
+* `SVector{N, T}`: alias para `StaticArray{N, T, 1}`
+* `SMatrix{M, N, T}`: alias para `StaticArray{(M, N), T, 2}`
 
 [Benchmarks](https://github.com/JuliaArrays/StaticArrays.jl#speed) para matrizes `Float64` 3×3:
 
@@ -185,6 +328,86 @@ md"""
 | decomposição LU             | 6.1x      |
 | decomposição QR             | 65.0x     |
 """
+
+# ╔═╡ e94db3ee-f765-4657-8656-4746bc9404b5
+md"""
+Comparação:
+"""
+
+# ╔═╡ 5badcbbb-1810-4781-9ce5-ec183aa7e267
+abstract type MeuTipo end
+
+# ╔═╡ dfbce314-06e2-448a-8a35-7671a1083f05
+struct MyImmutable <: MeuTipo
+	x::Vector{Int}
+end
+
+# ╔═╡ b4fad535-b940-4126-8923-4110fe70c834
+mutable struct MyMutable <: MeuTipo
+	x::Vector{Int}
+end
+
+# ╔═╡ c98e3d08-76e0-4661-9335-b8b846cb6945
+struct MySArray <: MeuTipo
+	x::SVector{2, Int}
+end
+
+# ╔═╡ b23883cb-0bd3-48f3-94cd-507a831027ca
+md"""
+#### Instaciamento
+"""
+
+# ╔═╡ 9e623a78-d3b9-4b56-b5ab-a36f50cd6d48
+function f_immutable()
+	for i in 1:1000
+    	x = MyImmutable([rand(Int), rand(Int)])
+	end
+	return nothing
+end
+
+# ╔═╡ e596d60c-0ced-44a4-86bf-f0e5bb2d9c6d
+@benchmark f_immutable()
+
+# ╔═╡ 25686e19-6866-442b-86c2-4c987449307c
+function f_mutable()
+	for i in 1:1000
+    	x = MyMutable([rand(Int), rand(Int)])
+	end
+	return nothing
+end
+
+# ╔═╡ 9a20d3a6-977d-44d5-aae2-6b1a418b5eff
+@benchmark f_mutable()
+
+# ╔═╡ a57da9ac-4e5d-43ec-ab4a-589455ccdf68
+function f_sarray()
+	for i in 1:1000
+		x = MySArray(SVector(rand(Int), rand(Int)))
+	end
+	return nothing
+end
+
+# ╔═╡ 5eecb645-7ac2-4ad3-b7ef-ba0d94c832db
+@benchmark f_sarray()
+
+# ╔═╡ d6b1a624-a141-4950-815c-135f1e1b59ce
+md"""
+#### Operações
+"""
+
+# ╔═╡ 33948e3f-ce17-41ca-a68d-e3ef6e29f5ca
+function mean_meu_tipo(m::MeuTipo)
+	return mean(m.x) 
+end
+
+# ╔═╡ 589278e9-aef3-4a1f-8ff8-a593ec15546c
+@benchmark mean_meu_tipo(MyImmutable([rand(Int), rand(Int)]))
+
+# ╔═╡ 9121f511-c1c4-4abb-bc4b-dab79ca83207
+@benchmark mean_meu_tipo(MyMutable([rand(Int), rand(Int)]))
+
+# ╔═╡ 25cf90b9-7e35-48bd-ab69-887c77ec164e
+@benchmark mean_meu_tipo(MySArray(SVector(rand(Int), rand(Int))))
 
 # ╔═╡ ece06047-04ba-47f9-856a-88417a16b17a
 md"""
@@ -435,13 +658,18 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 ANSIColoredPrinters = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 ANSIColoredPrinters = "~0.0.1"
+BenchmarkTools = "~1.1.1"
 PlutoUI = "~0.7.9"
+StaticArrays = "~1.2.7"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -461,6 +689,12 @@ uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[BenchmarkTools]]
+deps = ["JSON", "Logging", "Printf", "Statistics", "UUIDs"]
+git-tree-sha1 = "c31ebabde28d102b602bada60ce8922c266d205b"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "1.1.1"
 
 [[Dates]]
 deps = ["Printf"]
@@ -498,6 +732,10 @@ uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[[LinearAlgebra]]
+deps = ["Libdl"]
+uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -561,6 +799,20 @@ uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 [[Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
+[[SparseArrays]]
+deps = ["LinearAlgebra", "Random"]
+uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[[StaticArrays]]
+deps = ["LinearAlgebra", "Random", "Statistics"]
+git-tree-sha1 = "1b9a0f17ee0adde9e538227de093467348992397"
+uuid = "90137ffa-7385-5640-81b9-e52037218182"
+version = "1.2.7"
+
+[[Statistics]]
+deps = ["LinearAlgebra", "SparseArrays"]
+uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
 [[Suppressor]]
 git-tree-sha1 = "a819d77f31f83e5792a76081eee1ea6342ab8787"
 uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
@@ -599,6 +851,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─365e3617-b3e8-4128-956b-56ba047814ec
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
+# ╟─b232987d-bcc3-492d-850f-2a62768f3942
 # ╟─c6e7e56c-39c5-4330-83c4-5120e8bf5c99
 # ╟─dd475167-987c-462e-b296-67e61e2ccf64
 # ╠═17f404d1-12a3-4368-b7f2-b14968fcae86
@@ -610,6 +863,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═4281974f-9374-4e30-aacc-f200fafde1a6
 # ╠═042b82f4-5f7f-494e-ad34-2969e59d8996
 # ╠═954566c5-3653-4efc-a49b-c4d92c5f402d
+# ╠═ae350740-f49b-437f-aad5-da4b71bf8f57
+# ╠═a9f4b7a2-dcf8-4dba-a7c0-133310802a26
+# ╠═87f3d1aa-9803-4b97-a05e-fb5cd6610048
 # ╟─c5b42cd9-ff11-4118-93de-809eba145bce
 # ╟─3ae994ee-35d4-4f6f-964e-82022690f573
 # ╠═d93c4592-bd6d-49ce-b8e0-8d6a02928477
@@ -619,11 +875,51 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═ec1929fe-a686-4662-92e4-681cb6264f39
 # ╠═cb172b0a-ceaf-4c82-ab19-b7824dd12cc4
 # ╠═cd74a7da-824c-48ce-9d6c-af2337f3c57e
-# ╠═8bf79817-1e93-4c24-b228-2de2a255bcf2
-# ╠═d38c963d-c101-4399-8a3f-22b70c5a9f52
-# ╠═1882404a-ed82-4e7c-a0b2-2dde255a9788
-# ╠═3c5ad253-4964-48b2-871b-1daae0601848
-# ╠═3b7c1b4d-aa15-4aba-8f0a-bebf0cc7422e
+# ╟─8bf79817-1e93-4c24-b228-2de2a255bcf2
+# ╠═2fd61b27-b252-42d7-a367-4ade2871a2f2
+# ╠═b99fe12f-f2fb-4900-9e08-09ecded57a87
+# ╠═df453cda-acc3-4b26-ae95-a22e6cda2564
+# ╠═a6997d0f-a95d-452a-8c0a-f75a744a8e0b
+# ╟─d6cf53d0-3317-4cc2-8423-317636d1f173
+# ╟─a2656e94-58d5-4c48-90ff-d1e3909174db
+# ╠═beb9bf90-e578-4cb4-b8c4-08f7825e0a66
+# ╠═43eba429-f3c0-4a05-b240-a381552bd381
+# ╠═962cbdff-8503-4b4e-ac3a-35247fd947b7
+# ╟─e2b1f4c4-abf6-4729-a93c-66fa2c8aa407
+# ╟─d38c963d-c101-4399-8a3f-22b70c5a9f52
+# ╟─1882404a-ed82-4e7c-a0b2-2dde255a9788
+# ╠═714c2992-16f9-47f6-9c45-44fb2310a8d8
+# ╠═1ff11963-4ca4-4154-8df4-5724c2760599
+# ╠═11436681-78ba-4697-81d1-4b76e57074e0
+# ╠═e194d2f0-8ec9-41a2-addd-4b20124c14fd
+# ╠═463f85c5-62b6-42b8-81a1-df16d7ca1632
+# ╠═eaea8739-a1f9-41e0-b196-86a7eee92a30
+# ╠═056fdaf1-03e8-4565-b2dc-8f9ea5621812
+# ╟─3c5ad253-4964-48b2-871b-1daae0601848
+# ╠═633afbb7-8cf3-42d6-985c-edc5e52a8c93
+# ╠═b076bc83-a944-4a2e-86cd-352ee9ac686c
+# ╠═40817c95-b202-4730-8cf8-0ee12c8f132a
+# ╠═ce92ab2d-4362-44a5-b14a-d0d2e85f0e40
+# ╠═bf934236-4b43-423c-9e1e-55fad85d62ad
+# ╠═f6cfd1f1-be06-412e-9aba-9766bb98a91e
+# ╟─3b7c1b4d-aa15-4aba-8f0a-bebf0cc7422e
+# ╟─e94db3ee-f765-4657-8656-4746bc9404b5
+# ╠═5badcbbb-1810-4781-9ce5-ec183aa7e267
+# ╠═dfbce314-06e2-448a-8a35-7671a1083f05
+# ╠═b4fad535-b940-4126-8923-4110fe70c834
+# ╠═c98e3d08-76e0-4661-9335-b8b846cb6945
+# ╟─b23883cb-0bd3-48f3-94cd-507a831027ca
+# ╠═9e623a78-d3b9-4b56-b5ab-a36f50cd6d48
+# ╠═e596d60c-0ced-44a4-86bf-f0e5bb2d9c6d
+# ╠═25686e19-6866-442b-86c2-4c987449307c
+# ╠═9a20d3a6-977d-44d5-aae2-6b1a418b5eff
+# ╠═a57da9ac-4e5d-43ec-ab4a-589455ccdf68
+# ╠═5eecb645-7ac2-4ad3-b7ef-ba0d94c832db
+# ╟─d6b1a624-a141-4950-815c-135f1e1b59ce
+# ╠═33948e3f-ce17-41ca-a68d-e3ef6e29f5ca
+# ╟─589278e9-aef3-4a1f-8ff8-a593ec15546c
+# ╠═9121f511-c1c4-4abb-bc4b-dab79ca83207
+# ╠═25cf90b9-7e35-48bd-ab69-887c77ec164e
 # ╠═ece06047-04ba-47f9-856a-88417a16b17a
 # ╠═cb42709d-e4e6-4cc5-8d96-da1bfc4edab9
 # ╠═e6d16ced-35ab-4bbb-9238-78774c96dac7
