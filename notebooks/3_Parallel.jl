@@ -64,7 +64,7 @@ function positivo(x)
 	if x > 0
 		return x
 	else
-		return 0
+		return 0 
 	end
 end
 
@@ -143,7 +143,7 @@ function positivo_stable2(x::T) where T <: Real
 	if x > 0
 		return x
 	else
-		return 0.0
+		return 0::T
 	end
 end
 
@@ -170,7 +170,7 @@ md"""
 
 Qual o problema aqui? Com variáveis globais o compilador LLVM tem dificuldades em otimizar o código Assembly.
 
-Veja um exemplo:
+Veja um exemplo com aquele `x` lá de cima:
 """
 
 # ╔═╡ 2fd61b27-b252-42d7-a367-4ade2871a2f2
@@ -329,6 +329,12 @@ Uso simples:
 | decomposição QR             | 65.0x     |
 """
 
+# ╔═╡ 6326afa7-a9fd-4c6d-8c84-bd70e162ab7e
+md"""
+!!! tip "💡 Quando usar StaticArrays?"
+    Geralmente como regra-geral, se você tiver uma `Array` **até 100 elementos** é interessante usar uma `StaticArray`.
+"""
+
 # ╔═╡ e94db3ee-f765-4657-8656-4746bc9404b5
 md"""
 Comparação:
@@ -411,7 +417,9 @@ end
 
 # ╔═╡ ece06047-04ba-47f9-856a-88417a16b17a
 md"""
-## Desativar Checagem de indices -- [`@inbounds`](https://docs.julialang.org/en/v1/devdocs/boundscheck/)
+## Desativar Checagem de Índices -- [`@inbounds`](https://docs.julialang.org/en/v1/devdocs/boundscheck/)
+
+A maioria das linagugens mode
 """
 
 # ╔═╡ cb42709d-e4e6-4cc5-8d96-da1bfc4edab9
@@ -602,6 +610,9 @@ end
 
 # ╔═╡ a372ccf0-07fb-4fd7-b813-ede5d12507ea
 @code_warntype_ positivo_stable2(-3.4) #obs usando um hack
+
+# ╔═╡ 4a052112-9a45-4f63-aedf-eecd1bee403d
+@code_warntype_ positivo_stable2(-3) #obs usando um hack
 
 # ╔═╡ cd74a7da-824c-48ce-9d6c-af2337f3c57e
 @code_warntype_ meus_zeros([1, 0, 3])
@@ -871,6 +882,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═d93c4592-bd6d-49ce-b8e0-8d6a02928477
 # ╠═c17a5fbe-6d4e-4ef6-99c5-667d059df6f6
 # ╠═a372ccf0-07fb-4fd7-b813-ede5d12507ea
+# ╠═4a052112-9a45-4f63-aedf-eecd1bee403d
 # ╟─c33fec23-79f1-41b7-97be-6bc9a66b12bc
 # ╠═ec1929fe-a686-4662-92e4-681cb6264f39
 # ╠═cb172b0a-ceaf-4c82-ab19-b7824dd12cc4
@@ -903,6 +915,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═bf934236-4b43-423c-9e1e-55fad85d62ad
 # ╠═f6cfd1f1-be06-412e-9aba-9766bb98a91e
 # ╟─3b7c1b4d-aa15-4aba-8f0a-bebf0cc7422e
+# ╟─6326afa7-a9fd-4c6d-8c84-bd70e162ab7e
 # ╟─e94db3ee-f765-4657-8656-4746bc9404b5
 # ╠═5badcbbb-1810-4781-9ce5-ec183aa7e267
 # ╠═dfbce314-06e2-448a-8a35-7671a1083f05
@@ -917,7 +930,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5eecb645-7ac2-4ad3-b7ef-ba0d94c832db
 # ╟─d6b1a624-a141-4950-815c-135f1e1b59ce
 # ╠═33948e3f-ce17-41ca-a68d-e3ef6e29f5ca
-# ╟─589278e9-aef3-4a1f-8ff8-a593ec15546c
+# ╠═589278e9-aef3-4a1f-8ff8-a593ec15546c
 # ╠═9121f511-c1c4-4abb-bc4b-dab79ca83207
 # ╠═25cf90b9-7e35-48bd-ab69-887c77ec164e
 # ╠═ece06047-04ba-47f9-856a-88417a16b17a
