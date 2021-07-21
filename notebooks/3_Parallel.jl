@@ -763,6 +763,9 @@ md"""
 * [`FLoops.jl`](https://github.com/JuliaFolds/FLoops.jl): possui o macro `@floop` e `@reduce` para coisas mais customizadas e complexas. Permite paralelizar na GPU com [`FoldsCUDA.jl`](https://github.com/JuliaFolds/FoldsCUDA.jl).
 
 
+* [`Dagger.jl`](https://github.com/JuliaParallel/Dagger.jl): operações paralelas em um _**D**irected **A**cyclic **G**raph_ (DAG) ao estilo do `Dask` de Python.
+
+
 * [`Tullio.jl`](https://github.com/mcabbott/Tullio.jl): paralelização para operações matriciais -- Álgebra Linear.
 
 
