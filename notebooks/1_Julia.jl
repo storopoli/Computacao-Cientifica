@@ -102,9 +102,6 @@ x = Foo()
 # ╔═╡ 87bed413-6237-4c16-9459-41f4b868e1be
 y = Bar()
 
-# ╔═╡ d4c8819f-31fe-4e2e-b10d-cc0278cd29d5
-
-
 # ╔═╡ d4bea1f2-e30d-4fff-bdad-644b80f4e704
 f(x)
 
@@ -657,6 +654,12 @@ Spots meets Fido and FALLBACK
 # ╔═╡ c2875c4e-e49e-42e6-ad88-bddc790550b9
 md"""
 ### Agora em Julia ⚡
+"""
+
+# ╔═╡ 1d46cf0f-a322-4447-9192-133c6e4085b8
+md"""
+!!! info "💁 Exemplo com Pokemons"
+    Tem um [exemplo de despacho múltiplo muito bem feito com Pokemons](https://www.moll.dev/projects/effective-multi-dispatch/). Vale a pena conferir.
 """
 
 # ╔═╡ 81ae472d-7195-4525-87ae-1429972b8816
@@ -2841,7 +2844,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5a52e20b-ff55-462b-ab87-03f4f38138c0
 # ╠═ff24f4a0-bd0e-4dc7-b8bf-504b5ac05096
 # ╠═87bed413-6237-4c16-9459-41f4b868e1be
-# ╠═d4c8819f-31fe-4e2e-b10d-cc0278cd29d5
 # ╠═d4bea1f2-e30d-4fff-bdad-644b80f4e704
 # ╠═c7e13998-1b4b-4363-b89a-a1f2c8f92a1a
 # ╟─b4938cbd-27bc-4999-919a-a32e503dadb0
@@ -2862,6 +2864,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═fd342dc5-f775-4597-bad8-da131f127ab2
 # ╠═83bbae2f-1510-4d46-b88a-bb966ec8fe89
 # ╠═5c433041-9de3-4245-bbb1-393b9a26101d
+# ╟─1d46cf0f-a322-4447-9192-133c6e4085b8
 # ╟─81ae472d-7195-4525-87ae-1429972b8816
 # ╠═8faf0fee-cad5-440f-bc2d-0fdb848ce42d
 # ╠═cb276e1e-1b81-4705-b28b-b7b3e08332bc
