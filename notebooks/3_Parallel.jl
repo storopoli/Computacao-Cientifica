@@ -23,6 +23,9 @@ begin
 	using ANSIColoredPrinters
 end
 
+# ╔═╡ a5949305-ac91-42b8-a601-a90fa5ff0add
+using VectorizationBase, IfElse
+
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 begin
 	using InteractiveUtils
@@ -659,12 +662,7 @@ md"""
 """
 
 # ╔═╡ 25317cc9-14c7-4641-b417-b965ed05b3d0
-collatz(x::Int64) =
-    if iseven(x)
-        x ÷ 2
-    else
-        3x + 1
-    end
+collatz(x) = ifelse(iseven(x), x ÷ 2, 3x + 1)
 
 # ╔═╡ 9dd37346-1931-4905-9beb-ca14cbe43f46
 md"""
@@ -674,8 +672,8 @@ Esse padrão da sequência também é conhecido como **Números de Granizo** ou 
 """
 
 # ╔═╡ a7be2174-a7dd-4259-aab9-64cdcc749fb0
-function collatz_sequencia(x::Int64)
-	n = 0
+function collatz_sequencia(x)
+	n = zero(x)
     while true
         x == 1 && return n
         n += 1
@@ -731,12 +729,6 @@ all             findall         map             prod            unique
 # ╔═╡ 26ae4dfc-698e-4dfd-9503-2e66435a63d3
 @benchmark ThreadsX.map(collatz_sequencia, 1:100_000)
 
-# ╔═╡ d3d58604-c08b-4f7c-86cc-2f0fc5f2d09f
-ThreadsX.map(collatz_sequencia, 1:10)
-
-# ╔═╡ 0e907c6b-393b-413a-9b48-b08959e4eab2
-map(collatz_sequencia, 1:10)
-
 # ╔═╡ 7424ee08-938a-4b38-96b5-43f7613ccd3a
 md"""
 ### [`LoopVectorization`](https://github.com/JuliaSIMD/LoopVectorization.jl)
@@ -750,11 +742,30 @@ Possui umas funções vetorizadas prontas:
 * `vmapreduce` e `vmapreduce!`: `mapreduce` e `mapreduce!` vetorizado em SIMD
 """
 
-# ╔═╡ f94e54f7-e423-432b-931d-1f13f49fbe75
-range_collatz = collect(1:10)
+# ╔═╡ bb2197bf-7fc0-400e-be1b-238e196c721d
+md"""
+!!! info "💁 LoopVectorization na Conjectura de Collatz"
+    Essa [foi difícil de conseguir fazer funcionar](https://discourse.julialang.org/t/loopvectorization-jl-vmap-gives-an-error-vectorizationbase-vec-4-int64/65056/).
+"""
+
+# ╔═╡ edb1cf30-a22f-4a87-bfe7-426b1fc7c72c
+collatz_SIMD(x) =
+    IfElse.ifelse(VectorizationBase.iseven(x), x ÷ 2, 3x + 1)
+
+# ╔═╡ 8bbfb595-c965-4ec0-bc67-4d8e74f6380b
+function collatz_sequencia_SIMD(x)
+    n = zero(x)
+    m = x ≠ 0
+    while  VectorizationBase.vany(VectorizationBase.collapse_or(m))
+        n += m
+        x = collatz_SIMD(x)
+        m &= x ≠ 1
+    end
+    return n
+end
 
 # ╔═╡ d999c31e-f327-4733-a68d-09c373abeb1b
-vmap(collatz_sequencia, collect(1:10))
+@benchmark vmap(collatz_sequencia_SIMD, 1:100_000)
 
 # ╔═╡ a97692dd-5a85-4660-8993-a79e5f39f351
 md"""
@@ -1013,6 +1024,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 ANSIColoredPrinters = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+IfElse = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LoopVectorization = "bdcacae8-1622-11e9-2a5c-532679323890"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -1022,15 +1034,18 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 ThreadsX = "ac1d9e8a-700a-412c-b207-f0111f4b6c0d"
+VectorizationBase = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
 
 [compat]
 ANSIColoredPrinters = "~0.0.1"
 BenchmarkTools = "~1.1.1"
+IfElse = "~0.1.0"
 LoopVectorization = "~0.12.52"
-Plots = "~1.19.2"
+Plots = "~1.19.3"
 PlutoUI = "~0.7.9"
 StaticArrays = "~1.2.7"
 ThreadsX = "~0.1.7"
+VectorizationBase = "~0.20.23"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -1580,9 +1595,9 @@ version = "1.0.11"
 
 [[Plots]]
 deps = ["Base64", "Contour", "Dates", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
-git-tree-sha1 = "f3d4d35b8cb87adc844c05c722f505776ac29988"
+git-tree-sha1 = "1bbbb5670223d48e124b388dee62477480e23234"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.19.2"
+version = "1.19.3"
 
 [[PlutoUI]]
 deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
@@ -1806,9 +1821,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[VectorizationBase]]
 deps = ["ArrayInterface", "Hwloc", "IfElse", "Libdl", "LinearAlgebra", "Static"]
-git-tree-sha1 = "b609848b41158b8cc13a72dc6deb9511f9a96187"
+git-tree-sha1 = "1796c80c4407b199e8ba43ceccd953b0ff5bb829"
 uuid = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
-version = "0.20.22"
+version = "0.20.23"
 
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
@@ -2149,10 +2164,11 @@ version = "0.9.1+5"
 # ╠═31afe4a9-25fb-4ae6-83df-6891b9985435
 # ╟─7bd9b091-abb0-487d-9f47-7856e7f3f5fb
 # ╠═26ae4dfc-698e-4dfd-9503-2e66435a63d3
-# ╠═d3d58604-c08b-4f7c-86cc-2f0fc5f2d09f
-# ╠═0e907c6b-393b-413a-9b48-b08959e4eab2
 # ╟─7424ee08-938a-4b38-96b5-43f7613ccd3a
-# ╠═f94e54f7-e423-432b-931d-1f13f49fbe75
+# ╟─bb2197bf-7fc0-400e-be1b-238e196c721d
+# ╠═a5949305-ac91-42b8-a601-a90fa5ff0add
+# ╠═edb1cf30-a22f-4a87-bfe7-426b1fc7c72c
+# ╠═8bbfb595-c965-4ec0-bc67-4d8e74f6380b
 # ╠═d999c31e-f327-4733-a68d-09c373abeb1b
 # ╟─a97692dd-5a85-4660-8993-a79e5f39f351
 # ╟─0e544e1b-fd02-4f5b-b1f0-448a8a1c6ebd
