@@ -355,10 +355,10 @@ Para arquivos pequenos a diferença não é impactante. Mas para arquivos grande
 penguins_file = joinpath(pwd(), "..", "data", "penguins.csv")
 
 # ╔═╡ 04b9e718-44a5-4e4d-9d4a-10b72a140e3c
-@benchmark CSV.File(penguins_file) |> DataFrame
+@benchmark CSV.File($penguins_file) |> DataFrame
 
 # ╔═╡ 6c7e84cd-0747-4291-ace4-e1b0fa079c97
-@benchmark CSV.read(penguins_file, DataFrame)
+@benchmark CSV.read($penguins_file, DataFrame)
 
 # ╔═╡ f6d41644-3d13-4d4a-b8b8-c3fc9abec689
 penguins = CSV.read(penguins_file, DataFrame; missingstring="NA")
@@ -770,10 +770,10 @@ md"""
 """
 
 # ╔═╡ a2e0a0b4-bda6-480b-908f-5c1ff72a2490
-@benchmark subset(penguins, :bill_length_mm => ByRow(>(40)); skipmissing=true)
+@benchmark subset($penguins, :bill_length_mm => ByRow(>(40)); skipmissing=true)
 
 # ╔═╡ 2bfb7633-2325-49ac-9d0f-eb4baf32f853
-@benchmark subset(penguins, :bill_length_mm => x -> x .> 40; skipmissing=true)
+@benchmark subset($penguins, :bill_length_mm => x -> x .> 40; skipmissing=true)
 
 # ╔═╡ 1360ab11-5a21-4068-89b1-48b763318398
 md"""
@@ -782,16 +782,16 @@ md"""
 """
 
 # ╔═╡ 9eb436a0-d858-4999-b785-217c9b8d82c0
-@benchmark filter(:species => ==("Adelie"), penguins)
+@benchmark filter(:species => ==("Adelie"), $penguins)
 
 # ╔═╡ d33bef35-3591-472d-b31f-305308318a8d
-@benchmark filter(row -> row.species == "Adelie", penguins)
+@benchmark filter(row -> row.species == "Adelie", $penguins)
 
 # ╔═╡ 714b5152-6258-4ce2-b54c-410ebac24275
-@benchmark subset(penguins, :species => ByRow(==("Adelie")))
+@benchmark subset($penguins, :species => ByRow(==("Adelie")))
 
 # ╔═╡ dcca805f-2778-4c41-8995-a90f14e44552
-@benchmark subset(penguins, :species => x -> x .== "Adelie")
+@benchmark subset($penguins, :species => x -> x .== "Adelie")
 
 # ╔═╡ e8829151-00b9-4cdc-8023-e0b1b53f2f5d
 md"""
@@ -800,13 +800,13 @@ md"""
 """
 
 # ╔═╡ 6e98e03f-5a0c-44a9-a379-4e7a61dc4bbd
-@benchmark filter([:species, :island] => (sp, is) -> sp == "Adelie" && is ≠ "Torgensen", penguins)
+@benchmark filter([:species, :island] => (sp, is) -> sp == "Adelie" && is ≠ "Torgensen", $penguins)
 
 # ╔═╡ a4fde68a-ce63-4859-a679-ad2c69722e77
-@benchmark subset(penguins,  [:species, :island] => ByRow((sp, is) -> sp ==("Adelie") && is ≠("Torgensen")))
+@benchmark subset($penguins,  [:species, :island] => ByRow((sp, is) -> sp ==("Adelie") && is ≠("Torgensen")))
 
 # ╔═╡ 5d18d2c3-b2e4-4b67-bbf2-fbed41ba4f88
-@benchmark subset(penguins, :species => ByRow(==("Adelie")), :island => ByRow(≠("Torgensen")))
+@benchmark subset($penguins, :species => ByRow(==("Adelie")), :island => ByRow(≠("Torgensen")))
 
 # ╔═╡ 8a853221-931b-4e81-be90-27c1f92f3d35
 md"""
