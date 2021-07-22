@@ -10,7 +10,6 @@ begin
 	using PlutoUI
 	
 	using BenchmarkTools
-	using Chain
 	using CSV
 	using CategoricalArrays
 	using DataFrames
@@ -67,9 +66,75 @@ $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/image
 > Figura com licença creative commons de [`@allisonhorst`](https://github.com/allisonhorst/stats-illustrations)
 """
 
+# ╔═╡ 0553799f-c084-4f24-85c4-6da4c26cf524
+md"""
+## Datasets Utilizados
+
+* `palmerpenguins`
+* `starwars`
+"""
+
+# ╔═╡ 4722d7bc-789f-4c4b-966f-483fd276a243
+md"""
+### Dataset `palmerpenguins`
+
+É um dataset aberto sobre pinguins que foram encontrados próximos da estação de Palmer na Antártica.
+
+344 penguins e 8 variáveis:
+
+- `species`: uma das três espécies (Adélie, Chinstrap ou Gentoo)
+- `island`: uma das ilhas no arquipélago Palmer na Antartica (Biscoe, Dream ou Torgersen)
+- `bill_length_mm`: comprimento do bico em milímetros
+- `bill_depth_mm`: altura do bico em milímetros
+- `flipper_length_mm`: largura da asa em milímetros
+- `body_mass_g`: massa corporal em gramas
+- `sex`: sexo (female ou male)
+
+Ele está na minha pasta `data/` tanto como `penguins.csv` como `penguins.xlsx`
+
+> Dataset com licença creative commons de [`allisonhorst/palmerpenguins`](https://github.com/allisonhorst/palmerpenguins).
+"""
+
+# ╔═╡ 99c0cc2a-b538-4b42-8a6e-ddf4d93c5baa
+md"""
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/palmerpenguins_1.png?raw=true", :width => 338))
+$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/palmerpenguins_2.png?raw=true", :width => 338))
+"""
+
+# ╔═╡ edeabce5-2296-4eb5-9410-cdb9b6187e7e
+md"""
+### Dataset `starwars`
+
+87 personagens e 14 variáveis:
+
+- `name`: nome do personagem
+- `height`: altura em cm
+- `mass`: peso em kg
+- `hair_color`, `skin_color` ,`eye_color`: cor de cabelo, pele e olhos
+- `birth_year`: ano de nascimento em BBY (BBY = Before Battle of Yavin)
+- `sex`: o sexo biológico do personagem, `male`, `female`, `hermaphroditic`, ou `none` (no caso de Droids)
+- `gender`: a identidade de gênero do personagem determinada pela sua personalidade ou pela maneira que foram programados (no caso de Droids)oids).
+- `homeworld`: nome do mundo de origem
+- `species`: nome da espécie
+- `films`: lista de filmes que o personagem apareceu
+- `vehicles`: lista de veículos que o personagem pilotou
+- `starships`: lista de naves que o personagem pilotou
+
+> Dataset obtido por licença creative commons do StarWars API `https://swapi.dev/`
+"""
+
+# ╔═╡ c390de55-1f7c-4278-9d99-fd75c94f5e9d
+md"""
+!!! tip "💡 Julia"
+    Provavelmente Julia faz o percurso de Kessel em bem menos que 12 parsecs.
+"""
+
+# ╔═╡ 9197ec1a-eb2b-4dea-bb96-5ff16a9c423f
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/12-parsecs.gif?raw=true", :width => 800)
+
 # ╔═╡ f5f02b1c-0734-4e00-8b78-fab0ef6ab6c2
 md"""
-## Dados Tabulares em Julia
+# Dados Tabulares em Julia
 
 Não tem muito o que pensar...
 """
@@ -94,7 +159,7 @@ typeof(df_1)
 
 # ╔═╡ a6b81169-b0cf-49e6-a700-d3618d7aeae9
 md"""
-## Informações sobre um `DataFrame`
+# Informações sobre um `DataFrame`
 
 - `size(df)`: tupla das dimensões (similar ao `df.shape` de Python)
 - `nrow(df)` e `ncol(df)`: número de linhas e número de colunas
@@ -122,7 +187,7 @@ names(df_1)
 
 # ╔═╡ c4efdf84-8700-4ed9-b40a-965d9188ffbc
 md"""
-### Estatísticas Descritivas com o `describe`
+## Estatísticas Descritivas com o `describe`
 """
 
 # ╔═╡ de547f28-1eb5-4438-b088-adbeae032f55
@@ -173,45 +238,95 @@ describe(df_1, :mean; cols=[:x_1, :x_2])
 
 # ╔═╡ 8959d49d-b019-442d-adb6-99c1450ec108
 md"""
-## *Input*/*Output* (IO)
+# *Input*/*Output* (IO)
 
 1. [`CSV.jl`](https://github.com/JuliaData/CSV.jl): para ler qualquer arquivo delimitado -- `.csv`, `.tsv` etc.
 2. [`XLSX.jl`](https://github.com/felipenoris/XLSX.jl): para ler arquivos Excel `.xslx` e `.xls`.
 3. [`JSONTables.jl`](https://github.com/JuliaData/JSONTables.jl): para ler arquivos JSON `.json`.
-4. [`Arrow.jl`](https://github.com/JuliaData/Arrow.jl): formato Apache Arrow para Big Data.
+4. [`Arrow.jl`](https://github.com/JuliaData/Arrow.jl): formato Apache Arrow para Big Data (que não cabe na RAM).
+5. [`JuliaDB.jl`](https://juliadb.org/): leitura e manipulação de Big Data (que não cabe na RAM).
+6. **Banco de Dados**: Julia também trabalha bem com banco de dados. Veja [juliadatabases.org](https://juliadatabases.org/)
 """
 
-# ╔═╡ 4722d7bc-789f-4c4b-966f-483fd276a243
+# ╔═╡ bd0fdeff-13c8-445e-86fc-bd619bd37645
 md"""
-### Dataset `palmerpenguins`
-
-É um dataset aberto sobre pinguins que foram encontrados próximos da estação de Palmer na Antártica.
-
-344 penguins e 8 variáveis:
-
-- `species`: uma das três espécies (Adélie, Chinstrap ou Gentoo)
-- `island`: uma das ilhas no arquipélago Palmer na Antartica (Biscoe, Dream ou Torgersen)
-- `bill_length_mm`: comprimento do bico em milímetros
-- `bill_depth_mm`: altura do bico em milímetros
-- `flipper_length_mm`: largura da asa em milímetros
-- `body_mass_g`: massa corporal em gramas
-- `sex`: sexo (female ou male)
-
-Ele está na minha pasta `data/` tanto como `penguins.csv` como `penguins.xlsx`
-
-> Dataset com licença creative commons de [`allisonhorst/palmerpenguins`](https://github.com/allisonhorst/palmerpenguins).
+## `CSV.jl`
 """
 
-# ╔═╡ 99c0cc2a-b538-4b42-8a6e-ddf4d93c5baa
+# ╔═╡ 811b2abe-a7ff-4985-a4a2-2b03301dc099
 md"""
-$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/palmerpenguins_1.png?raw=true", :width => 338))
-$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/palmerpenguins_2.png?raw=true", :width => 338))
+Óbvio que você já deve estar cansado disso, mas [Julia é mais rápida que R ou Python em leitura de CSVs](https://juliacomputing.com/blog/2020/06/fast-csv/):
+"""
+
+# ╔═╡ 07e01ad7-2f1c-45fd-88aa-a7e5e528fd52
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/fast_csv_heterogeneous.png?raw=true")
+
+# ╔═╡ ba30be06-4c47-4e13-a263-2d3b77e78802
+md"""
+> Este dataset possui 10 mil linhas e 200 colunas. As colunas contêm `String`, `Float`, `DateTime` e `missing`. O Pandas leva cerca de 400 milissegundos para carregar este dataset. Sem multithreading, `CSV.jl` é 2 vezes mais rápido que R e cerca de 10 vezes mais rápido com 10 threads.
+
+> Fonte: [Julia Computing em 2020](https://juliacomputing.com/blog/2020/06/fast-csv/).
 """
 
 # ╔═╡ 68e791a3-cfff-4115-8cbe-b7cc40b67bc4
 md"""
 !!! tip "💡 Opções CSV.jl"
     `CSV.jl` tolera qualquer maluquice que vier pela frente de arquivo delimitado. Veja a documentação para a função [`CSV.File`](https://csv.juliadata.org/dev/#CSV.File).
+"""
+
+# ╔═╡ 75984809-48aa-4c14-a193-23695831c1b7
+md"""
+Tem várias maneiras de ler `.csv`s:
+
+- Vanilla: `CSV.File(file) |> DataFrame` ou `CSV.read(file, DataFrame)`
+- Brasileiro/Europeu: `CSV.read(file, DataFrame; delim=";")`
+- Lendo da internet:
+  ```julia
+  using HTTP
+  url = "..."
+  CSV.read(HTTP.get(url).body, DataFrame)
+  ```
+- Lendo uma porrada de CSV de um diretório:
+   - preservando a ordem:
+     ```julia
+     files = filter(endswith(".csv"), readdir())
+     reduce(vcat, CSV.read(file, DataFrame) for file in files)
+     ```
+   - não preservando a ordem (mais rápido):
+     ```julia
+     files = filter(endswith(".csv"), readdir())
+     mapreduce(x -> CSV.read(x, DataFrame), vcat, files)
+     ```
+- Lendo arquivos comprimidos:
+   - Gzip:
+     ```julia
+     using CodecZlib, Mmap
+     CSV.File(transcode(GzipDecompressor, Mmap.mmap("a.csv.gz"))) |> DataFrame
+     ```
+   - Zip:
+     ```julia
+     using ZipFile
+     z = ZipFile.Reader("a.zip") # or "a2.zip"
+     # identificar o arquivo correto no zip
+     a_file_in_zip = filter(x->x.name == "a.csv", z.files)[1]
+     CSV.File(read(a_file_in_zip)) |> DataFrame
+     ```
+- Lendo CSV em pedaços (*chunks*): `CSV.Chunks(source; tasks::Integer=Threads.nthreads(), kwargs...)`
+- Lendo CSV de uma `String`:
+  ```julia
+  minha_string = "..."
+  CSV.read(IOBuffer(contents), DataFrame)
+  ```
+"""
+
+# ╔═╡ 456acc71-3199-481c-b37c-0041ddb18a11
+md"""
+!!! tip "💡 Escrevendo CSV"
+    Só usar o `CSV.write`:
+
+	`CSV.write(file, table; kwargs...) => file`
+
+    `df |> CSV.write(file; kwargs...) => file`
 """
 
 # ╔═╡ dd760bda-855b-41a0-bc59-be46943c5705
@@ -231,61 +346,149 @@ df = CSV.read(file, DataFrame)
 ```
 """
 
+# ╔═╡ 0224e6af-4b4b-45d8-b7a2-3a8152638b6a
+md"""
+Para arquivos pequenos a diferença não é impactante. Mas para arquivos grandes eu recomendo `CSV.read`. Aliás eu só uso essa função.
+"""
+
+# ╔═╡ b4ed9851-3c64-4d10-8160-5d2e90681e72
+penguins_file = joinpath(pwd(), "..", "data", "penguins.csv")
+
 # ╔═╡ 04b9e718-44a5-4e4d-9d4a-10b72a140e3c
-@benchmark CSV.File("../data/penguins.csv") |> DataFrame
+@benchmark CSV.File(penguins_file) |> DataFrame
 
 # ╔═╡ 6c7e84cd-0747-4291-ace4-e1b0fa079c97
-@benchmark CSV.read("../data/penguins.csv", DataFrame)
+@benchmark CSV.read(penguins_file, DataFrame)
 
 # ╔═╡ f6d41644-3d13-4d4a-b8b8-c3fc9abec689
-penguins = CSV.read("../data/penguins.csv", DataFrame)
-
-# ╔═╡ 0f3c04f6-210a-4fac-ac73-af5ecb4c5370
-md"""
-* Adelie – 146 observações.
-* Chinstrap – 68 observações.
-* Gentoo – 119 observações.
-"""
-
-# ╔═╡ edeabce5-2296-4eb5-9410-cdb9b6187e7e
-md"""
-## Dataset StarWars
-
-87 personagens e 14 variáveis:
-
-- `name`: nome do personagem
-- `height`: altura em cm
-- `mass`: peso em kg
-- `hair_color`, `skin_color` ,`eye_color`: cor de cabelo, pele e olhos
-- `birth_year`: ano de nascimento em BBY (BBY = Before Battle of Yavin)
-- `sex`: o sexo biológico do personagem, `male`, `female`, `hermaphroditic`, ou `none` (no caso de Droids)
-- `gender`: a identidade de gênero do personagem determinada pela sua personalidade ou pela maneira que foram programados (no caso de Droids)oids).
-- `homeworld`: nome do mundo de origem
-- `species`: nome da espécie
-- `films`: lista de filmes que o personagem apareceu
-- `vehicles`: lista de veículos que o personagem pilotou
-- `starships`: lista de naves que o personagem pilotou
-
-> Dataset obtido por licença creative commons do StarWars API `https://swapi.dev/`
-"""
-
-# ╔═╡ c390de55-1f7c-4278-9d99-fd75c94f5e9d
-md"""
-!!! tip "💡 Julia"
-    Provavelmente Julia faz o percurso de Kessel em bem menos que 12 parsecs.
-"""
-
-# ╔═╡ 9197ec1a-eb2b-4dea-bb96-5ff16a9c423f
-Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/12-parsecs.gif?raw=true", :width => 800)
+penguins = CSV.read(penguins_file, DataFrame)
 
 # ╔═╡ fafdd689-6c1f-4036-aeb8-47c75cc73e9f
-starwars = @chain begin
-	HTTP.get("https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.csv?raw=true").body
-	CSV.read(DataFrame)
+begin
+	url = "https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.csv?raw=true"
+	starwars = CSV.read(HTTP.get(url).body, DataFrame)
 end
 
-# ╔═╡ ab034249-de4e-418d-a54e-ab1ad49bea1b
-nrow(starwars)
+# ╔═╡ ca69e258-32eb-479f-ab67-8d6969dc77ce
+md"""
+## XLSX.jl
+"""
+
+# ╔═╡ 0f601a7e-8b3c-4807-82cd-38cd448395b9
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/CSV_Excel_meme.png?raw=true")
+
+# ╔═╡ d13b4e84-94d0-4b2e-af5f-0fb0b387465c
+md"""
+!!! danger "⚠️ O problema do Excel"
+    **Excel altera os dados de maneira silenciosa**.
+
+	Por exemplo, [pesquisadores tiveram que mudar o nome de 27 Genes](https://www.theverge.com/2020/8/6/21355674/human-genes-rename-microsoft-excel-misreading-dates) pois o Excel pensava que eram datas (e.g `MARCH1` não é 1 de Março mas sim [Membrane Associated Ring-CH-Type Finger 1](https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:26077). Mais de [1/5 dos estudos publicados com dados genéticos tem erros do Excel](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1044-7).
+
+	Além disso, **Excel "falha silenciosamente"**.
+
+	Por exemplo, [um erro silencioso de Excel no pipeline de dados do COVID-19 no Reino Unido fez com que fosse subreportado mais de 15mil casos de COVID-19](https://www.engadget.com/microsoft-excel-england-covid-19-delay-114634846.html). Alguém muito inteligente usou o formato `.xls` que aguenta somente ≈65k linhas e depois disso ele para de escrever e não avisa o erro.
+
+	>Veja mais histórias de horror do Excel no [European Spreadsheet Risk Interest Group](http://eusprig.org/horror-stories.htm).
+"""
+
+# ╔═╡ 7ba9ae9e-e141-4566-9db4-87b91aeed57b
+md"""
+Eu uso muito pouco Excel (aliás tenho asco de coisas pagas... 🤮). Só conheço duas funções de leitura e uma de escrita:
+
+* `XLSX.readxlsx(file.xlsx)`: lê todo o arquivo XLSX e retorna uma espécie de índice de abas (_tabs_) e células. Ele funciona com um dicionário dá pra fazer uma indexação `xf["minha_aba"]`.
+
+
+* `XLSX.readtable(file.xlsx, sheet)`: lê uma aba especifica do arquivo XLSX. Aceita como `sheet` uma `String` com o nome da aba ou um `Integer` começando em 1 com o índice da aba.
+   * Essa função retorna uma tupla `(data, column_labels)` então é necessário colocar o operador *splat* `...` dentro do construtor `DataFrame`
+   * Cuidado com o argumento `infer_eltypes`. Por padrão ele é `false` e vai te dar um `DataFrame` com um monte de colunas `Any`. Use `infer_eltypes = true`)
+
+
+* `XLSX.writetable(file.xlsx, data, columnames)`: escreve um arquivo XLSX. Se atente que aqui precisa dos dados e do nome das colunas separados. `XLSX.writetable("df.xlsx", collect(eachcol(df)), names(df))`
+"""
+
+# ╔═╡ 4b03488e-634e-4c48-a84e-649d3dbf9c14
+md"""
+!!! tip "💡 Operações Avançadas com XLSX.jl"
+    Veja esse [tutorial na documentação de `XLSX.jl`](https://felipenoris.github.io/XLSX.jl/dev/tutorial/). Tem várias maneiras de ler arquivos Excel: intervalo de células, arquivos grandes etc...
+"""
+
+# ╔═╡ d65393aa-9ece-44be-b1e6-1e73e4644d73
+penguins_xlsx_file = joinpath(pwd(), "..", "data", "penguins.xlsx")
+
+# ╔═╡ 9c003007-ec85-4e6d-81a0-6778224a2ea1
+XLSX.readxlsx(penguins_xlsx_file)
+
+# ╔═╡ 968878aa-7396-412c-9b6c-39f1cc199b1e
+DataFrame(XLSX.readtable(penguins_xlsx_file, 1)...)
+
+# ╔═╡ b331fa61-c49a-4e56-bcac-4a977d247637
+md"""
+# Funções de `DataFrames.jl`
+
+Falar do bang `!`
+"""
+
+# ╔═╡ 844deb5f-76ef-4857-b218-c6b3ff3e3646
+md"""
+# Indexação de `DataFrame`
+"""
+
+# ╔═╡ 18a5f498-4d4d-4a47-ab5a-3b62df1c2d0b
+md"""
+# Selecionar Colunas de `DataFrame`
+"""
+
+# ╔═╡ 9ca94b93-d587-4f43-abeb-23d4125fdb47
+md"""
+## Renomear Colunas de `DataFrame`
+"""
+
+# ╔═╡ 03b63951-8e92-448c-8e1a-cc3857cc3e8d
+md"""
+## Inserir novas colunas com `insertcols!`
+"""
+
+# ╔═╡ 8c73a569-2d31-413c-9464-3bda8d811fc0
+md"""
+# Ordenar Linhas de `DataFrame`
+"""
+
+# ╔═╡ c960e354-3f67-44ff-b5ca-5898bbbae67d
+md"""
+# Filtrar Linhas de `DataFrame`
+"""
+
+# ╔═╡ 8ffbf3c6-f92f-46f7-bf45-410102dfe474
+md"""
+## `filter` vs `subset`
+"""
+
+# ╔═╡ 8a853221-931b-4e81-be90-27c1f92f3d35
+md"""
+# Transformações de `DataFrame`
+"""
+
+# ╔═╡ 7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
+md"""
+# Lidando com Dados Ausentes de `DataFrame`
+"""
+
+# ╔═╡ d7c3676e-0875-4755-83e7-b15fdcfdd9de
+md"""
+# Dados Categóricos com `CategoricalArrays`
+"""
+
+# ╔═╡ 971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
+md"""
+# Agrupamento e Sumarizações de `DataFrame`
+
+Split/Apply/Combine e `GroupedDataFrame`
+"""
+
+# ╔═╡ 6113bca4-9f27-4453-827c-56bd0667d9d6
+md"""
+# Joins de `DataFrame`
+"""
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
@@ -317,7 +520,6 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
-Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -330,7 +532,6 @@ XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 BenchmarkTools = "~1.1.1"
 CSV = "~0.8.5"
 CategoricalArrays = "~0.10.0"
-Chain = "~0.4.7"
 DataFrames = "~1.2.1"
 HTTP = "~0.9.12"
 PlutoUI = "~0.7.9"
@@ -367,11 +568,6 @@ deps = ["DataAPI", "Future", "JSON", "Missings", "Printf", "RecipesBase", "Stati
 git-tree-sha1 = "1562002780515d2573a4fb0c3715e4e57481075e"
 uuid = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 version = "0.10.0"
-
-[[Chain]]
-git-tree-sha1 = "c72673739e02d65990e5e068264df5afaa0b3273"
-uuid = "8be319e6-bccf-4806-a6f7-6fae938471bc"
-version = "0.4.7"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
@@ -719,6 +915,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─f8557972-abb6-4fc1-9007-8d6fb91ca184
 # ╟─b22870c8-fc29-451d-afcf-4e07823291fc
 # ╟─0bdad8c0-837c-4814-a8d9-e73bec34399e
+# ╟─0553799f-c084-4f24-85c4-6da4c26cf524
+# ╟─4722d7bc-789f-4c4b-966f-483fd276a243
+# ╟─99c0cc2a-b538-4b42-8a6e-ddf4d93c5baa
+# ╟─edeabce5-2296-4eb5-9410-cdb9b6187e7e
+# ╟─c390de55-1f7c-4278-9d99-fd75c94f5e9d
+# ╟─9197ec1a-eb2b-4dea-bb96-5ff16a9c423f
 # ╟─f5f02b1c-0734-4e00-8b78-fab0ef6ab6c2
 # ╟─750df153-fb1c-4b65-bc17-6d408000e422
 # ╟─e4f7f01e-76bb-4f26-b231-0a01d817fc33
@@ -738,20 +940,42 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═39a3b34d-2cb5-4033-a243-c13af0a49b2c
 # ╟─8d4c63fe-2c4c-40d4-b079-7a4fd2b55142
 # ╠═ae553b32-49a0-4c45-950b-bb4400e069ae
-# ╠═8959d49d-b019-442d-adb6-99c1450ec108
-# ╟─4722d7bc-789f-4c4b-966f-483fd276a243
-# ╟─99c0cc2a-b538-4b42-8a6e-ddf4d93c5baa
+# ╟─8959d49d-b019-442d-adb6-99c1450ec108
+# ╟─bd0fdeff-13c8-445e-86fc-bd619bd37645
+# ╟─811b2abe-a7ff-4985-a4a2-2b03301dc099
+# ╟─07e01ad7-2f1c-45fd-88aa-a7e5e528fd52
+# ╟─ba30be06-4c47-4e13-a263-2d3b77e78802
 # ╟─68e791a3-cfff-4115-8cbe-b7cc40b67bc4
+# ╟─75984809-48aa-4c14-a193-23695831c1b7
+# ╟─456acc71-3199-481c-b37c-0041ddb18a11
 # ╟─dd760bda-855b-41a0-bc59-be46943c5705
+# ╟─0224e6af-4b4b-45d8-b7a2-3a8152638b6a
+# ╠═b4ed9851-3c64-4d10-8160-5d2e90681e72
 # ╠═04b9e718-44a5-4e4d-9d4a-10b72a140e3c
 # ╠═6c7e84cd-0747-4291-ace4-e1b0fa079c97
 # ╠═f6d41644-3d13-4d4a-b8b8-c3fc9abec689
-# ╟─0f3c04f6-210a-4fac-ac73-af5ecb4c5370
-# ╟─edeabce5-2296-4eb5-9410-cdb9b6187e7e
-# ╟─c390de55-1f7c-4278-9d99-fd75c94f5e9d
-# ╟─9197ec1a-eb2b-4dea-bb96-5ff16a9c423f
 # ╠═fafdd689-6c1f-4036-aeb8-47c75cc73e9f
-# ╠═ab034249-de4e-418d-a54e-ab1ad49bea1b
+# ╟─ca69e258-32eb-479f-ab67-8d6969dc77ce
+# ╟─0f601a7e-8b3c-4807-82cd-38cd448395b9
+# ╟─d13b4e84-94d0-4b2e-af5f-0fb0b387465c
+# ╟─7ba9ae9e-e141-4566-9db4-87b91aeed57b
+# ╟─4b03488e-634e-4c48-a84e-649d3dbf9c14
+# ╠═d65393aa-9ece-44be-b1e6-1e73e4644d73
+# ╠═9c003007-ec85-4e6d-81a0-6778224a2ea1
+# ╠═968878aa-7396-412c-9b6c-39f1cc199b1e
+# ╠═b331fa61-c49a-4e56-bcac-4a977d247637
+# ╠═844deb5f-76ef-4857-b218-c6b3ff3e3646
+# ╠═18a5f498-4d4d-4a47-ab5a-3b62df1c2d0b
+# ╠═9ca94b93-d587-4f43-abeb-23d4125fdb47
+# ╠═03b63951-8e92-448c-8e1a-cc3857cc3e8d
+# ╠═8c73a569-2d31-413c-9464-3bda8d811fc0
+# ╠═c960e354-3f67-44ff-b5ca-5898bbbae67d
+# ╠═8ffbf3c6-f92f-46f7-bf45-410102dfe474
+# ╠═8a853221-931b-4e81-be90-27c1f92f3d35
+# ╠═7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
+# ╠═d7c3676e-0875-4755-83e7-b15fdcfdd9de
+# ╠═971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
+# ╠═6113bca4-9f27-4453-827c-56bd0667d9d6
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
