@@ -738,6 +738,7 @@ Paralelização de operações com SIMD. O uso principal são os macros `@turbo`
 Possui umas funções vetorizadas prontas:
 
 * `vmap` e `vmap!`: `map` e `map!` vetorizado em SIMD
+* `vmapnt` e `vmapntt`: igual ao `vmap` mas usa armazenagem **n**ão-**t**emporal para evitar a poluição do cache. Se você não vai ler os valores logo de cara provavlmente dê algum desempenho.
 * `vfilter` e `vfilter!`: `filter` e `filter!` vetorizado em SIMD
 * `vmapreduce` e `vmapreduce!`: `mapreduce` e `mapreduce!` vetorizado em SIMD
 """
@@ -765,7 +766,7 @@ function collatz_sequencia_SIMD(x)
 end
 
 # ╔═╡ d999c31e-f327-4733-a68d-09c373abeb1b
-@benchmark vmap(collatz_sequencia_SIMD, 1:100_000)
+@benchmark vmapntt(collatz_sequencia_SIMD, 1:100_000)
 
 # ╔═╡ a97692dd-5a85-4660-8993-a79e5f39f351
 md"""
@@ -1040,12 +1041,12 @@ VectorizationBase = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
 ANSIColoredPrinters = "~0.0.1"
 BenchmarkTools = "~1.1.1"
 IfElse = "~0.1.0"
-LoopVectorization = "~0.12.52"
+LoopVectorization = "~0.12.53"
 Plots = "~1.19.3"
 PlutoUI = "~0.7.9"
 StaticArrays = "~1.2.7"
 ThreadsX = "~0.1.7"
-VectorizationBase = "~0.20.23"
+VectorizationBase = "~0.20.24"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -1470,9 +1471,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[LoopVectorization]]
 deps = ["ArrayInterface", "DocStringExtensions", "IfElse", "LinearAlgebra", "OffsetArrays", "Polyester", "Requires", "SLEEFPirates", "Static", "StrideArraysCore", "ThreadingUtilities", "UnPack", "VectorizationBase"]
-git-tree-sha1 = "0df87659132a077b3f7e9f7fca8c9c59d4965071"
+git-tree-sha1 = "06c91d5495c32bca6b843551a1331c3cd2fb23d0"
 uuid = "bdcacae8-1622-11e9-2a5c-532679323890"
-version = "0.12.52"
+version = "0.12.53"
 
 [[MacroTools]]
 deps = ["Markdown", "Random"]
@@ -1821,9 +1822,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[VectorizationBase]]
 deps = ["ArrayInterface", "Hwloc", "IfElse", "Libdl", "LinearAlgebra", "Static"]
-git-tree-sha1 = "1796c80c4407b199e8ba43ceccd953b0ff5bb829"
+git-tree-sha1 = "ddeac5d8aad03c17bdc8efd45246e82fc52d12f4"
 uuid = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
-version = "0.20.23"
+version = "0.20.24"
 
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
