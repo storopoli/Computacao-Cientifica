@@ -361,12 +361,12 @@ penguins_file = joinpath(pwd(), "..", "data", "penguins.csv")
 @benchmark CSV.read(penguins_file, DataFrame)
 
 # ╔═╡ f6d41644-3d13-4d4a-b8b8-c3fc9abec689
-penguins = CSV.read(penguins_file, DataFrame)
+penguins = CSV.read(penguins_file, DataFrame; missingstring="NA")
 
 # ╔═╡ fafdd689-6c1f-4036-aeb8-47c75cc73e9f
 begin
 	url = "https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.csv?raw=true"
-	starwars = CSV.read(HTTP.get(url).body, DataFrame)
+	starwars = CSV.read(HTTP.get(url).body, DataFrame; missingstring="NA")
 end
 
 # ╔═╡ ca69e258-32eb-479f-ab67-8d6969dc77ce
@@ -425,48 +425,514 @@ DataFrame(XLSX.readtable(penguins_xlsx_file, 1)...)
 md"""
 # Funções de `DataFrames.jl`
 
-Falar do bang `!`
+São [muitas](https://dataframes.juliadata.org/dev/lib/functions/):
+
+- `eachrow` e `eachcol`: iterador de linhas e colunas (dão suporte para funções `findnext`, `findprev`, `findfirst`, `findlast` e `findall`)
+- `select` e `select!`: seleção e filtragem de colunas
+- `filter`, `filter!`, `subset` e `subset!`: seleção e filtragem de linhas
+- `sort` e `sort!`: ordenação de linhas
+- `unique` e `unique!`: valores únicos de colunas
+- `rename` e `rename!`: renomeamento de colunas
+- `transform` e `transform!`: transformação/criação de colunas
+- `insertcols!`: inserção de colunas
+- `completecases`, `dropmissing`, `dropmissing!`, `allowmissing`, `allowmissing!`, `disallowmissing`, `disallowmissing!`, `coalesce`: valores faltantes
+- `hcat`, `vcat`, `append!` e `push!`: concatenação de dados
+- `combine`: sumarizações de colunas (muito usado com *joins*)
+- `groupby`: agrupar dados por colunas
+- `antijoin`, `crossjoin`, `innerjoin`, `leftjoin`, `outerjoin`, `rightjoin` e `semijoin`: *joins* de `DataFrame`s
+- `stack`, `unstack` e `flatten`: redimensionamento de `DataFrame`s (formato *wide* ⇆ *long* e *nest* ⇆ *unnest*)
+"""
+
+# ╔═╡ 47325d97-c116-48c5-8c5a-b2525082a4ee
+md"""
+!!! tip "💡 Funções com !"
+    Quase todas as funções de `DataFrames.jl` tem uma versão `funcao!` que faz a alteração *inplace* e retorna `nothing`. São funções convenientes e rápidas pois não geram alocações novas.
 """
 
 # ╔═╡ 844deb5f-76ef-4857-b218-c6b3ff3e3646
 md"""
 # Indexação de `DataFrame`
+
+Basicamente funciona assim, muito similar com as `Array`s:
+
+```julia
+df[row, col]
+```
+
+Onde:
+
+* `row`:
+   * uma única linha:
+      * `Integer`: `df[1, col]`
+      * `begin` e `end` também funcionam `df[end, col]`
+   * várias linhas:
+      * `UnitRange`: um intervalo `df[1:10, col]`
+      * `Vector{Integer}`: `df[[1,2], col]`
+      * `Vector{Bool}`: os índices que são `true`, `df[[false, true, true], col]`
+   * todas as linhas:
+      * `:`: todas as linhas (com cópia)
+      * `!`: todas as linhas (sem cópia)
+* `col`:
+   * uma única coluna:
+      * `Symbol`: `df[:, :col]`
+      * `String`: `df[:, "col"]`
+      * `Integer`: `df[:, 1]`
+      * `begin` e `end` também funcionam `df[:, end]`
+      * `df.col` também funciona e é igual a `df[!, :col]`
+   * várias colunas:
+      * `Vector{Symbol}`: `df[:, [:col1, :col2]]`
+      * `Vector{String}`: `df[:, ["col1", "col2"]]`
+      * `UnitRange`: um intervalo `df[:, 1:10]`
+      * `Vector{Integer}`: várias linhas `df[:, [1,2]]`
+      * `Vector{Bool}`: os índices que são `true`, `df[:, [false, true, true]]`
+      * RegEx: `df[:, r"^col"]`
+      * `Not`: uma negação bem flexível `df[:, Not(:col)]` ou `df[:, Not(1:5)]`
+      * `Between`: um intervalo bem flexível `df[:, Between(:col1, :col5)]` ou `df[:, Between("col", 5)]`
+      * `Cols`: seleção flexível de colunas `df[:, Cols(:col, "col", 5)]`
+   * todas as colunas:
+      * `:`
+      * `All`: `df[:, All()]`
 """
+
+# ╔═╡ 7eb0f340-7bb9-4942-a150-cbe0a9b89118
+md"""
+!!! tip "💡 Diferença entre df[!, :col] e df[:, :col]"
+    `df[!, :col]`: substitui a coluna `:col` no `df` com um novo vetor passado no lado direito da expressão **sem copiar**.
+	
+	`df[:, :col]`: atualiza a coluna `:col` no `df` com um novo vetor passado no lado direito da expressão **fazendo uma cópia**.
+
+	**O mais rápido é `df[!, :col]`**. `df[:, :col]` mantém a mesma coluna então faz checagem de tipo, não deixa você colocar uma coluna de tipos que não podem ser convertidos para o tipo original da coluna.
+
+	> Note que `df[!, :col]` é o mesmo que `df.col`.
+"""
+
+# ╔═╡ ba120760-53a5-4b2b-929c-bcb939819334
+md"""
+## Linhas
+"""
+
+# ╔═╡ dc37999a-338b-4248-8bd8-07999fa09d1d
+penguins[begin, :]
+
+# ╔═╡ a51b287a-15e6-40f1-9eb2-bfd389af5731
+penguins[1:10, :]
+
+# ╔═╡ 689ff378-e97e-4632-9cac-9411ccfee789
+penguins[[1,2], :]
+
+# ╔═╡ 309e08fd-b84e-4c60-ac03-9574e5ff74bc
+penguins[vcat(false, true, true, repeat([false], nrow(penguins)-3)), :]
+
+# ╔═╡ 06e4452f-3ef7-41b6-a07d-20c5f3ce76ef
+md"""
+## Colunas
+"""
+
+# ╔═╡ f96c94ed-1235-4651-959e-e474fb6793a5
+penguins.species
+
+# ╔═╡ bc851d7c-8b9f-4a57-973a-d1a5076f2b9a
+penguins[:, :species]
+
+# ╔═╡ 6d6db43e-fb6d-4494-bf7e-d9bd2cc95e3d
+penguins[:, end]
+
+# ╔═╡ 69fc9893-5715-40b5-b192-3682828fb22e
+penguins[:, 4]
+
+# ╔═╡ a7282b59-3cbc-44d6-a91d-00ab6694cba0
+penguins[:, 1:4]
+
+# ╔═╡ 977b194a-302e-4965-93c4-226b8ca91440
+penguins[:, r"mm$"] 
+
+# ╔═╡ a170e72c-ae85-4a41-9447-08c5643ca994
+penguins[:, Not(:species)]
+
+# ╔═╡ 8f7cdd2d-2d3c-4c5e-a76a-79e4cdef5a68
+penguins[:, Not(1:5)]
+
+# ╔═╡ 3cc6096a-a559-489c-b70d-f7ee9c03a711
+penguins[:, Cols(:species, "bill_length_mm", 5)]
+
+# ╔═╡ 45c10fc6-b51c-43f0-8733-66114f31606c
+md"""
+!!! tip "💡 Designação"
+    Qualquer indexação acima se você parear com um operador `=` de designação (`.=` vetorizado), você **altera os valores do `DataFrame`**. 
+
+	```julia
+	df[row, col] = ...    # um valor
+	df[:, col] .= ...     # múltiplas linhas na mesma coluna
+	df[row, :] .= ...     # múltiplas colunas na mesma linha
+	```
+"""
+
+# ╔═╡ 543d473a-44a5-42b7-b820-7a3b5bd1d84e
+md"""
+# Semânticas de DataFrames.jl
+"""
+
+# ╔═╡ 3c75695c-6160-4385-a329-c52fe43ab283
+md"""
+!!! tip "💡 Semânticas de DataFrames.jl"
+    Para muitas coisas `DataFrames.jl` usa a [semântica de `Pair`s](https://bkamins.github.io/julialang/2020/12/24/minilanguage.html):
+
+	```julia
+	:col => transformação => :nova_col
+	```
+"""
+
+# ╔═╡ ebc8d4af-7257-4a74-bccd-8693c6fc26be
+typeof(:age => mean => :mean_age)
 
 # ╔═╡ 18a5f498-4d4d-4a47-ab5a-3b62df1c2d0b
 md"""
 # Selecionar Colunas de `DataFrame`
+
+* `select`: retorna um `DataFrame`
+* `select!`: retorna `nothing` e altera o `DataFrame` *inplace*
+
+```julia
+select(df, ...)
+```
+
+`select` e `select!` funcionam com todos os seletores de `col` que falamos acima:
+
+* `select(df, :col1, :col2)`
+* `select(df, [:col1, :col2])`
+* `select(df, Not(:col1))`
+* `select(df, Between(:col1, :col5))`
+* `select(df, r"^col")`
+* `select(df, Not(:col1))`
 """
+
+# ╔═╡ 2bc2529d-8931-4300-8a64-97b349c37e2d
+select(penguins, r"^bill")
 
 # ╔═╡ 9ca94b93-d587-4f43-abeb-23d4125fdb47
 md"""
 ## Renomear Colunas de `DataFrame`
+
+Renomeação de colunas pode ser feito de duas maneiras:
+
+1. **apenas renomeando**: passando um pair em `rename`
+   ```julia
+   rename(df, :col => :nova_col)
+   ```
+
+> Funciona com todos os seletores de `col`.
 """
+
+# ╔═╡ 66c9b74d-ec9b-4d21-9b7f-87cb9756c29f
+rename(penguins, :species => :especies, :island => :ilha)
+
+# ╔═╡ 11be77ad-91f4-4d1d-a16f-5fd72941b9d5
+md"""
+2. **selecionando e renomeando**: passando um `Pair` em um `select`
+   ```julia
+   select(df, :col => :nova_col)
+   ```
+"""
+
+# ╔═╡ c2d12ce6-0dcc-4ccf-8ea2-7365a7ff60d3
+select(penguins, :species => :especies)
 
 # ╔═╡ 03b63951-8e92-448c-8e1a-cc3857cc3e8d
 md"""
 ## Inserir novas colunas com `insertcols!`
+
+Podemos também inserir novas colunas com `insertcols!` (essa função não tem versão sem `!`):
+
+```julia
+insertcols!(df, :nova_col=...)
+```
+
+> Funciona com todos os seletores de `col`.
+
+Por padrão se não especificarmos o índice que queremos inserir a coluna automaticamente ela é inserida no final do `DataFrame`.
+Caso queira inserir em um índice específico é só indicar a posição após o argumento `df`:
+
+```julia
+insertcols!(df, 3, :nova_col=...)      # insere no índice 3
+insertcols!(df, :col2, :nova_col=...)  # insere no índice da :col2
+insertcols!(df, "col2", :nova_col=...) # insere no índice da :col2
+```
 """
+
+# ╔═╡ 6c629f13-1d3f-47a4-a0fa-a05a601a6274
+md"""
+## Reordenar Colunas
+
+Suponha que você queria reordenar colunas de um dataset.
+
+Você consegue fazer isso com o `select` (ou `select!`) e o seletores de `col`:
+"""
+
+# ╔═╡ 83d1b730-18b4-4835-8c39-f9dd86d7722e
+starwars |> names # antes
+
+# ╔═╡ cc691c4f-80a1-4a61-ab70-8b611913ade5
+select(starwars, Between(1,:name), Between(:sex, :homeworld), :) |> names #depois
 
 # ╔═╡ 8c73a569-2d31-413c-9464-3bda8d811fc0
 md"""
 # Ordenar Linhas de `DataFrame`
+
+* sort: retorna um DataFrame
+* sort!: retorna nothing e altera o `DataFrame` *inplace*
+
+> Funciona com todos os seletores de `col`.
+
+Por padrão é ordem crescente (`rev=false`) e ordena todas as colunas começando com a primeira coluna:
+```julia
+sort(df, cols; rev=false)
+```
 """
+
+# ╔═╡ e4134fcf-9117-4561-ae38-5628f6d660ca
+sort(penguins, :bill_length_mm)
+
+# ╔═╡ ec537d76-c7c3-4108-b92e-505ccc5d2e57
+sort(penguins, [:species, :bill_length_mm]; rev=true)
+
+# ╔═╡ 664b3514-dfbd-4b4e-8ede-5b6ada310eab
+sort(penguins, Not(:species); rev=true)
 
 # ╔═╡ c960e354-3f67-44ff-b5ca-5898bbbae67d
 md"""
 # Filtrar Linhas de `DataFrame`
+
+* `filter`: retorna um DataFrame
+* `filter!`: retorna nothing e altera o `DataFrame` *inplace*
+
+```julia
+filter(fun, df)
+```
+
+* `subset`: retorna um DataFrame
+* `subset!`: retorna nothing e altera o `DataFrame` *inplace*
+
+```julia
+subset(df, :col => fun)
+```
+
+> Funciona com todos os seletores de `col`.
+"""
+
+# ╔═╡ cc50b948-f35f-4509-b39e-287acbd9ad74
+md"""
+!!! tip "💡 filter vs subset"
+    `filter` é um **despacho múltiplo da função `Base.filter`**. Portanto, segue a mesma convenção de `Base.filter`: primeiro vem a função e depois a coleção, no caso `DataFrame`.
+
+	`subset` é uma **função de `DataFrames.jl`** portanto a API é **consistente** com as outras funções: `função(df, ...)`.
+
+	`filter` é **MUITO mais rápido**, mas `subset` é mais conveniente para **múltiplas condições de filtragem** e lida melhor com **dados faltantes**.
 """
 
 # ╔═╡ 8ffbf3c6-f92f-46f7-bf45-410102dfe474
+filter(:species => ==("Adelie"), penguins)
+
+# ╔═╡ 83d5f454-592a-4425-812d-323eebb257fa
+filter(row -> row.species == "Adelie" && row.island ≠ "Torgensen", penguins)
+
+# ╔═╡ fe546a4f-ab05-49cc-8123-e7e713417d0e
+filter([:species, :island] => (sp, is) -> sp == "Adelie" && is ≠ "Torgensen", penguins)
+
+# ╔═╡ 511bbea9-e5f8-4082-89ae-0bde99a0b552
 md"""
-## `filter` vs `subset`
+!!! danger "⚠️ filter não lida muito bem com missing"
+    Tem que usar o `!ismissing`.
 """
+
+# ╔═╡ 3b709446-6daf-4fd7-8b62-8ed64ac8cfa9
+filter(row -> row.bill_length_mm > 40, penguins)
+
+# ╔═╡ e1849ea8-6cb7-4001-9ae5-508793ee7f0f
+filter(row -> !ismissing(row.bill_length_mm > 40), penguins)
+
+# ╔═╡ c571d48e-627e-414c-8b42-9243b1e952da
+md"""
+!!! tip "💡 Missing: subset para a salvação"
+    `filter` com `!ismissing` fica beeeeeeem verboso. Aí que entra o `subset` com `skipmissing=true`.
+"""
+
+# ╔═╡ 8bd9020d-bd31-4ce4-a3aa-b831d453ab17
+subset(penguins, :bill_length_mm => ByRow(>(40)); skipmissing=true)
+
+# ╔═╡ 8a922b3f-a38f-47f9-8dc0-cffd829a4e3c
+md"""
+!!! tip "💡 ByRow"
+    Um *wrapper* (função de conveniência) para vetorizar (*brodcast*) a operação para toda as observações da coluna.
+
+	`ByRow(fun)` ≡ `x -> fun.(x)`
+
+	Mas o `ByRow` é [**mais rápido** que a função anônima vetorizada](https://discourse.julialang.org/t/performance-of-dataframes-subset-and-byrow/60577).
+"""
+
+# ╔═╡ a2e0a0b4-bda6-480b-908f-5c1ff72a2490
+@benchmark subset(penguins, :bill_length_mm => ByRow(>(40)); skipmissing=true)
+
+# ╔═╡ 2bfb7633-2325-49ac-9d0f-eb4baf32f853
+@benchmark subset(penguins, :bill_length_mm => x -> x .> 40; skipmissing=true)
+
+# ╔═╡ 1360ab11-5a21-4068-89b1-48b763318398
+md"""
+!!! tip "💡 Benchmarks filter vs subset"
+    `filter` é **mais rápido**, mas ele fica beeeem verboso rápido...
+"""
+
+# ╔═╡ 9eb436a0-d858-4999-b785-217c9b8d82c0
+@benchmark filter(:species => ==("Adelie"), penguins)
+
+# ╔═╡ d33bef35-3591-472d-b31f-305308318a8d
+@benchmark filter(row -> row.species == "Adelie", penguins)
+
+# ╔═╡ 714b5152-6258-4ce2-b54c-410ebac24275
+@benchmark subset(penguins, :species => ByRow(==("Adelie")))
+
+# ╔═╡ dcca805f-2778-4c41-8995-a90f14e44552
+@benchmark subset(penguins, :species => x -> x .== "Adelie")
+
+# ╔═╡ e8829151-00b9-4cdc-8023-e0b1b53f2f5d
+md"""
+!!! tip "💡 Benchmarks filter vs subset"
+    `filter` é realmente **MUITO mais rápido**.
+"""
+
+# ╔═╡ 6e98e03f-5a0c-44a9-a379-4e7a61dc4bbd
+@benchmark filter([:species, :island] => (sp, is) -> sp == "Adelie" && is ≠ "Torgensen", penguins)
+
+# ╔═╡ a4fde68a-ce63-4859-a679-ad2c69722e77
+@benchmark subset(penguins,  [:species, :island] => ByRow((sp, is) -> sp ==("Adelie") && is ≠("Torgensen")))
+
+# ╔═╡ 5d18d2c3-b2e4-4b67-bbf2-fbed41ba4f88
+@benchmark subset(penguins, :species => ByRow(==("Adelie")), :island => ByRow(≠("Torgensen")))
 
 # ╔═╡ 8a853221-931b-4e81-be90-27c1f92f3d35
 md"""
 # Transformações de `DataFrame`
+
+* `transform`: retorna um DataFrame
+* `transform!`: retorna nothing e altera o `DataFrame` *inplace*
+
+> Funciona com todos os seletores de `col`.
 """
+
+# ╔═╡ 11c7082d-36a8-4653-81cb-8fd95bf2c5ad
+transform(penguins, names(penguins, r"mm$") .=> ByRow(x -> x/10))
+
+# ╔═╡ 70cb0f17-46ef-4771-a8e0-208aabb84d21
+cols_mm = names(penguins, r"mm$")
+
+# ╔═╡ 9197d244-889f-4fef-a6d4-495e03b44a5a
+cols_cm = replace.(cols_mm, "mm" => "cm")
+
+# ╔═╡ 3842cd95-2b12-4e10-b12f-3c41bb24702c
+transform(penguins, cols_mm .=> ByRow(x -> x/10) .=> cols_cm)
+
+# ╔═╡ d3bd0723-002f-4e43-8e9f-fb40e60770c9
+md"""
+!!! tip "💡 O mundo não é feito de funções anônonimas"
+    Você pode usar também funções existentes ou criadas por você.
+"""
+
+# ╔═╡ 0e8f6918-393f-4756-8722-3bf3bf094522
+function mm_to_cm(x)
+	return x / 10
+end
+
+# ╔═╡ a489eea5-fbe1-499c-9a77-5d9da26815e9
+transform(penguins, cols_mm .=> ByRow(mm_to_cm) .=> cols_cm)
+
+# ╔═╡ 695a3cbc-6664-4ab9-a059-ef0ed454be16
+md"""
+!!! tip "💡 Sem renomear colunas"
+	`transform` e `tranform!` também aceitam um argumento `renamecols` que por padrão é `true`.
+
+	Se você passar `renamecols=false` as colunas não são renomeadas para `col_function`
+"""
+
+# ╔═╡ 131d0f27-1b89-4c59-a7fb-3928217e971c
+transform(penguins, cols_mm .=> ByRow(mm_to_cm); renamecols=false)
+
+# ╔═╡ 7ca7168c-fa55-4808-be9c-e33b5df21708
+md"""
+!!! tip "💡 ifelse"
+    Uma função interessante de se ter no bolso é a `ifelse`.
+"""
+
+# ╔═╡ a952354f-84b0-4050-a78f-002a953b0c48
+select(penguins, :body_mass_g => ByRow(x -> ifelse(coalesce(x, 0) > mean(skipmissing(penguins.body_mass_g)), "pesado", "leve")) => :peso)
+
+# ╔═╡ 7f96c3c1-a93e-401d-9993-2c857f4002f5
+md"""
+!!! danger "⚠️ coalesce"
+    Aqui eu fiz todos os `missing` de `:body_mass_g` virarem `0`.
+
+	Veja a próxima seção sobre **Dados Ausentes**.
+"""
+
+# ╔═╡ 4818c8d6-d421-46ed-a31d-cade0ed1e5a8
+md"""
+## Exemplo mais Complexo com `starwars`
+"""
+
+# ╔═╡ e1abe2d3-6296-447a-a53a-d669f554ac8f
+transform(
+	dropmissing(select(starwars, Between(:name, :mass), :gender, :species)),
+	[:height, :mass, :species] =>
+                          ByRow((height, mass, species) ->
+                                height > 200 || mass > 200 ? "large" :
+                                species == "Droid" ? "robot" :
+                                "other") =>
+                          :type)
+
+# ╔═╡ 857136e8-c2fc-4473-86ed-f351b2af17c6
+md"""
+# Sumarizações de Dados
+
+As vezes você quer fazer coisas mais complexas que um `describe(df)` conseguiria fazer.
+
+Nessas horas que entra o `combine`. Essa função retorna um dataframe apenas com as colunas especificadas e com as linhas determinadas pela transformação.
+
+```julia
+combine(df, ...)
+```
+"""
+
+# ╔═╡ 7f05e0b8-2fd8-4bf6-a17a-83ed728d920f
+md"""
+!!! tip "💡 combine e groupby"
+    `combine` é bastante utilizado com `groupby`. Isto vai ser coberto na seção de **Agrupamentos de `DataFrame`**.
+"""
+
+# ╔═╡ 7c81da5c-bc38-4f02-b613-fa783fde5e34
+combine(penguins, nrow, :body_mass_g => mean ∘ skipmissing => :mean_body_mass)
+
+# ╔═╡ f3ed3917-e855-4b14-b76f-e2d09c74e958
+md"""
+!!! info "💁 Composição de funções com ∘"
+    Matematicamente o símbolo ∘ é o simbolo de composição de funções:
+	
+	$$f \circ g(x) = f(g(x))$$
+
+	Então no nosso caso:
+	```julia
+	mean ∘ skipmissing == mean(skipmissing())
+	```
+"""
+
+# ╔═╡ f155e53e-58e0-4535-bc9c-6c1dd6989d76
+md"""
+Ou fazer coisas mais complicadas:
+"""
+
+# ╔═╡ 130b1d66-e806-4a90-a2fe-f75fd7f4c2c5
+combine(
+	dropmissing(select(penguins, :body_mass_g, names(penguins, r"mm$"))), 
+		[:body_mass_g, :bill_length_mm] => cor,
+	    [:body_mass_g, :bill_depth_mm] => cor,
+	    [:body_mass_g, :flipper_length_mm] => cor)
 
 # ╔═╡ 7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
 md"""
@@ -480,7 +946,7 @@ md"""
 
 # ╔═╡ 971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
 md"""
-# Agrupamento e Sumarizações de `DataFrame`
+# Agrupamento de `DataFrame`
 
 Split/Apply/Combine e `GroupedDataFrame`
 """
@@ -488,6 +954,13 @@ Split/Apply/Combine e `GroupedDataFrame`
 # ╔═╡ 6113bca4-9f27-4453-827c-56bd0667d9d6
 md"""
 # Joins de `DataFrame`
+"""
+
+# ╔═╡ 26d3ecfa-6240-4dfc-9f73-14005d7c3191
+md"""
+# Redimensionamento de `DataFrame`
+
+`stack` e `unstack`
 """
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
@@ -963,19 +1436,91 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═d65393aa-9ece-44be-b1e6-1e73e4644d73
 # ╠═9c003007-ec85-4e6d-81a0-6778224a2ea1
 # ╠═968878aa-7396-412c-9b6c-39f1cc199b1e
-# ╠═b331fa61-c49a-4e56-bcac-4a977d247637
-# ╠═844deb5f-76ef-4857-b218-c6b3ff3e3646
-# ╠═18a5f498-4d4d-4a47-ab5a-3b62df1c2d0b
-# ╠═9ca94b93-d587-4f43-abeb-23d4125fdb47
-# ╠═03b63951-8e92-448c-8e1a-cc3857cc3e8d
-# ╠═8c73a569-2d31-413c-9464-3bda8d811fc0
-# ╠═c960e354-3f67-44ff-b5ca-5898bbbae67d
+# ╟─b331fa61-c49a-4e56-bcac-4a977d247637
+# ╟─47325d97-c116-48c5-8c5a-b2525082a4ee
+# ╟─844deb5f-76ef-4857-b218-c6b3ff3e3646
+# ╟─7eb0f340-7bb9-4942-a150-cbe0a9b89118
+# ╟─ba120760-53a5-4b2b-929c-bcb939819334
+# ╠═dc37999a-338b-4248-8bd8-07999fa09d1d
+# ╠═a51b287a-15e6-40f1-9eb2-bfd389af5731
+# ╠═689ff378-e97e-4632-9cac-9411ccfee789
+# ╠═309e08fd-b84e-4c60-ac03-9574e5ff74bc
+# ╟─06e4452f-3ef7-41b6-a07d-20c5f3ce76ef
+# ╠═f96c94ed-1235-4651-959e-e474fb6793a5
+# ╠═bc851d7c-8b9f-4a57-973a-d1a5076f2b9a
+# ╠═6d6db43e-fb6d-4494-bf7e-d9bd2cc95e3d
+# ╠═69fc9893-5715-40b5-b192-3682828fb22e
+# ╠═a7282b59-3cbc-44d6-a91d-00ab6694cba0
+# ╠═977b194a-302e-4965-93c4-226b8ca91440
+# ╠═a170e72c-ae85-4a41-9447-08c5643ca994
+# ╠═8f7cdd2d-2d3c-4c5e-a76a-79e4cdef5a68
+# ╠═3cc6096a-a559-489c-b70d-f7ee9c03a711
+# ╟─45c10fc6-b51c-43f0-8733-66114f31606c
+# ╟─543d473a-44a5-42b7-b820-7a3b5bd1d84e
+# ╟─3c75695c-6160-4385-a329-c52fe43ab283
+# ╠═ebc8d4af-7257-4a74-bccd-8693c6fc26be
+# ╟─18a5f498-4d4d-4a47-ab5a-3b62df1c2d0b
+# ╠═2bc2529d-8931-4300-8a64-97b349c37e2d
+# ╟─9ca94b93-d587-4f43-abeb-23d4125fdb47
+# ╠═66c9b74d-ec9b-4d21-9b7f-87cb9756c29f
+# ╟─11be77ad-91f4-4d1d-a16f-5fd72941b9d5
+# ╠═c2d12ce6-0dcc-4ccf-8ea2-7365a7ff60d3
+# ╟─03b63951-8e92-448c-8e1a-cc3857cc3e8d
+# ╟─6c629f13-1d3f-47a4-a0fa-a05a601a6274
+# ╠═83d1b730-18b4-4835-8c39-f9dd86d7722e
+# ╠═cc691c4f-80a1-4a61-ab70-8b611913ade5
+# ╟─8c73a569-2d31-413c-9464-3bda8d811fc0
+# ╠═e4134fcf-9117-4561-ae38-5628f6d660ca
+# ╠═ec537d76-c7c3-4108-b92e-505ccc5d2e57
+# ╠═664b3514-dfbd-4b4e-8ede-5b6ada310eab
+# ╟─c960e354-3f67-44ff-b5ca-5898bbbae67d
+# ╟─cc50b948-f35f-4509-b39e-287acbd9ad74
 # ╠═8ffbf3c6-f92f-46f7-bf45-410102dfe474
-# ╠═8a853221-931b-4e81-be90-27c1f92f3d35
+# ╠═83d5f454-592a-4425-812d-323eebb257fa
+# ╠═fe546a4f-ab05-49cc-8123-e7e713417d0e
+# ╟─511bbea9-e5f8-4082-89ae-0bde99a0b552
+# ╠═3b709446-6daf-4fd7-8b62-8ed64ac8cfa9
+# ╠═e1849ea8-6cb7-4001-9ae5-508793ee7f0f
+# ╟─c571d48e-627e-414c-8b42-9243b1e952da
+# ╠═8bd9020d-bd31-4ce4-a3aa-b831d453ab17
+# ╟─8a922b3f-a38f-47f9-8dc0-cffd829a4e3c
+# ╠═a2e0a0b4-bda6-480b-908f-5c1ff72a2490
+# ╠═2bfb7633-2325-49ac-9d0f-eb4baf32f853
+# ╟─1360ab11-5a21-4068-89b1-48b763318398
+# ╠═9eb436a0-d858-4999-b785-217c9b8d82c0
+# ╠═d33bef35-3591-472d-b31f-305308318a8d
+# ╠═714b5152-6258-4ce2-b54c-410ebac24275
+# ╠═dcca805f-2778-4c41-8995-a90f14e44552
+# ╟─e8829151-00b9-4cdc-8023-e0b1b53f2f5d
+# ╠═6e98e03f-5a0c-44a9-a379-4e7a61dc4bbd
+# ╠═a4fde68a-ce63-4859-a679-ad2c69722e77
+# ╠═5d18d2c3-b2e4-4b67-bbf2-fbed41ba4f88
+# ╟─8a853221-931b-4e81-be90-27c1f92f3d35
+# ╠═11c7082d-36a8-4653-81cb-8fd95bf2c5ad
+# ╠═70cb0f17-46ef-4771-a8e0-208aabb84d21
+# ╠═9197d244-889f-4fef-a6d4-495e03b44a5a
+# ╠═3842cd95-2b12-4e10-b12f-3c41bb24702c
+# ╟─d3bd0723-002f-4e43-8e9f-fb40e60770c9
+# ╠═0e8f6918-393f-4756-8722-3bf3bf094522
+# ╠═a489eea5-fbe1-499c-9a77-5d9da26815e9
+# ╟─695a3cbc-6664-4ab9-a059-ef0ed454be16
+# ╠═131d0f27-1b89-4c59-a7fb-3928217e971c
+# ╟─7ca7168c-fa55-4808-be9c-e33b5df21708
+# ╠═a952354f-84b0-4050-a78f-002a953b0c48
+# ╟─7f96c3c1-a93e-401d-9993-2c857f4002f5
+# ╟─4818c8d6-d421-46ed-a31d-cade0ed1e5a8
+# ╠═e1abe2d3-6296-447a-a53a-d669f554ac8f
+# ╟─857136e8-c2fc-4473-86ed-f351b2af17c6
+# ╟─7f05e0b8-2fd8-4bf6-a17a-83ed728d920f
+# ╠═7c81da5c-bc38-4f02-b613-fa783fde5e34
+# ╟─f3ed3917-e855-4b14-b76f-e2d09c74e958
+# ╟─f155e53e-58e0-4535-bc9c-6c1dd6989d76
+# ╠═130b1d66-e806-4a90-a2fe-f75fd7f4c2c5
 # ╠═7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
 # ╠═d7c3676e-0875-4755-83e7-b15fdcfdd9de
 # ╠═971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
 # ╠═6113bca4-9f27-4453-827c-56bd0667d9d6
+# ╠═26d3ecfa-6240-4dfc-9f73-14005d7c3191
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
