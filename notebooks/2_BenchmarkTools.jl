@@ -493,7 +493,7 @@ Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/
 
 # ╔═╡ 0b936e23-64d7-41e7-8eb9-b9b5c7b76011
 md"""
-O uso também é bem simples: basta anotar o código com o macro `@descend` para descer às "trevas" da representação mais baixo-nível possível da sua função
+O uso também é bem simples: basta anotar o código com o macro `@descend` para descer às "trevas" da representação mais baixo-nível possível da sua função:
 """
 
 # ╔═╡ 39a43e8a-fe93-4afc-84ae-348390656d6b

@@ -140,7 +140,7 @@ md"""
 md"""
 #### Tipos Paramétricos
 
-São introduzidos com as chaves `{}` e usando a palavra-chave `where`
+São introduzidos com as chaves `{}` e usando a palavra-chave `where`.
 
 Por exemplo qualquer subtipo concreto de `Real`:
 """
@@ -784,7 +784,7 @@ md"""
 * [`OnlineStats.jl`](https://github.com/joshday/OnlineStats.jl): Algoritmos de "passada única" (*single-pass*) para Estatísticas e Visualizações de Dados.
 
 
-* [`VectorizedStatistics`](https://github.com/JuliaSIMD/VectorizedStatistics.jl): Funções de Estatística Descritiva (`mean`, `std`, ...) baseadas em `LoopVectorization.jl`.
+* [`VectorizedStatistics`](https://github.com/JuliaSIMD/VectorizedStatistics.jl): Funções de Estatística Descritiva (`mean`, `std`, ...) baseadas em `LoopVectorization.jl` com SIMD.
 """
 
 # ╔═╡ 0e544e1b-fd02-4f5b-b1f0-448a8a1c6ebd

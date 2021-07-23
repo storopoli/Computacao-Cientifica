@@ -27,6 +27,9 @@ TableOfContents(aside=true)
 # ╔═╡ e4dbc9c7-cc0d-4305-ac6a-c562b233d965
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ ebc2a29a-2ad9-457f-8b9c-344fbc955a15
+HTML("<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/qGW0GT1rCvs' frameborder='0' allowfullscreen></iframe></div>")
+
 # ╔═╡ 6f1bec92-7703-4911-8ff5-668618185bf4
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/llvm_julia_meme.jpg?raw=true", :width => 400)
 
@@ -107,6 +110,9 @@ f(x)
 
 # ╔═╡ c7e13998-1b4b-4363-b89a-a1f2c8f92a1a
 f(y)
+
+# ╔═╡ 7412d8ce-dc0c-42be-800d-fe222c48a1f9
+HTML("<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/kc9HwsxE1OY' frameborder='0' allowfullscreen></iframe></div>")
 
 # ╔═╡ ee77185f-1abf-425a-aec0-1f84f54bcb41
 abstract type Pet end
@@ -361,7 +367,7 @@ df = DataFrame(
     z=randn(n),
 )
 
-@benchmark combine(groupby(df, :x), :y => median, :z => mean)
+@benchmark combine(groupby($df, :x), :y => median, :z => mean)
 ```
 
 ##### Python `pandas`:
@@ -2787,6 +2793,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
 # ╟─92216109-f448-495d-8114-d7e4c6e2b5f0
 # ╟─c0212d94-246c-4129-b2c7-65a3b107d951
+# ╟─ebc2a29a-2ad9-457f-8b9c-344fbc955a15
 # ╟─165e0a37-dd2c-4dae-8cc6-b80615af6e30
 # ╟─d5c8264f-defe-4e4c-b072-093c580a19af
 # ╟─89dbf386-2216-400e-ab36-05599e1fb4c7
@@ -2847,6 +2854,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═d4bea1f2-e30d-4fff-bdad-644b80f4e704
 # ╠═c7e13998-1b4b-4363-b89a-a1f2c8f92a1a
 # ╟─b4938cbd-27bc-4999-919a-a32e503dadb0
+# ╟─7412d8ce-dc0c-42be-800d-fe222c48a1f9
 # ╟─c2875c4e-e49e-42e6-ad88-bddc790550b9
 # ╠═ee77185f-1abf-425a-aec0-1f84f54bcb41
 # ╠═461bd896-6d65-4b76-8934-2e38cfd86231
