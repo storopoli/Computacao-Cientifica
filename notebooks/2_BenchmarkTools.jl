@@ -587,6 +587,16 @@ md"""
 	```
 """
 
+# ╔═╡ 8ef7cb22-67a0-4638-9656-d290149f7aa5
+md"""
+# Mais Informações sobre Inspeção de Código Julia
+
+Veja esse Workshop da JuliaCon 2021 ([Código GitHub](https://github.com/aviatesk/juliacon2021-workshop-pkgdev))
+"""
+
+# ╔═╡ b052618d-90d9-480d-bf75-dc833f4cccd8
+HTML("<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/wXRMwJdEjX4' frameborder='0' allowfullscreen></iframe></div>")
+
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -1841,6 +1851,8 @@ version = "0.9.1+5"
 # ╠═be52ee6e-88e7-479a-9102-4d3f2632d3f5
 # ╠═7cf5acc3-65e2-4967-9857-7c48f27582ad
 # ╟─cb0ee76f-b4f8-4dfa-b2e9-61c07502cb20
+# ╟─8ef7cb22-67a0-4638-9656-d290149f7aa5
+# ╟─b052618d-90d9-480d-bf75-dc833f4cccd8
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
