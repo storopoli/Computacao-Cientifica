@@ -937,12 +937,225 @@ combine(
 # ╔═╡ 7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
 md"""
 # Lidando com Dados Ausentes de `DataFrame`
+
+Temos algumas funções para lidar com `missing`:
+
+1. No **`DataFrame`**:
+   * `dropmissing`: retorna um `DataFrame`
+   * `dropmissing!`: retorna `nothing` e altera o `DataFrame` *inplace*
+2. Na **`Array`**:
+   * `skipmissing`: remove os valores `missing`, e.g. `sum(skipmissing(x))`
+3. No **elemento escalar**:
+   * `coalesce`: substitui o valor `missing` por algo especificado, e.g. `colaesce.(x, 0)`
 """
+
+# ╔═╡ e629ce11-b734-4f30-b178-7241e335c45a
+md"""
+## `dropmissing` no `DataFrame`
+
+```julia
+dropmissing(df, cols)
+```
+
+> `cols` pode ser qualquer um dos seletores de `col`.
+
+Se você **não especificar nenhum argumento como `cols` qualquer linha com qualquer `missing` é removida**. Ou seja, **limpeza total de `missing`s**: 
+"""
+
+# ╔═╡ f88fbf73-6737-409c-8ee3-98cb1fc51c75
+dropmissing(penguins)
+
+# ╔═╡ 21cfdb23-2b15-4279-84b9-cbcda9d49afe
+dropmissing(penguins, r"mm$") # veja que temos `sex` vários missings
+
+# ╔═╡ b315f5eb-104d-4f22-aa2f-04ac41335bcb
+coalesce(missing, "falante")
+
+# ╔═╡ 9f47e9ce-7a25-4673-af63-41ef2fe05e58
+select(penguins, :sex => ByRow(x -> coalesce(x, "faltante")))
 
 # ╔═╡ d7c3676e-0875-4755-83e7-b15fdcfdd9de
 md"""
-# Dados Categóricos com `CategoricalArrays`
+# Dados Categóricos com [`CategoricalArrays.jl`](https://github.com/JuliaData/CategoricalArrays.jl)
+
+Tudo de manipulação de dados categóricos está em [`CategoricalArrays.jl`](https://github.com/JuliaData/CategoricalArrays.jl).
+
+Qualquer `Array` pode ser convertida para `CategoricalArray`:
+
+```julia
+using CategoricalArrays
+
+v = ["Group A", "Group A", "Group A", "Group B", "Group B", "Group B"]
+cv = categorical(v)
+```
+
+> Por padrão `categorical` criará **valores como `UInt32` em ordem alfabética**.
 """
+
+# ╔═╡ bc0a87b3-2412-470d-b67c-959108c75ef6
+# CategoricalVector{String, UInt32}
+cv = categorical(penguins.species)
+
+# ╔═╡ bdbc9453-14a6-4cdd-8db6-39b925415be7
+typeof(cv)
+
+# ╔═╡ 8122592c-1f6d-4a79-a146-f0a4c729ab1b
+md"""
+!!! tip "💡 CategoricalArrays em Big Data"
+	Se você estiver mexendo com Big Data pode usar o `compress=true` para comprimir para o menor tipo possível de `UInt` que pode ser usado para representar os diferentes valores categóricos da `Array`.
+"""
+
+# ╔═╡ 4821561e-2e16-48e7-a025-7c4674ab6689
+# CategoricalVector{String, UInt8}
+cv_compress = categorical(penguins.species; compress=true)
+
+# ╔═╡ 8ffbc0cb-0857-4cd6-8830-2dc0fec46969
+md"""
+!!! tip "💡 Base.summarysize"
+    Essa função de `Base` computa o tamanho da memória, em bytes, usada pelos todos objetos únicos acessíveis do argumento. Ela levanta **toda a capivara** de `Arrays`. 
+"""
+
+# ╔═╡ 508064ff-f281-45e4-9d91-7b4ae45f266f
+Base.summarysize(cv)
+
+# ╔═╡ b925755c-7b03-48ab-9215-68efa1b20ef3
+Base.summarysize(cv_compress)
+
+# ╔═╡ 877a20dc-6a08-468f-baf2-126fd250e074
+md"""
+## Categorias Ordenadas
+
+O padrão de `categorical` é criar variáveis categóricas **não-ordenadas**.
+
+Ou seja não conseguimos comparar uma categoria com outra:
+"""
+
+# ╔═╡ 38c3fda1-8248-4e57-ab18-db10907290e9
+cv[begin] > cv[end] # Adelie > Chinstrap
+
+# ╔═╡ 52c87379-cf27-43eb-91e3-0b696cb72f76
+md"""
+Apenas é possível comparações de igualdade com `==` ou `≠`:
+"""
+
+# ╔═╡ c2a5b5d6-26e1-4782-94e7-524d653a23a5
+cv[begin] == cv[end] # Adelie == Chinstrap
+
+# ╔═╡ 7d4e7237-6a9c-46c2-839a-916de5c4bb16
+cv[begin] ≠ cv[end] # Adelie ≠ Chinstrap
+
+# ╔═╡ 1c8e5c89-9fe5-4bc0-8e54-632597f0e9a3
+md"""
+Para isso precisamos do argumento `ordered=true`:
+"""
+
+# ╔═╡ 84d6af7c-c32a-4142-ab4e-90f712fd966a
+cv_ordered = categorical(penguins.species; ordered=true)
+
+# ╔═╡ 11fbe1ef-4902-4d7a-87cc-c608156f845f
+typeof(cv_ordered)
+
+# ╔═╡ 3fc3ca84-e1b9-4f02-96d9-984a43fae1f5
+cv_ordered[begin] == cv_ordered[end] # Adelie == Chinstrap
+
+# ╔═╡ 700f80f5-1916-424c-b56e-3632b7868b6a
+cv_ordered[begin] > cv_ordered[end] # Adelie > Chinstrap
+
+# ╔═╡ 74cf8979-b2d2-43af-89cd-0eaf73941fd6
+md"""
+Por padrão a ordenação é alfabética.
+
+Mas raramente isso funciona...
+
+Para trocar usamos o argumento `levels` e passamos a ordem de grandeza das categorias:
+"""
+
+# ╔═╡ cacb0ff8-34a3-4699-b9d8-c69effb4f6c0
+# digamos que Chinstrap < Adelie < Gentoo
+cv_ordered_custom = categorical(
+	penguins.species;
+	ordered=true,
+	levels=["Chinstrap", "Adelie", "Gentoo"]
+)
+
+# ╔═╡ 4b766752-dcee-460a-a719-60f82850c16a
+cv_ordered_custom[begin] > cv_ordered_custom[end] # Adelie > Chinstrap
+
+# ╔═╡ c2dcd926-b27d-45d4-b10f-2a94223a6142
+md"""
+## Funções de [`CategoricalArrays.jl`](https://github.com/JuliaData/CategoricalArrays.jl)
+
+- `categorical(A)` - constrói uma `CategoricalArray` com valores da `Array` `A`.
+- `levels(A)` - retorna um vetor de valores únicos da `CategoricalArray` `A`.
+- `levels!(A)` - define um vetor de valores como os rótulos da `CategoricalArray` `A` *inplace*.
+- `levelcode(x)` - retorna o código do valor categórico `x` (para `Array`s, use `levelcode.(A)`).
+- `compress(A)` - retorna uma cópia da `CategoricalArray` `A` usando o menor tipo de referência possível (igual a `categorical` com `compress=true`).
+- `cut(x)` - corta uma `Array` em intervalos e retorna uma `CategoricalArray` ordenada.
+- `decompress(A)` - retorna uma cópia da `CategoricalArray` `A` usando o tipo de referência padrão (`UInt32`).
+- `isordered(A)` - testa se as entradas em `A` podem ser comparadas usando `<`, `>` e operadores semelhantes.
+- `ordered!(A, Bool)` - faz com que  as entradas em `A` podem ser comparadas usando `<`, `>` e operadores semelhantes.
+- `recode(A [, default], pairs...)` - retorna uma cópia da `CategoricalArray` `A` após substituir um ou mais valores.
+- `recode!(A [, default], pairs ...)` - substitua um ou mais valores na `CategoricalArray` `A` *inplace*
+"""
+
+# ╔═╡ bdc36c0b-99aa-4052-9cde-ea7635e366c6
+isordered(cv_ordered)
+
+# ╔═╡ 7b8b2876-073f-4469-83e3-f754db8e3123
+collect(1:10)
+
+# ╔═╡ 73a20699-6054-45db-b5d9-8fbba8287fa1
+cut(1:5, 2)
+
+# ╔═╡ 10903659-de58-4ad3-9b66-4bd4cf848f6c
+cut(1:5, 2; labels=["Pequeno", "Grande"])
+
+# ╔═╡ 09527938-62b3-471c-aa4e-bd527399a180
+levels(cv)
+
+# ╔═╡ 48459911-bfea-4a1c-a808-bf2eeb262352
+levels!(cv_ordered, ["Chinstrap", "Adelie", "Gentoo"])
+
+# ╔═╡ 4d588708-5ea9-46c0-98d1-d4b00c64cfbf
+levels(cv_ordered)
+
+# ╔═╡ 65cbf902-a6f9-46f1-bc5c-9852b37fdf1c
+recode(cv, "Adelie" => "A", "Gentoo" => "G", "Chinstrap" => "C")
+
+# ╔═╡ 14161886-664b-496d-9548-574fda7d7745
+md"""
+!!! tip "💡 Pegando Valores Numéricos de CategoricalArrays"
+    As vezes precisamos dos valores numéricos para Matrizes e Modelos.
+
+	Uma maneira é o `levelcode.(x)` e a outra é um [`for` loop com um `ifelse`](https://discourse.julialang.org/t/dummy-encoding-one-hot-encoding-from-pooleddataarray/4167/10):
+
+	```julia
+	for c in unique(df.col)
+    	df[!, Symbol(c)] = ifelse.(df.col .== c, 1, 0)
+	end
+	```
+
+	Outra opção é usar os [*contrast coding systems* de `StatsModels.jl`](https://juliastats.org/StatsModels.jl/latest/contrasts/#Contrast-coding-systems).
+"""
+
+# ╔═╡ fbe8762f-6ba7-45a5-8249-8a9edf0771ec
+v = levelcode.(cv)
+
+# ╔═╡ 6a528de5-cc31-45c8-bbfd-de2155211a5b
+typeof(v)
+
+# ╔═╡ fe1d94fe-f79a-437b-9d02-af61b46905a3
+for c in unique(penguins.species)
+    penguins[!, Symbol(c)] = ifelse.(penguins.species .== c, 1, 0)
+end
+
+# ╔═╡ 9f87b096-1879-46c6-9cb8-995e965a52e6
+for c in unique(penguins.species)
+    penguins[!, Symbol("species_$(c)")] = ifelse.(penguins.species .== c, 1, 0)
+end
+
+# ╔═╡ 6e22e6a9-b540-4ab1-ac8e-ecc00a6ed6e6
+select(penguins, r"^species", [:Adelie, :Gentoo, :Chinstrap])
 
 # ╔═╡ 971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
 md"""
@@ -1516,8 +1729,48 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─f3ed3917-e855-4b14-b76f-e2d09c74e958
 # ╟─f155e53e-58e0-4535-bc9c-6c1dd6989d76
 # ╠═130b1d66-e806-4a90-a2fe-f75fd7f4c2c5
-# ╠═7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
-# ╠═d7c3676e-0875-4755-83e7-b15fdcfdd9de
+# ╟─7d67c6c6-15df-4b42-9ba7-cab2ae02cfb1
+# ╟─e629ce11-b734-4f30-b178-7241e335c45a
+# ╠═f88fbf73-6737-409c-8ee3-98cb1fc51c75
+# ╠═21cfdb23-2b15-4279-84b9-cbcda9d49afe
+# ╠═b315f5eb-104d-4f22-aa2f-04ac41335bcb
+# ╠═9f47e9ce-7a25-4673-af63-41ef2fe05e58
+# ╟─d7c3676e-0875-4755-83e7-b15fdcfdd9de
+# ╠═bc0a87b3-2412-470d-b67c-959108c75ef6
+# ╠═bdbc9453-14a6-4cdd-8db6-39b925415be7
+# ╟─8122592c-1f6d-4a79-a146-f0a4c729ab1b
+# ╠═4821561e-2e16-48e7-a025-7c4674ab6689
+# ╟─8ffbc0cb-0857-4cd6-8830-2dc0fec46969
+# ╠═508064ff-f281-45e4-9d91-7b4ae45f266f
+# ╠═b925755c-7b03-48ab-9215-68efa1b20ef3
+# ╟─877a20dc-6a08-468f-baf2-126fd250e074
+# ╠═38c3fda1-8248-4e57-ab18-db10907290e9
+# ╟─52c87379-cf27-43eb-91e3-0b696cb72f76
+# ╠═c2a5b5d6-26e1-4782-94e7-524d653a23a5
+# ╠═7d4e7237-6a9c-46c2-839a-916de5c4bb16
+# ╟─1c8e5c89-9fe5-4bc0-8e54-632597f0e9a3
+# ╠═84d6af7c-c32a-4142-ab4e-90f712fd966a
+# ╠═11fbe1ef-4902-4d7a-87cc-c608156f845f
+# ╠═3fc3ca84-e1b9-4f02-96d9-984a43fae1f5
+# ╠═700f80f5-1916-424c-b56e-3632b7868b6a
+# ╟─74cf8979-b2d2-43af-89cd-0eaf73941fd6
+# ╠═cacb0ff8-34a3-4699-b9d8-c69effb4f6c0
+# ╠═4b766752-dcee-460a-a719-60f82850c16a
+# ╟─c2dcd926-b27d-45d4-b10f-2a94223a6142
+# ╠═bdc36c0b-99aa-4052-9cde-ea7635e366c6
+# ╠═7b8b2876-073f-4469-83e3-f754db8e3123
+# ╠═73a20699-6054-45db-b5d9-8fbba8287fa1
+# ╠═10903659-de58-4ad3-9b66-4bd4cf848f6c
+# ╠═09527938-62b3-471c-aa4e-bd527399a180
+# ╠═48459911-bfea-4a1c-a808-bf2eeb262352
+# ╠═4d588708-5ea9-46c0-98d1-d4b00c64cfbf
+# ╠═65cbf902-a6f9-46f1-bc5c-9852b37fdf1c
+# ╟─14161886-664b-496d-9548-574fda7d7745
+# ╠═fbe8762f-6ba7-45a5-8249-8a9edf0771ec
+# ╠═6a528de5-cc31-45c8-bbfd-de2155211a5b
+# ╠═fe1d94fe-f79a-437b-9d02-af61b46905a3
+# ╠═9f87b096-1879-46c6-9cb8-995e965a52e6
+# ╠═6e22e6a9-b540-4ab1-ac8e-ecc00a6ed6e6
 # ╠═971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
 # ╠═6113bca4-9f27-4453-827c-56bd0667d9d6
 # ╠═26d3ecfa-6240-4dfc-9f73-14005d7c3191
