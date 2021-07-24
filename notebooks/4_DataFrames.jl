@@ -13,8 +13,8 @@ begin
 	using CSV
 	using CategoricalArrays
 	using DataFrames
-	using HTTP
 	using XLSX
+	using HTTP: get
 	using Statistics: mean, std, cor
 end
 
@@ -184,6 +184,15 @@ ncol(df_1)
 
 # ╔═╡ 843ac012-f8f1-4655-84e2-ffb151b99bea
 names(df_1)
+
+# ╔═╡ a885fe89-1d10-4fe1-b3fc-486c2abf80d5
+md"""
+!!! tip "💡 Conversão de DataFrame em Matrix"
+    Se você precisar converter um `DataFrame` com colunas do **mesmo tipo** para uma matriz, você pode usar o construtor `Matrix` passando um `DataFrame`.
+"""
+
+# ╔═╡ bf4b1f85-028b-4e0b-8336-63d3cfea28d3
+Matrix(df_1)
 
 # ╔═╡ c4efdf84-8700-4ed9-b40a-965d9188ffbc
 md"""
@@ -1161,19 +1170,399 @@ select(penguins, r"^species", [:Adelie, :Gentoo, :Chinstrap])
 md"""
 # Agrupamento de `DataFrame`
 
-Split/Apply/Combine e `GroupedDataFrame`
+`DataFrames.jl` dá suporte à operações de agrupamento (*Split/Apply/Combine*) com a função `groupby`.
 """
+
+# ╔═╡ d0831039-639b-4e9f-8ca5-af64ac5f57ce
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/split_apply_combine.png?raw=true")
+
+# ╔═╡ d7efcd51-c6e2-44f6-adad-bdfc8bed969a
+md"""
+!!! info "💁 GroupedDataFrame"
+    Todo objeto retornado pelo `groupby` e um tipo `GroupedDataFrame`.
+"""
+
+# ╔═╡ 6df41c9e-2510-48b5-b79d-a6deca1ed1cb
+md"""
+Uma coisa importante do `groupby` é que ele pode ser seguido por algumas outras funções:
+
+- `combine`: **não impõe restrições à quantidade de linhas retornadas**, a ordem das linhas é especificada pela ordem dos grupos em `GroupedDataFrame`. Normalmente é usado para **calcular estatísticas descritivas por grupo**.
+
+
+- `select`: retorna um `GroupedDataFrame` com a **quantidade e ordem das linhas exatamente igual ao `DataFrame` de origem**, incluindo **apenas novas colunas calculadas**.
+
+
+- `transform`: retorna um `GroupedDataFrame` com a **quantidade e ordem das linhas exatamente igual ao `DataFrame` de origem**, incluindo **todas as colunas da origem e as novas colunas calculadas**.
+"""
+
+# ╔═╡ b03af91d-789a-4441-95ce-9ac2f036c5c1
+penguins_valid = dropmissing(penguins);
+
+# ╔═╡ d27425e3-87f2-4dd6-947d-402f71551ec5
+penguins_gdf = groupby(penguins_valid, :species)
+
+# ╔═╡ 6370f7a5-892e-47fa-95cc-da786769b4e9
+typeof(penguins_gdf)
+
+# ╔═╡ 819aa9b5-dd3b-492d-bd2b-7e1750c77b00
+keys(penguins_gdf)
+
+# ╔═╡ c4272242-e948-4706-97d4-98f59434c36d
+md"""
+## `combine` em `GroupedDataFrame`
+"""
+
+# ╔═╡ 25e4ca67-b98e-4b0e-a319-082ca3cd4ef2
+combine(penguins_gdf, nrow)
+
+# ╔═╡ c297b585-a86f-41f7-8a0b-3b4264cd0ffd
+combine(penguins_gdf,
+	nrow => :n,
+	:species => (x -> length(x) / nrow(penguins_valid)) => :perc)
+
+# ╔═╡ 2ffc4229-f6a0-48c6-9eee-163bc9f1b19d
+combine(penguins_gdf, :bill_length_mm => mean => :media_bico_comp)
+
+# ╔═╡ 2369f081-371a-4a72-a031-c5760c12a1e9
+combine(penguins_gdf, nrow, names(penguins_valid, r"mm$") .=> mean)
+
+# ╔═╡ fddd9bc0-1b46-44c9-a18c-55ad9ccc4742
+combine(penguins_gdf, :body_mass_g => (x -> [extrema(x)]) => [:min, :max])
+
+# ╔═╡ b1bc56d0-36b0-49b0-807a-2fb2b88a8898
+md"""
+## `select` em `GroupedDataFrame`
+
+> Obs: também pode ser usado o `select!`
+"""
+
+# ╔═╡ 80419314-5080-4eff-9e08-239d181a81b3
+select(penguins_gdf, [:flipper_length_mm, :body_mass_g] => cor)
+
+# ╔═╡ bc3fbc31-0ea5-4b57-86a8-96ef4678ffa2
+md"""
+## `transform` em `GroupedDataFrame`
+
+> Obs: também pode ser usado o `transform!`
+"""
+
+# ╔═╡ 2ee52796-79c1-4c67-aa78-9e6e64fe8c32
+transform(penguins_gdf, :species => ByRow(x -> "Pinguim $x"))
+
+# ╔═╡ 4d4df9c8-fd91-4d74-a2e8-9eada35a1092
+md"""
+## Múltiplos Grupos
+
+O `groupby` aceita todos os seletores de `col`:
+"""
+
+# ╔═╡ ea369275-302a-4ee0-a15e-a595f17fc4a9
+penguins_gdf2 = groupby(penguins_valid, [:species, :island, :sex])
+
+# ╔═╡ be05ff11-7688-4729-a25a-dd1c64819ab1
+md"""
+!!! tip "💡 Aplicar uma função em todas as colunas válidas (não-agrupantes)"
+    Use a função `valuecols`.
+"""
+
+# ╔═╡ 0754fa8e-7e08-400c-8b55-c6366447b16a
+combine(penguins_gdf2, valuecols(penguins_gdf2) .=> mean)
+
+# ╔═╡ b3215fac-4eec-498b-8c05-7f9bb7fce952
+md"""
+## Opções Avançadas de Agrupamento
+
+A função `groupby` tem alguns argumentos de *keyword* (todas `Bool` e com `false` como padrão):
+
+* `sort`: ordenação do `GroupedDataFrame` resultante pelas colunas de agrupamento. 
+* `skipmissing`: se vai remover grupos com valores `missing` por inteiro caso tenha algum valor faltante em uma das colunas de agrupamento.
+
+As funções `combine`, `select` e `transform` possuem 3 argumentos de *keyword* quando aplicadas em um `GroupedDataFrame` (todos `Bool` e com `true` como padrão):
+
+
+* `keepkeys`: se as colunas de agrupamento devem ser retornadas no `GroupedDataFrame`.
+* `ungroup`: se o objeto retornado é um `DataFrame` ou um `GroupedDataFrame`.
+* `renamecols`: se as colunas nos `cols => function` devem ter nomes automaticamente gerados pelas funções ou não.
+"""
+
+# ╔═╡ 7a2f9c21-71ff-4271-8166-3393a0e2dc57
+md"""
+## Desempenho de Agrupamento
+
+Suponha que você queira o pinguim mais pesado de cada espécie.
+
+Tem pelo menos 3 maneiras de fazer isso. E algumas implicações de desempenho:
+"""
+
+# ╔═╡ fa9947ea-1053-4857-92af-843d603bb1a7
+combine(penguins_gdf) do sdf
+	sdf[argmax(sdf.body_mass_g), :]
+end
+
+# ╔═╡ f2bda2c2-deab-4e07-834d-fa6760c9f73d
+combine(groupby(penguins_valid, :species)) do sdf
+	first(sort(sdf, :body_mass_g; rev=true))
+end
+
+# ╔═╡ 17180dad-8e9c-499e-aa92-4066dc70b117
+combine(groupby(sort(penguins_valid, :body_mass_g; rev=true), :species), first)
+
+# ╔═╡ fd507ef7-b210-46fc-8a7e-427450f7326f
+@benchmark combine(groupby(penguins_valid, :species)) do sdf
+	sdf[argmax(sdf.body_mass_g), :]
+end
+
+# ╔═╡ c881af06-1401-4c47-a38d-ae61212a936b
+@benchmark combine(groupby(penguins_valid, :species)) do sdf
+	first(sort(sdf, :body_mass_g; rev=true))
+end
+
+# ╔═╡ 62e51c8d-4de6-4834-92a5-b594bf31f073
+@benchmark combine(groupby(sort(penguins_valid, :body_mass_g; rev=true), :species), first)
+
+# ╔═╡ 05fa98bc-10fb-4f8a-91e8-9cdf3f68d9bd
+md"""
+!!! info "💁 SubDataFrame"
+    `sdf` é um acrônimo para `SubDataFrame` que é o que ocorre embaixo do capô do `GroupedDataFrame`.
+
+	`SubDataFrame` são *views*, isto quer dizer que eles dão acesso direto ao `DataFrame`/`GroupedDataFrame` pai, e portanto qualquer alteração em um `sdf` impacta o `df`/`gdf` correspondente.
+"""
+
+# ╔═╡ bdf30fe2-59d9-4d61-81a7-84f61a769c74
+combine(penguins_gdf) do sdf
+	typeof(sdf)
+end
 
 # ╔═╡ 6113bca4-9f27-4453-827c-56bd0667d9d6
 md"""
-# Joins de `DataFrame`
+# *Joins* de `DataFrame`
+
+É possível fazer *joins* com `DataFrames`. Note que o tipo de retorno é sempre um novo `DataFrame`.
+
+* `innerjoin`: contém linhas para valores da chave que existem em **todos** os `DataFrame`s.
+* `leftjoin`: contém linhas para valores da chave que existem no **primeiro** `DataFrame` (à esquerda), independentemente de esse valor existir ou não no segundo `DataFrame` (à direita).
+* `rightjoin`: contém linhas para os valores da chave que existem no **segundo** `DataFrame` (à direita), independentemente de esse valor existir ou não no primeiro `DataFrame` (à esquerda).
+* `outerjoin`: contém linhas para valores da chave que existem em **qualquer um** dos `DataFrame`s.
+* `semijoin`: similar ao `innerjoin`, mas restrita às colunas do primeiro `DataFrame` (à esquerda).
+* `antijoin`: contém linhas para valores da chave que existem no **primeiro** `DataFrame` (à esquerda), **mas não no segundo** `DataFrame` (à direita) argumento. 
+* `crossjoin`: **produto cartesiano de linhas de todos** os `DataFrame`s.
+"""
+
+# ╔═╡ 3696de64-fdc8-49b3-a45c-47482739d45e
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/joins.png?raw=true")
+
+# ╔═╡ 3a2d45f0-5f1b-40ed-b720-0d2aa7f5b9ca
+people = DataFrame(ID = [20, 40], Name = ["Joãozinho", "Mariazinha"])
+
+# ╔═╡ db434628-4961-405d-8d69-4f2e45976577
+jobs = DataFrame(ID = [20, 40], Job = ["Advogado(a)", "Médico(a)"])
+
+# ╔═╡ 6bcdb3b1-b0be-4d23-8862-75957e2cb036
+md"""
+!!! tip "💡 Chave de *Join*"
+    O argumento mais importante do *join* é a chave `on`.
+"""
+
+# ╔═╡ 6b4a89f3-1f8d-4eb3-8ef0-c6464b9d15f1
+innerjoin(people, jobs; on = :ID)
+
+# ╔═╡ d0782f40-3def-481f-be7b-881a1dc9824e
+leftjoin(people, jobs; on = :ID)
+
+# ╔═╡ 67edfd75-3623-4e75-988d-08c0b958a9f5
+rightjoin(people, jobs; on = :ID)
+
+# ╔═╡ dd038402-c18a-4b44-a635-b749f63b13c7
+outerjoin(people, jobs; on = :ID)
+
+# ╔═╡ 7963b6de-998f-4add-bd94-cc7babe12816
+semijoin(people, jobs; on = :ID)
+
+# ╔═╡ e20f890c-b49b-4cbe-bd3a-4440f7f0174b
+antijoin(people, jobs; on = :ID)
+
+# ╔═╡ 8004bf73-bc80-4919-9790-e68c13cc69a7
+md"""
+!!! danger "⚠️ crossjoin"
+    `crossjoin` **não*8 tem o argumento `on`. Mas se atente ao argumento `makeunique`.
+"""
+
+# ╔═╡ 83c5c631-95e5-4353-962c-94c572b1a692
+crossjoin(people, jobs; makeunique=true)
+
+# ╔═╡ a0a53ae6-3f6a-44fa-9486-638eb805c46d
+md"""
+## Chaves com Nomes Diferentes
+
+Às vezes nossas tabelas tem chaves diferentes. `DataFrames.jl` usa a síntaxe de `Pair`:
+
+```julia
+left => right
+```
+"""
+
+# ╔═╡ 50b882c1-3c0a-47c3-bea4-c0894b9be0f1
+jobs_new = DataFrame(IDNew = [20, 40], Job = ["Advogado(a)", "Médico(a)"])
+
+# ╔═╡ 83b0d0a8-11e8-4cbf-bde6-55164dd860ee
+innerjoin(people, jobs_new; on = :ID => :IDNew)
+
+# ╔═╡ 5cc5494d-43a7-44f3-994b-b9cd89b793c4
+md"""
+## Múltiplas Chaves
+
+Para múltiplas chaves usamos um vetor de `Symbol` ou um vetor de `Pair` `left => right`:
+"""
+
+# ╔═╡ 1c4898a3-2a0e-41ec-8306-61343cd6be3a
+cidades = DataFrame(
+	City = ["Amsterdam", "London", "London", "New York", "New York"],
+	Job = ["Advogado(a)", "Advogado(a)", "Advogado(a)", "Médico(a)", "Médico(a)"],
+	Category = [1, 2, 3, 4, 5])
+
+# ╔═╡ 1495fdc5-ebdd-4f41-8144-b9a987c064ee
+locais = DataFrame(
+	Location = ["Amsterdam", "London", "London", "New York", "New York"],
+	Work = ["Advogado(a)", "Advogado(a)", "Advogado(a)", "Médico(a)", "Médico(a)"],
+	Name = ["a", "b", "c", "d", "e"]
+)
+
+# ╔═╡ fbafda61-e057-457f-8d4a-227b03703cff
+innerjoin(cidades, locais; on=[:City => :Location, :Job => :Work])
+
+# ╔═╡ 5ac9f0b7-94d9-4836-9d7e-a91869ea0cf2
+md"""
+!!! danger "⚠️  Joins com missing"
+    Para *joins* com valores `missing`, veja o argumento `matchmissing` das funções de *join*.
+
+	Por padrão ele é `matchmissing=:error`.
 """
 
 # ╔═╡ 26d3ecfa-6240-4dfc-9f73-14005d7c3191
 md"""
 # Redimensionamento de `DataFrame`
 
-`stack` e `unstack`
+As vezes queremos converter `DataFrames` entre formato longo ou largo:
+
+* `stack`: largo → longo.
+* `unstack`: longo → largo.
+
+A sintaxe é bem simples:
+
+```julia
+stack(df, cols)
+unstack(df, cols)
+```
+
+> Funciona com todos os seletores de `col`.
+"""
+
+# ╔═╡ ba926e8e-0060-410d-bbd5-f99e19f0b98f
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/wide_vs_long.png?raw=true")
+
+# ╔═╡ 99d1d4a7-5e0f-4747-bb13-7c555db23ab4
+md"""
+!!! tip "💡 variable e value"
+    Por padrão `stack` define os nomes das colunas de variáveis como `:variable` e valores como `:value`. Mas você pode escolher o nome que quiser.
+"""
+
+# ╔═╡ 265d4dbb-5b20-4014-b469-74d85fd5ab15
+long_penguins = stack(penguins_valid, Not([:species, :sex, :island]))
+
+# ╔═╡ 270a65f2-20a6-4db2-a3de-2484b0ddad72
+unstack(long_penguins,
+	[:species, :sex, :island], :variable, :value;
+	allowduplicates=true)
+
+# ╔═╡ c4a91d4c-9afc-4551-b7ea-31ba1abf5e69
+md"""
+## Expansão de valores aninhados
+
+Às vezes (em especial com aqueles malditos JSON) temos dados aninhados.
+
+Aí que entra a função `flatten`.
+
+Lorem ipsum, yada yada, a sintaxe é a mesma:
+
+```julia
+flatten(df, cols)
+```
+
+> Funciona com todos os seletores de `col`.
+"""
+
+# ╔═╡ 2b502c61-6ea4-4f7c-90f7-b0663f27dc6f
+df_maldito = DataFrame(
+	a=[1, 2],
+	b=[[1, 2], [3, 4]],
+	c=[[5, 6], [7, 8]]
+)
+
+# ╔═╡ 2427725c-515c-4820-845c-abd90c6db0cc
+flatten(df_maldito, :b)
+
+# ╔═╡ 769368ee-d378-43fa-ad48-20453f5c0913
+flatten(df_maldito, [:b, :c])
+
+# ╔═╡ 445ee8bc-75d8-4683-afd0-05582630a1ea
+flatten(df_maldito, Not(:a))
+
+# ╔═╡ 09402d9a-8586-4257-bd04-5c315508114a
+md"""
+!!! tip "💡 Tuplas"
+    `flatten` também funciona com tuplas.
+"""
+
+# ╔═╡ 6eaf37ad-2f27-40b5-8af6-20f335b9fa40
+df_maldito2 = DataFrame(
+	a=[1, 2],
+	b=[(1, 2), (3, 4)],
+	c=[(5, 6), (7, 8)]
+)
+
+# ╔═╡ 2ad063bc-2176-49cc-9cf6-0fb09e3969f5
+flatten(df_maldito2, Not(:a))
+
+# ╔═╡ c2bc45aa-4dc0-4a94-9137-697c23db53f9
+md"""
+## Expansão para Colunas Diferentes
+
+Se você não tem o intuito de duplicar valores como linhas (exemplo do `flatten`), você pode usar um [`transform` com o `AsTable`](https://discourse.julialang.org/t/expanding-named-tuples/62435/10) que converte as colunas em `NamedTuple`s:
+"""
+
+# ╔═╡ 3b1dda1b-bdfc-4dd6-930e-413edd3fdf8c
+df_maldito_3 = DataFrame(
+	a=[(1, 2, 3),
+	   (4, 5, 6)])
+
+# ╔═╡ 2ee241ae-31b7-4198-b5b6-2e4dc31e574b
+transform(df_maldito_3, :a => ByRow(identity) => AsTable)
+
+# ╔═╡ 40141f62-874b-4bc5-b6a3-233597edc9c4
+transform(df_maldito_3, :a => AsTable ∘ ByRow(identity))
+
+# ╔═╡ c6c5f26b-edd6-4ae4-afbe-450483c8d38d
+md"""
+!!! tip "💡 Por que x1, x2, ...?"
+    Note que o construtor padrão de `DataFrame` gera automaticamente colunas `x1`, `x2`, ... e é isso que está acontecendo debaixo do capô do `ByRow(identity) => AsTable`.
+"""
+
+# ╔═╡ d0b43734-ec7f-4508-9b9e-8b6f4f602b07
+select(
+	transform(df_maldito_3, :a => ByRow(identity) => AsTable),
+	Not(:a)
+)
+
+# ╔═╡ 1da692bb-fbc7-4cde-96c8-861d8305e78c
+select(
+	transform(df_maldito_3, :a => ByRow(identity) => AsTable),
+	[:x1, :x2, :x3] .=> [:col1, :col2, :col3]
+)
+
+# ╔═╡ 2efad240-8517-4477-8055-b01423178383
+md"""
+!!! tip "💡 Nomes Informativos"
+    Você pode também substituir `identity` por qualquer função que retorna uma `NamedTuple`.
 """
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
@@ -1617,6 +2006,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═06a37ad8-2ff7-4999-9008-98aa96b73420
 # ╠═5da74073-e6cd-4ce9-a994-797be0e59ff8
 # ╠═843ac012-f8f1-4655-84e2-ffb151b99bea
+# ╟─a885fe89-1d10-4fe1-b3fc-486c2abf80d5
+# ╠═bf4b1f85-028b-4e0b-8336-63d3cfea28d3
 # ╟─c4efdf84-8700-4ed9-b40a-965d9188ffbc
 # ╟─de547f28-1eb5-4438-b088-adbeae032f55
 # ╠═877c0807-b9a9-406c-ac5d-dd7478a197c6
@@ -1771,9 +2162,80 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═fe1d94fe-f79a-437b-9d02-af61b46905a3
 # ╠═9f87b096-1879-46c6-9cb8-995e965a52e6
 # ╠═6e22e6a9-b540-4ab1-ac8e-ecc00a6ed6e6
-# ╠═971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
-# ╠═6113bca4-9f27-4453-827c-56bd0667d9d6
-# ╠═26d3ecfa-6240-4dfc-9f73-14005d7c3191
+# ╟─971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
+# ╠═d0831039-639b-4e9f-8ca5-af64ac5f57ce
+# ╟─d7efcd51-c6e2-44f6-adad-bdfc8bed969a
+# ╟─6df41c9e-2510-48b5-b79d-a6deca1ed1cb
+# ╠═b03af91d-789a-4441-95ce-9ac2f036c5c1
+# ╠═d27425e3-87f2-4dd6-947d-402f71551ec5
+# ╠═6370f7a5-892e-47fa-95cc-da786769b4e9
+# ╠═819aa9b5-dd3b-492d-bd2b-7e1750c77b00
+# ╟─c4272242-e948-4706-97d4-98f59434c36d
+# ╠═25e4ca67-b98e-4b0e-a319-082ca3cd4ef2
+# ╠═c297b585-a86f-41f7-8a0b-3b4264cd0ffd
+# ╠═2ffc4229-f6a0-48c6-9eee-163bc9f1b19d
+# ╠═2369f081-371a-4a72-a031-c5760c12a1e9
+# ╠═fddd9bc0-1b46-44c9-a18c-55ad9ccc4742
+# ╟─b1bc56d0-36b0-49b0-807a-2fb2b88a8898
+# ╠═80419314-5080-4eff-9e08-239d181a81b3
+# ╟─bc3fbc31-0ea5-4b57-86a8-96ef4678ffa2
+# ╠═2ee52796-79c1-4c67-aa78-9e6e64fe8c32
+# ╟─4d4df9c8-fd91-4d74-a2e8-9eada35a1092
+# ╠═ea369275-302a-4ee0-a15e-a595f17fc4a9
+# ╟─be05ff11-7688-4729-a25a-dd1c64819ab1
+# ╠═0754fa8e-7e08-400c-8b55-c6366447b16a
+# ╟─b3215fac-4eec-498b-8c05-7f9bb7fce952
+# ╟─7a2f9c21-71ff-4271-8166-3393a0e2dc57
+# ╠═fa9947ea-1053-4857-92af-843d603bb1a7
+# ╠═f2bda2c2-deab-4e07-834d-fa6760c9f73d
+# ╠═17180dad-8e9c-499e-aa92-4066dc70b117
+# ╠═fd507ef7-b210-46fc-8a7e-427450f7326f
+# ╠═c881af06-1401-4c47-a38d-ae61212a936b
+# ╠═62e51c8d-4de6-4834-92a5-b594bf31f073
+# ╟─05fa98bc-10fb-4f8a-91e8-9cdf3f68d9bd
+# ╠═bdf30fe2-59d9-4d61-81a7-84f61a769c74
+# ╟─6113bca4-9f27-4453-827c-56bd0667d9d6
+# ╟─3696de64-fdc8-49b3-a45c-47482739d45e
+# ╠═3a2d45f0-5f1b-40ed-b720-0d2aa7f5b9ca
+# ╠═db434628-4961-405d-8d69-4f2e45976577
+# ╟─6bcdb3b1-b0be-4d23-8862-75957e2cb036
+# ╠═6b4a89f3-1f8d-4eb3-8ef0-c6464b9d15f1
+# ╠═d0782f40-3def-481f-be7b-881a1dc9824e
+# ╠═67edfd75-3623-4e75-988d-08c0b958a9f5
+# ╠═dd038402-c18a-4b44-a635-b749f63b13c7
+# ╠═7963b6de-998f-4add-bd94-cc7babe12816
+# ╠═e20f890c-b49b-4cbe-bd3a-4440f7f0174b
+# ╟─8004bf73-bc80-4919-9790-e68c13cc69a7
+# ╠═83c5c631-95e5-4353-962c-94c572b1a692
+# ╟─a0a53ae6-3f6a-44fa-9486-638eb805c46d
+# ╠═50b882c1-3c0a-47c3-bea4-c0894b9be0f1
+# ╠═83b0d0a8-11e8-4cbf-bde6-55164dd860ee
+# ╟─5cc5494d-43a7-44f3-994b-b9cd89b793c4
+# ╠═1c4898a3-2a0e-41ec-8306-61343cd6be3a
+# ╠═1495fdc5-ebdd-4f41-8144-b9a987c064ee
+# ╠═fbafda61-e057-457f-8d4a-227b03703cff
+# ╟─5ac9f0b7-94d9-4836-9d7e-a91869ea0cf2
+# ╟─26d3ecfa-6240-4dfc-9f73-14005d7c3191
+# ╟─ba926e8e-0060-410d-bbd5-f99e19f0b98f
+# ╟─99d1d4a7-5e0f-4747-bb13-7c555db23ab4
+# ╠═265d4dbb-5b20-4014-b469-74d85fd5ab15
+# ╠═270a65f2-20a6-4db2-a3de-2484b0ddad72
+# ╟─c4a91d4c-9afc-4551-b7ea-31ba1abf5e69
+# ╠═2b502c61-6ea4-4f7c-90f7-b0663f27dc6f
+# ╠═2427725c-515c-4820-845c-abd90c6db0cc
+# ╠═769368ee-d378-43fa-ad48-20453f5c0913
+# ╠═445ee8bc-75d8-4683-afd0-05582630a1ea
+# ╟─09402d9a-8586-4257-bd04-5c315508114a
+# ╠═6eaf37ad-2f27-40b5-8af6-20f335b9fa40
+# ╠═2ad063bc-2176-49cc-9cf6-0fb09e3969f5
+# ╟─c2bc45aa-4dc0-4a94-9137-697c23db53f9
+# ╠═3b1dda1b-bdfc-4dd6-930e-413edd3fdf8c
+# ╠═2ee241ae-31b7-4198-b5b6-2e4dc31e574b
+# ╠═40141f62-874b-4bc5-b6a3-233597edc9c4
+# ╟─c6c5f26b-edd6-4ae4-afbe-450483c8d38d
+# ╠═d0b43734-ec7f-4508-9b9e-8b6f4f602b07
+# ╠═1da692bb-fbc7-4cde-96c8-861d8305e78c
+# ╟─2efad240-8517-4477-8055-b01423178383
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
