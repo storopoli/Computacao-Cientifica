@@ -742,12 +742,12 @@ md"""
 
 Por exemplo, um **ARIMA($p,1,q$)**:
 
-$$y^{\prime}_{t} = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y^{\prime}_{t-i} + \sum^1_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+$$y_{t} - y_{t-1} = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot \left( y_{t-i} - y_{t-i-1} \right) + \sum^q_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
 
 Onde:
 
-*  $y_t$: observação $y$ diferenciada no tempo $t$.
-*  $y^{\prime}_{t-i}$: observação $y$ diferenciada no tempo $t-i$.
+*  $y_{t} - y_{t-1}$: diferença entre observação $y$ no tempo $t$ e observação no tempo $t-i$.
+*  $y_{t-i} - y_{t-i-1}$: diferença entre observação $y$ no tempo $t-i$ e observação no tempo $t-i-1$
 *  $\alpha$: constante (*intercept*).
 *  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
 *  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
@@ -755,12 +755,11 @@ Onde:
 
 De maneira geral, os modelos **ARIMA($p,d,q$)** são:
 
-$$y^{(d)}_{t} = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y^{(d)}_{t-i} + \sum^1_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+$$\sum^d_{i=1} \left( y_{t_{i}} - y_{t_{i-1}} \right) = \alpha + \sum^p_{i=1} \sum^d_{i=1} \boldsymbol{\beta}_i \cdot \left( y_{t_{i-1}} - y_{t_{i-2}} \right) + \sum^q_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
 
 Onde:
 
-*  $y_t$: observação $y$ diferenciação de ordem $d$ no tempo $t$.
-*  $y^{(d)}_{t-i}$: observação $y$ com diferenciação de ordem $d$ no tempo $t-i$.
+*  $y_{t_{i}} - y_{t_{i-1}}$: diferença entre observação $y$ no tempo $t_i$ e observação no tempo $t_{i-1}$.
 *  $\alpha$: constante (*intercept*).
 *  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
 *  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
@@ -778,7 +777,7 @@ $$\begin{equation}
 
 ### Tudo acaba em $(HTML("<s>pizza</s>")) ARIMA
 
-Comoc vocês podem ver... todos que vimos até agora são casos especiais de algum **ARIMA($p,d,q$)**:
+Como vocês podem ver... todos que vimos até agora são casos especiais de algum **ARIMA($p,d,q$)**:
 
 * **AR($p$)**: **ARIMA($p,0,0$)**
 * **MA($q$)**: **ARIMA($0,0,q$)**
@@ -804,16 +803,28 @@ E os construtores:
 ar1 = ARParams(true, [1])
 
 # ╔═╡ 07a95924-d638-4b15-8b8a-b99af5254865
-m_ar1 = fit(ar1, ap.Passengers)
+m_ar1 = fit(ar1, float.(ap.Passengers))
 
 # ╔═╡ b8939ebd-81bb-4e73-a6f2-7e1fe6ee471a
 ma2 = MAParams([1, 2])
 
 # ╔═╡ f24dd12d-039c-470c-9d1c-5f84538c5e6a
-m_ma2 = fit(ma2, ap.Passengers)
+m_ma2 = fit(ma2, float.(ap.Passengers))
+
+# ╔═╡ aa46d085-8757-4453-a34f-4d8891bce366
+ar2ma3 = ARMAParams(true, [1, 2], [1, 3]) # notem que estou sem o 2 no q
+
+# ╔═╡ 7a8bc69d-f3c1-4dbb-a8e0-373ca39bb06a
+m_ar2ma3 = fit(ar2ma3, float.(ap.Passengers))
+
+# ╔═╡ d68b6f54-8883-4453-95f2-533c528955ac
+ar2i3ma3 = ARIMAParams(true, [1, 2], 3, [1, 2, 3]) # d não é vetor
+
+# ╔═╡ 7c8af0f8-9ef8-4ed2-8d35-82827567fb81
+m_ar2i3ma3 = fit(ar2i3ma3, float.(ap.Passengers))
 
 # ╔═╡ 894c5e01-b7da-4f98-9594-fb06ec5d6642
-forecast(m_ma2, ap.Passengers)
+forecast(m_ar1, float.(ap.Passengers)) # próximo ponto
 
 # ╔═╡ ffa8b715-8974-481a-98c5-b5f101b0dff6
 md"""
@@ -996,6 +1007,10 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╠═07a95924-d638-4b15-8b8a-b99af5254865
 # ╠═b8939ebd-81bb-4e73-a6f2-7e1fe6ee471a
 # ╠═f24dd12d-039c-470c-9d1c-5f84538c5e6a
+# ╠═aa46d085-8757-4453-a34f-4d8891bce366
+# ╠═7a8bc69d-f3c1-4dbb-a8e0-373ca39bb06a
+# ╠═d68b6f54-8883-4453-95f2-533c528955ac
+# ╠═7c8af0f8-9ef8-4ed2-8d35-82827567fb81
 # ╠═894c5e01-b7da-4f98-9594-fb06ec5d6642
 # ╟─ffa8b715-8974-481a-98c5-b5f101b0dff6
 # ╠═661a485e-5721-4acc-96a4-39674ec27c1e
