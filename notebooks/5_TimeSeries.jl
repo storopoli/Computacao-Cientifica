@@ -796,7 +796,7 @@ E os construtores:
 * `ARParams(c::Bool, p)`: **AR($p$)**
 * `MAParams(q)`: **MA($q$)**
 * `ARMAParams(c::Bool, p, q)`: **ARMA($p,q$)**
-* `ARIMAParams(c::Bool, p, d, q)`: **ARMA($p,d,q$)**
+* `ARIMAParams(c::Bool, p, d, q)`: **ARIMA($p,d,q$)**
 """
 
 # ╔═╡ 08a5e81b-72ad-4ed3-8bac-fa6d050c58c5
