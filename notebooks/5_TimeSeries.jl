@@ -24,28 +24,29 @@ begin
 			"Plots",
 			"RollingFunctions",
 			"ShiftedArrays",
-			"TimeSeries",
-			"TSAnalysis",
 			"HTTP"
 			])
+	Pkg.add(url="https://github.com/pierrenodet/AutoARIMA.jl")
 	Pkg.add(url="https://github.com/viraltux/Forecast.jl")
 	
 	using PlutoUI
 	
-	using CSV
+	using AutoARIMA
 	using Dates
 	using DataFrames
 	using Forecast
 	using Plots
 	using RollingFunctions
 	using ShiftedArrays
-	using TimeSeries
-	using TSAnalysis
 	
 	using Statistics: mean
-	
-	# evitar conflitos com stack de DataFrames
-	import HTTP
+	using ShiftedArrays: lag, lead
+
+	# evitar conflitos
+	import HTTP # stack de DataFrames
+	using DataFrames: transform
+	using Base: isnothing
+	using AutoARIMA: forecast
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -483,23 +484,52 @@ combine(groupby(ap, :Month), :Passengers => mean)
 md"""
 ## Calcular valores com base em Valores Anteriores -- [`ShiftedArrays.jl`](https://github.com/JuliaArrays/ShiftedArrays.jl)
 
-* `lag`
-* `lead`
+* `lag(v::AbstractArray, n = 1; default = missing)`
+* `lead(v::AbstractArray, n = 1; default = missing)`
 """
+
+# ╔═╡ 7c6e7292-c74f-4807-be07-44162a8cadd8
+v = [1, 3, 5, 4]
+
+# ╔═╡ de4425ad-866d-4654-b187-25b68bda5ca7
+lag(v)
+
+# ╔═╡ 3cbd6c11-ecce-401d-877b-a810118cdc7e
+lead(v)
+
+# ╔═╡ fc9793b6-d8ce-4ec0-a1ae-cd594cb25de8
+md"""
+Funciona também com intervalos:
+"""
+
+# ╔═╡ 93b4b297-e02f-418e-8569-8c9d1b290e0f
+w = 1:2:9
+
+# ╔═╡ df80ab42-4ea9-494f-9764-c0e841fb6949
+lag(w, 2)
+
+# ╔═╡ 71ba199b-b0e6-48c3-97ca-bd8277454f5d
+lead(w, 2)
+
+# ╔═╡ d3b4e17e-6432-45b6-b0bf-993b63bf1165
+transform(ap, :Passengers => lag => :PassengerLag)
+
+# ╔═╡ 89221be1-a1d8-43fe-9252-069a41b23703
+transform(ap, :Passengers => (x -> lead(x, 2)) => :PassengerLead)
 
 # ╔═╡ 2627e2e2-96de-4812-9542-ff7a28cbdc2f
 md"""
 ## Calcular Estatísticas Móveis com base em Valores Anteriores -- [`RollingFunctions.jl`](https://github.com/JeffreySarnoff/RollingFunctions.jl)
 
 Funções com dois prefixos:
-* **`roll`**:
-* **`run`**:
+* **`roll`**: retorna um vetor de tamanho `ndata - windowsize + 1`
+* **`run`**: retorna um vetor de tamanho de `ndata`
 
 Funções com vários sufixos:
-* `min`, `max`, `mean`, `median`
-* `var`, `std`, `sem`, `mad`, `mad_normalized`
-* `skewness`, `kurtosis`, `variation`
-* `cor`, `cov`: correlação e covariância (sobre dois vetores de dados) 
+* `min`, `max`, `mean`, `median`.
+* `var`, `std`, `sem`, `mad`, `mad_normalized`.
+* `skewness`, `kurtosis`, `variation`.
+* `cor`, `cov`: correlação e covariância (sobre dois vetores de dados).
 """
 
 # ╔═╡ 77b5a188-e6a6-4822-9c41-786b7904bc21
@@ -515,14 +545,95 @@ md"""
 	> OBS: também aceita dois vetores se for uma função complexa. Veja a documentação no [`README.md` do `RollingFunctions.jl`](https://github.com/JeffreySarnoff/RollingFunctions.jl#works-with-your-functions)
 """
 
-# ╔═╡ 1d77ec4b-d94a-487a-a910-fb6fc6aa6f6a
+# ╔═╡ e2c22ba6-faf2-41c1-b1f8-5119ae1dc14e
+(length(v), length(w))
 
+# ╔═╡ 1d77ec4b-d94a-487a-a910-fb6fc6aa6f6a
+rollmean(v,1) # ndata - windowsize + 1
+
+# ╔═╡ b253f241-a503-4932-951b-6cd890bbd70b
+rollmean(v,2) # ndata - windowsize + 1
 
 # ╔═╡ 87004299-9a20-4dca-aeaf-41d19bd772ed
+rollmean(w,1) # ndata - windowsize + 1
+
+# ╔═╡ 825bbd9c-f084-4a5e-b55c-376571b37e51
+runmean(v, 1) # ndata
+
+# ╔═╡ 3e448093-8265-4506-a450-c8fd21bb2931
+runmean(v, 2) # ndata
+
+# ╔═╡ a902af22-1e73-479a-8dec-3dca65961694
+runmean(w, 1)
+
+# ╔═╡ a8b4992d-4cd4-4338-80a9-887117847b79
+md"""
+## Decompor Séries Temporais
+
+Como vocês viram **séries temporais** tem alguns componentes:
+
+$$y_t = S_t + T_t + R_t$$
+
+Onde:
+
+*  $y_t$ é a observação no tempo $t$.
+*  $T_t$ é o componente de **têndencia** no tempo $t$.
+*  $S_t$ é o componente **sazonal** no tempo $t$.
+*  $R_t$ é o componente **residual** no tempo $t$.
 
 
-# ╔═╡ a825b32b-b783-49d8-85b5-60d986f9cbbb
-plot(ap)
+Tem várias maneiras de decompor uma série temporal:
+
+* [**X-11**](https://otexts.com/fpp3/methods-used-by-official-statistics-agencies.html#x-11-method): originado no US Census Bureau e foi desenvolvido pela Statistics Canada. O método X-11 é um processo iterativo, usando médias móveis apropriadas para decompor uma série temporal.
+
+
+* [**SEATS**](https://otexts.com/fpp3/methods-used-by-official-statistics-agencies.html#seats-method): **Se**asonal **E**xtraction in **A**RIMA **T**ime **S**eries. Procedimento foi desenvolvido no Banco da Espanha e agora é amplamente utilizado por agências governamentais em todo o mundo.
+
+
+* [**STL**](): **S**easonal and **T**rend decomposition using **L**OESS. E LOESS é _**l**ocally **e**stimated **s**catterplot **s**moothing_ (basicamente uma interpolação polinomial)
+"""
+
+# ╔═╡ 6de89a61-a3d8-47f4-8c1d-0a5369da0bc5
+begin
+	n = 1000
+	axb = LinRange(-1/2,pi+1/2,n)
+	x = LinRange(0,pi,n)
+	y = sin.(x) .+ rand(n)
+	scatter(x, y; xlims=(-1/2,pi+1/2), ma=0.5, label="Dados", color=:grey)
+	plot!(axb, loess(x,y,predict=axb); lw=4, la=0.7, label = "LOESS", color=:blue)
+	plot!(x,sma(y,100,true); lw=4, la=0.7, label= "Média Movel 100", color=:orange)
+	title!("LOESS")
+	xlabel!("\$t\$")
+end
+
+# ╔═╡ 6d773bbf-579f-4035-b079-9a553e99e166
+md"""
+### STL -- **S**easonal and **T**rend decomposition using **L**OESS
+
+STL tem várias **vantagens** sobre a decomposição clássica e os métodos SEATS e X-11:
+
+* Ao contrário do SEATS e do X-11, o STL lida com **qualquer tipo de sazonalidade**, não apenas dados mensais e trimestrais.
+
+
+* O componente **sazonal $S_t$ pode mudar ao longo do tempo** e a taxa de mudança pode ser **controlada pelo usuário**.
+
+
+* A **suavidade do ciclo de tendência $T_t$ também pode ser controlada pelo usuário**.
+
+
+* Pode ser robusto para *outliers* (ou seja, o usuário pode especificar uma decomposição robusta), de modo que **observações incomuns ocasionais não afetem as estimativas** do ciclo de tendência $T_t$ e componentes sazonais $S_t$. Eles irão, no entanto, afetar o componente residual $R_t$.
+
+Decomposição STL está disponível no pacote [`Forecast.jl`](https://github.com/viraltux/Forecast.jl) com a função `stl`:
+"""
+
+# ╔═╡ 448a1eb3-0512-4e10-98c2-829e356ccea8
+stl_ap = stl(ap.Passengers, 12; robust=true)
+
+# ╔═╡ 213f02d5-679e-4d05-9f42-fa047663af50
+typeof(stl_ap)
+
+# ╔═╡ 2b674a78-f024-459b-b0c4-b4107730e7cd
+plot(stl_ap)
 
 # ╔═╡ c9583420-6b50-4afb-aa34-7b070fbd50d6
 md"""
@@ -531,8 +642,8 @@ md"""
 - $(HTML("<s>Frequentista</s>")):
    * Livro [Forecastring 3a edição](https://otexts.com/fpp3/)
    * Livro [Analysis of Financial Time Series 3a edição](https://faculty.chicagobooth.edu/ruey-s-tsay/research/analysis-of-financial-time-series-3rd-edition)
-   * Pacote [`TSAnalysis.jl`](https://github.com/fipelle/TSAnalysis.jl): ARIMA, filtros Kalman etc...
-   * Pacote[`Forecast.jl`](https://github.com/viraltux/Forecast.jl): foco em predição e visualizações, apenas modelos AR
+   * Pacote [`AutoARIMA.jl`](https://github.com/pierrenodet/AutoARIMA.jl): Modelos ARIMA.
+   * Pacote[`Forecast.jl`](https://github.com/viraltux/Forecast.jl): foco em predição e visualizações, apenas modelos AR, decomposição STL.
 - **Bayesiana**:
    * Livro [Bayesian Data Analysis 3a edição](http://www.stat.columbia.edu/~gelman/book/)
    * Livro [Statistical Rethinking 2a edição](https://xcelab.net/rm/statistical-rethinking/)
@@ -541,25 +652,168 @@ md"""
    * Pacote [`Turing.jl`](https://github.com/TuringLang/Turing.jl): [meus tutoriais em inglês](https://storopoli.io/Bayesian-Julia) e vamos falar sobre ele na [Aula 9 - Modelos Probabilísticos Bayesianos com `Turing.jl`](https://storopoli.io/Computacao-Cientifica/9_Turing/)
 """
 
+# ╔═╡ 3d98552e-014c-4939-8e93-3b3536cd0898
+md"""
+!!! info "💁 Séries Temporais em Julia"
+    Veja essa [lista de vários pacotes](https://discourse.julialang.org/t/time-series-in-julia-working-list/62539).
+"""
+
 # ╔═╡ edc542c7-8f70-4fa3-abcf-c9162ced69a0
 md"""
 ## _**A**uto**r**egressive_ -- AR
+
+O próprio nome diz, ele **regride em sí próprio**, ou seja você usa os dados em um tempo anterior como coeficientes do modelo.
+
+Por exemplo um modelo **AR(1)** é:
+
+$$y_t = \alpha + \beta \cdot y_{t-1} + \epsilon$$
+
+Onde:
+
+*  $y_t$: observação $y$ no tempo $t$.
+*  $y_{t-1}$: observação $y$ no tempo $t-1$.
+*  $\alpha$: constante (*intercept*).
+*  $\beta$: coeficiente (*slope*).
+*  $\epsilon$: erro ou resíduo.
+
+Por exemplo um modelo **AR(2)** é:
+
+$$y_t = \alpha + \boldsymbol{\beta}_1 \cdot y_{t-1} + \boldsymbol{\beta}_2 \cdot y_{t-2} + \epsilon$$
+
+Onde:
+
+*  $y_t$: observação $y$ no tempo $t$.
+*  $y_{t-1}$: observação $y$ no tempo $t-1$.
+*  $y_{t-2}$: observação $y$ no tempo $t-2$.
+*  $\alpha$: constante (*intercept*).
+*  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
+*  $\epsilon$: erro ou resíduo.
+
+De modo geral os modelos **AR($p$)** são:
+
+$$y_t = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y_{t-i} + \epsilon$$
+"""
+
+# ╔═╡ 05f271d7-8d3f-4aeb-917e-079defcd67e7
+md"""
+!!! tip "💡 ARCH e GARCH"
+    Os modelos econométricos e financeiros de séries temporais geralmente assumem heterocedasticidade: eles permitem que a escala dos termos de erro que definem a série varie ao longo do tempo. O modelo mais simples é o _**A**uto**r**egressive **C**onditional **H**eteroscedasticity_ (ARCH) com extensões para o _**G**eneralized **A**uto**r**egressive **C**onditional **H**eteroscedasticity_ (GARCH)
 """
 
 # ╔═╡ 37c4966e-6a4d-4f9d-905b-a806cc8b3ba6
 md"""
 ## _**M**oving **A**verage_ -- MA
+
+Um modelo de média móvel usa erros anteriores como preditores para resultados futuros. Para um modelo **MA($q$)** de média móvel de ordem $q$:
+
+$$y_t = \alpha + \sum^q_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+
+Onde:
+
+*  $y_t$: observação $y$ no tempo $t$.
+*  $\alpha$: constante (*intercept*).
+*  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
+*  $\boldsymbol{\epsilon}$: vetor de erros ou resíduos.
 """
 
 # ╔═╡ 43fc389e-3daf-4a2d-b1c1-45dc10b53b49
 md"""
 ## _**A**uto**r**egressive **M**oving **A**verage_ -- ARMA
+
+Juncão do **AR($p$)** com o **MA($q$)** em **ARMA($p,q$)**:
+
+$$y_t = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y_{t-i} + \sum^q_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+
+Onde:
+
+*  $y_t$: observação $y$ no tempo $t$.
+*  $y_{t-i}$: observação $y$ no tempo $t-i$.
+*  $\alpha$: constante (*intercept*).
+*  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
+*  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
+*  $\boldsymbol{\epsilon}$: vetor de erros ou resíduos.
 """
 
 # ╔═╡ d13d7df1-7970-4696-8159-a17ba2ab9b03
 md"""
 ## _**A**uto**r**egressive **Integrated** **M**oving **A**verage_ -- ARIMA
+
+É o **ARMA($p,q$)** com uma média movel **integrada**.
+
+Por exemplo, um **ARIMA($p,1,q$)**:
+
+$$y^{\prime}_{t} = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y^{\prime}_{t-i} + \sum^1_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+
+Onde:
+
+*  $y_t$: observação $y$ diferenciada no tempo $t$.
+*  $y^{\prime}_{t-i}$: observação $y$ diferenciada no tempo $t-i$.
+*  $\alpha$: constante (*intercept*).
+*  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
+*  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
+*  $\boldsymbol{\epsilon}$: vetor de erros ou resíduos.
+
+De maneira geral, os modelos **ARIMA($p,d,q$)** são:
+
+$$y^{(d)}_{t} = \alpha + \sum^p_{i=1} \boldsymbol{\beta}_i \cdot y^{(d)}_{t-i} + \sum^1_{i=1} \boldsymbol{\theta}_i \cdot \boldsymbol{\epsilon}_{t-i}$$
+
+Onde:
+
+*  $y_t$: observação $y$ diferenciação de ordem $d$ no tempo $t$.
+*  $y^{(d)}_{t-i}$: observação $y$ com diferenciação de ordem $d$ no tempo $t-i$.
+*  $\alpha$: constante (*intercept*).
+*  $\boldsymbol{\beta}$: vetor de coeficientes (*slopes*).
+*  $\boldsymbol{\theta}$: vetor de coeficientes (*slopes*) para o erro.
+*  $\boldsymbol{\epsilon}$: vetor de erros ou resíduos.
+
+Ou uma notação alternativa:
+
+$$\begin{equation}
+  \begin{array}{c c c c}
+    (1-\beta_1 y - \cdots - \beta_p y^p) & (1-y)^d y_{t} &= &\alpha + (1 + \theta_1 y + \cdots + \theta_q y^q)\epsilon_t\\
+    {\uparrow} & {\uparrow} & &{\uparrow}\\
+    \text{AR($p$)} & \text{$d$ diferenças} & & \text{MA($q$)}\\
+  \end{array}
+\end{equation}$$
+
+### Tudo acaba em $(HTML("<s>pizza</s>")) ARIMA
+
+Comoc vocês podem ver... todos que vimos até agora são casos especiais de algum **ARIMA($p,d,q$)**:
+
+* **AR($p$)**: **ARIMA($p,0,0$)**
+* **MA($q$)**: **ARIMA($0,0,q$)**
+* **ARMA($p,q)$**: **ARIMA($p,0,q$)**
 """
+
+# ╔═╡ 4f08d209-8956-4f7b-bfcb-51dbf52dc135
+md"""
+Modelos **ARIMA** estão disponíveis no pacote [`AutoARIMA.jl`](https://github.com/pierrenodet/AutoARIMA.jl) com as funções:
+
+* `fit(Params, y)`: passa um dos construtores abaixo e um vetor $y$.
+* `forecast(Model, y_new)`: passa o modelo retornado por `fit` e um vetor $y_{t+i}$
+
+E os construtores:
+
+* `ARParams(c::Bool, p)`: **AR($p$)**
+* `MAParams(q)`: **MA($q$)**
+* `ARMAParams(c::Bool, p, q)`: **ARMA($p,q$)**
+* `ARIMAParams(c::Bool, p, d, q)`: **ARMA($p,d,q$)**
+"""
+
+# ╔═╡ 08a5e81b-72ad-4ed3-8bac-fa6d050c58c5
+ar1 = ARParams(true, [1])
+
+# ╔═╡ 07a95924-d638-4b15-8b8a-b99af5254865
+m_ar1 = fit(ar1, ap.Passengers)
+
+# ╔═╡ b8939ebd-81bb-4e73-a6f2-7e1fe6ee471a
+ma2 = MAParams([1, 2])
+
+# ╔═╡ f24dd12d-039c-470c-9d1c-5f84538c5e6a
+m_ma2 = fit(ma2, ap.Passengers)
+
+# ╔═╡ 894c5e01-b7da-4f98-9594-fb06ec5d6642
+forecast(m_ma2, ap.Passengers)
 
 # ╔═╡ ffa8b715-8974-481a-98c5-b5f101b0dff6
 md"""
@@ -705,17 +959,44 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╟─e4ea794a-4a6b-4a63-808b-fc93cabb7971
 # ╠═4bca7094-79b1-438e-a4cd-1b0035e8218d
 # ╠═36674734-e58d-4984-88cc-bfad40a035d3
-# ╠═878ad6c7-cfca-4af9-b999-32c83bc90d10
-# ╠═2627e2e2-96de-4812-9542-ff7a28cbdc2f
+# ╟─878ad6c7-cfca-4af9-b999-32c83bc90d10
+# ╠═7c6e7292-c74f-4807-be07-44162a8cadd8
+# ╠═de4425ad-866d-4654-b187-25b68bda5ca7
+# ╠═3cbd6c11-ecce-401d-877b-a810118cdc7e
+# ╟─fc9793b6-d8ce-4ec0-a1ae-cd594cb25de8
+# ╠═93b4b297-e02f-418e-8569-8c9d1b290e0f
+# ╠═df80ab42-4ea9-494f-9764-c0e841fb6949
+# ╠═71ba199b-b0e6-48c3-97ca-bd8277454f5d
+# ╠═d3b4e17e-6432-45b6-b0bf-993b63bf1165
+# ╠═89221be1-a1d8-43fe-9252-069a41b23703
+# ╟─2627e2e2-96de-4812-9542-ff7a28cbdc2f
 # ╟─77b5a188-e6a6-4822-9c41-786b7904bc21
+# ╠═e2c22ba6-faf2-41c1-b1f8-5119ae1dc14e
 # ╠═1d77ec4b-d94a-487a-a910-fb6fc6aa6f6a
+# ╠═b253f241-a503-4932-951b-6cd890bbd70b
 # ╠═87004299-9a20-4dca-aeaf-41d19bd772ed
-# ╠═a825b32b-b783-49d8-85b5-60d986f9cbbb
-# ╠═c9583420-6b50-4afb-aa34-7b070fbd50d6
-# ╠═edc542c7-8f70-4fa3-abcf-c9162ced69a0
-# ╠═37c4966e-6a4d-4f9d-905b-a806cc8b3ba6
-# ╠═43fc389e-3daf-4a2d-b1c1-45dc10b53b49
-# ╠═d13d7df1-7970-4696-8159-a17ba2ab9b03
+# ╠═825bbd9c-f084-4a5e-b55c-376571b37e51
+# ╠═3e448093-8265-4506-a450-c8fd21bb2931
+# ╠═a902af22-1e73-479a-8dec-3dca65961694
+# ╟─a8b4992d-4cd4-4338-80a9-887117847b79
+# ╟─6de89a61-a3d8-47f4-8c1d-0a5369da0bc5
+# ╟─6d773bbf-579f-4035-b079-9a553e99e166
+# ╠═448a1eb3-0512-4e10-98c2-829e356ccea8
+# ╠═213f02d5-679e-4d05-9f42-fa047663af50
+# ╠═2b674a78-f024-459b-b0c4-b4107730e7cd
+# ╟─c9583420-6b50-4afb-aa34-7b070fbd50d6
+# ╟─3d98552e-014c-4939-8e93-3b3536cd0898
+# ╟─edc542c7-8f70-4fa3-abcf-c9162ced69a0
+# ╟─05f271d7-8d3f-4aeb-917e-079defcd67e7
+# ╟─37c4966e-6a4d-4f9d-905b-a806cc8b3ba6
+# ╟─43fc389e-3daf-4a2d-b1c1-45dc10b53b49
+# ╟─d13d7df1-7970-4696-8159-a17ba2ab9b03
+# ╟─4f08d209-8956-4f7b-bfcb-51dbf52dc135
+# ╠═08a5e81b-72ad-4ed3-8bac-fa6d050c58c5
+# ╠═07a95924-d638-4b15-8b8a-b99af5254865
+# ╠═b8939ebd-81bb-4e73-a6f2-7e1fe6ee471a
+# ╠═f24dd12d-039c-470c-9d1c-5f84538c5e6a
+# ╠═894c5e01-b7da-4f98-9594-fb06ec5d6642
 # ╟─ffa8b715-8974-481a-98c5-b5f101b0dff6
 # ╠═661a485e-5721-4acc-96a4-39674ec27c1e
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
