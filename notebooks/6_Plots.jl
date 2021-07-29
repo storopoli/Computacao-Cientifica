@@ -13,18 +13,16 @@ begin
 	using CSV
 	using CategoricalArrays
 	using DataFrames
-	using Makie
 	using StatsPlots
 	using Plots
-	using WGLMakie
 	using Statistics: mean, std, cor
-	
+
 	# evitar conflitos com stack de DataFrames
 	import HTTP
 	
-	# para o WGLMakie
+	# WGLMakie
+	using WGLMakie
 	using JSServe
-	JSServe.Page(exportable=true)
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -45,6 +43,9 @@ md"""
 
 # ╔═╡ a1044598-e24a-4399-983e-3a906e9fae51
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
+
+# ╔═╡ 0f7b1d39-faa6-4265-a80b-2640e26fe860
+JSServe.Page()
 
 # ╔═╡ 6fdaea83-8716-4b7e-82c6-57086c7e8efa
 md"""
@@ -129,8 +130,8 @@ md"""
 	Ele tem uma galeria de gráficos chamada [BeautifulMakie](https://lazarusa.github.io/BeautifulMakie/). A imagem abaixo é um [exemplo](https://lazarusa.github.io/BeautifulMakie/ScattersLines/penguinsAoGsides/) retirado de lá.
 """
 
-# ╔═╡ 305176d0-330d-4e4c-833b-54ccd4dee816
-WGLMakie.scatter(randn(55),resolution=(500,500))
+# ╔═╡ 0142221c-8a80-455c-b31d-c7c347882917
+WGLMakie.scatter(1:4)
 
 # ╔═╡ ad112d99-2cd2-48de-8a85-2c7789600ef0
 begin
@@ -176,9 +177,6 @@ begin
     fig
 end
 
-# ╔═╡ 8ea0633c-ad50-4d31-acc1-6a1dbff96482
-fig
-
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -213,7 +211,6 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -228,7 +225,6 @@ CategoricalArrays = "~0.10.0"
 DataFrames = "~1.2.1"
 HTTP = "~0.9.12"
 JSServe = "~1.2.3"
-Makie = "~0.15.0"
 Plots = "~1.19.4"
 PlutoUI = "~0.7.9"
 StatsPlots = "~0.14.26"
@@ -599,9 +595,9 @@ version = "0.5.5"
 
 [[GeometryBasics]]
 deps = ["EarCut_jll", "IterTools", "LinearAlgebra", "StaticArrays", "StructArrays", "Tables"]
-git-tree-sha1 = "15ff9a14b9e1218958d3530cc288cf31465d9ae2"
+git-tree-sha1 = "4136b8a5668341e58398bb472754bff4ba0456ff"
 uuid = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
-version = "0.3.13"
+version = "0.3.12"
 
 [[Gettext_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "XML2_jll"]
@@ -1342,10 +1338,10 @@ uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
 version = "0.14.26"
 
 [[StructArrays]]
-deps = ["Adapt", "DataAPI", "StaticArrays", "Tables"]
-git-tree-sha1 = "000e168f5cc9aded17b6999a560b7c11dda69095"
+deps = ["Adapt", "DataAPI", "Tables"]
+git-tree-sha1 = "44b3afd37b17422a62aea25f04c1f7e09ce6b07f"
 uuid = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
-version = "0.6.0"
+version = "0.5.1"
 
 [[StructTypes]]
 deps = ["Dates", "UUIDs"]
@@ -1680,6 +1676,7 @@ version = "0.9.1+5"
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─a1044598-e24a-4399-983e-3a906e9fae51
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
+# ╠═0f7b1d39-faa6-4265-a80b-2640e26fe860
 # ╟─6fdaea83-8716-4b7e-82c6-57086c7e8efa
 # ╟─1d743482-02ae-4723-a35e-c23fcc79e2f5
 # ╟─5718597f-051e-42e8-ba85-d5ef5898f0f3
@@ -1690,9 +1687,8 @@ version = "0.9.1+5"
 # ╟─767225db-5dbe-4c5f-8c89-e7029f10c62b
 # ╟─b77198eb-92aa-4328-a194-ddce40362ebc
 # ╟─7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
-# ╠═305176d0-330d-4e4c-833b-54ccd4dee816
+# ╠═0142221c-8a80-455c-b31d-c7c347882917
 # ╠═ad112d99-2cd2-48de-8a85-2c7789600ef0
-# ╠═8ea0633c-ad50-4d31-acc1-6a1dbff96482
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
