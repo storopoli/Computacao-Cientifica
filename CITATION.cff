@@ -15,4 +15,5 @@ license: "CC-BY-SA-4.0"
 message: "Se você usa esse software, por favor cite-o com esses metadados."
 repository-code: "https://github.com/storopoli/Computacao-Cientifica"
 title: "Ciência de Dados e Computação Científica com Julia"
+version: 1.0.0
 ...
