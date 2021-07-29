@@ -10,6 +10,7 @@ begin
 	using PlutoUI
 	
 	using AlgebraOfGraphics
+	using CairoMakie
 	using CSV
 	using CategoricalArrays
 	using DataFrames
@@ -20,9 +21,8 @@ begin
 	# evitar conflitos com stack de DataFrames
 	import HTTP
 	
-	# WGLMakie
-	using WGLMakie
-	using JSServe
+	# evitar conflitos
+	using CairoMakie: density!
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -43,9 +43,6 @@ md"""
 
 # ╔═╡ a1044598-e24a-4399-983e-3a906e9fae51
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
-
-# ╔═╡ 0f7b1d39-faa6-4265-a80b-2640e26fe860
-JSServe.Page()
 
 # ╔═╡ 6fdaea83-8716-4b7e-82c6-57086c7e8efa
 md"""
@@ -122,19 +119,22 @@ md"""
 # ╔═╡ b77198eb-92aa-4328-a194-ddce40362ebc
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/12-parsecs.gif?raw=true", :width => 800)
 
+# ╔═╡ 2143fe13-c3f3-4a53-a92c-65e8d0263ce3
+begin
+	penguin_frequency = data(penguins) * frequency() * mapping(:species)
+	draw(penguin_frequency)
+end
+
 # ╔═╡ 7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
 md"""
 !!! tip "💡 BeautifulMakie"
     Um dos coautores do livro [Julia Data Science](https://juliadatascience.io) é o [Lázaro Alonso](https://lazarusa.github.io/Webpage/index.html).
 
-	Ele tem uma galeria de gráficos chamada [BeautifulMakie](https://lazarusa.github.io/BeautifulMakie/). A imagem abaixo é um [exemplo](https://lazarusa.github.io/BeautifulMakie/ScattersLines/penguinsAoGsides/) retirado de lá.
+	Ele tem uma galeria de gráficos chamada [BeautifulMakie](https://lazarusa.github.io/BeautifulMakie/). As imagem abaixos são exemplos retirado de lá.
 """
 
-# ╔═╡ 0142221c-8a80-455c-b31d-c7c347882917
-WGLMakie.scatter(1:4)
-
 # ╔═╡ ad112d99-2cd2-48de-8a85-2c7789600ef0
-begin
+let
 	ychi = filter(:species => x -> x == "Chinstrap", penguins)[!,:bill_depth_mm]
     yade = filter(:species => x -> x == "Adelie", penguins)[!,:bill_depth_mm]
     ygen = filter(:species => x -> x == "Gentoo", penguins)[!,:bill_depth_mm]
@@ -157,21 +157,63 @@ begin
     ax2 = Axis(axP[1,1])
 
     ax3 = Axis(fig[2,2],xgridstyle=:dash,ygridstyle=:dash,xtickalign=1, ytickalign=1)
-    chin = WGLMakie.density!(ax3, ychi, direction = :y, color =("#8C00EC", 0.25),
+    chin = density!(ax3, ychi, direction = :y, color =("#8C00EC", 0.25),
             strokewidth = 1, strokecolor = "#8C00EC")
-    ade = WGLMakie.density!(ax3, yade, direction = :y, color =("#FC7808", 0.25),
+    ade = density!(ax3, yade, direction = :y, color =("#FC7808", 0.25),
             strokewidth = 1, strokecolor = "#FC7808")
-    gen = WGLMakie.density!(ax3, ygen, direction = :y, color =("#107A78", 0.25),
+    gen = density!(ax3, ygen, direction = :y, color =("#107A78", 0.25),
             strokewidth = 1, strokecolor = "#107A78")
     leg = Legend(fig, [chin,ade,gen], ["Chinstrap", "Adelie", "Gentoo"],)
     fig[1,2] = leg
     limits!(ax2, 30, 60, 10, 25)
-    WGLMakie.xlims!(ax1, 30,60)
-    WGLMakie.ylims!(ax3, 10, 25)
+    CairoMakie.xlims!(ax1, 30,60)
+    CairoMakie.ylims!(ax3, 10, 25)
     hidexdecorations!(ax1, ticks = false, grid = false)
     hideydecorations!(ax3, ticks = false, grid = false)
     hidespines!(ax3, :b,:r,:t)
     hidespines!(ax1, :l,:r,:t)
+    colsize!(fig.layout, 1, Relative(3/4))
+    rowsize!(fig.layout, 1, Relative(1/4))
+    fig
+end
+
+# ╔═╡ 266b84f9-978b-47dd-9554-f3e7fabf2406
+let
+    ychi = filter(:species => x -> x == "Chinstrap", penguins)[!,:bill_depth_mm]
+    yade = filter(:species => x -> x == "Adelie", penguins)[!,:bill_depth_mm]
+    ygen = filter(:species => x -> x == "Gentoo", penguins)[!,:bill_depth_mm]
+
+    penguin_bill = data(penguins) * mapping( :bill_length_mm  => "bill length mm",
+        :bill_depth_mm  => "bill depth mm")
+
+    layers = AlgebraOfGraphics.density() * visual(Contour) + linear() +
+                visual(alpha = 0.5, markersize = 15)
+    aesPoints = penguin_bill * layers * mapping(color = :species, marker = :species,)
+    aesHist = data(penguins) * mapping(:bill_length_mm => "bill length mm",
+        color = :species, stack = :species) * AlgebraOfGraphics.histogram(;bins = 20)
+
+    estilo = (color=["#FC7808", "#8C00EC", "#107A78"],
+                marker=[:circle, :utriangle, :rect])
+
+    layer = AlgebraOfGraphics.density() * visual(Wireframe, linewidth=0.05)
+    plt3d = penguin_bill * layer * mapping(color = :species)
+    # the actual plot with AoG and Makie
+    set_aog_theme!()
+    fig = Figure(; resolution = (700, 700))
+    aes3d = draw!(fig[2,1], plt3d; axis = (type = Axis3,), palettes = estilo)
+    aesH = draw!(fig[1,1], aesHist, palettes = estilo)
+    ax1 = Axis(aesH[1,1])
+    ax2 = Axis(aes3d[1,1])
+
+    ax3 = Axis(fig[2,2], ylabel = "bill depth mm")
+    chin = density!(ax3, ychi, direction = :y, color =("#8C00EC", 0.25),
+        strokewidth = 1, strokecolor = "#8C00EC")
+    ade = density!(ax3, yade, direction = :y, color =("#FC7808", 0.25),
+        strokewidth = 1, strokecolor = "#FC7808")
+    gen = density!(ax3, ygen, direction = :y, color =("#107A78", 0.25),
+        strokewidth = 1, strokecolor = "#107A78")
+    leg = Legend(fig, [chin,ade,gen], ["Chinstrap", "Adelie", "Gentoo"],)
+    fig[1,2] = leg
     colsize!(fig.layout, 1, Relative(3/4))
     rowsize!(fig.layout, 1, Relative(1/4))
     fig
@@ -206,29 +248,27 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
-JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
-WGLMakie = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
 
 [compat]
 AlgebraOfGraphics = "~0.4.9"
 CSV = "~0.8.5"
+CairoMakie = "~0.6.3"
 CategoricalArrays = "~0.10.0"
 DataFrames = "~1.2.1"
 HTTP = "~0.9.12"
-JSServe = "~1.2.3"
 Plots = "~1.19.4"
 PlutoUI = "~0.7.9"
 StatsPlots = "~0.14.26"
-WGLMakie = "~0.4.4"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -320,6 +360,18 @@ git-tree-sha1 = "b83aa3f513be680454437a0eee21001607e5d983"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 version = "0.8.5"
 
+[[Cairo]]
+deps = ["Cairo_jll", "Colors", "Glib_jll", "Graphics", "Libdl", "Pango_jll"]
+git-tree-sha1 = "d0b3f8b4ad16cb0a2988c6788646a5e6a17b6b1b"
+uuid = "159f3aea-2a34-519c-b102-8c37f9878175"
+version = "1.0.5"
+
+[[CairoMakie]]
+deps = ["Base64", "Cairo", "Colors", "FFTW", "FileIO", "FreeType", "GeometryBasics", "LinearAlgebra", "Makie", "SHA", "StaticArrays"]
+git-tree-sha1 = "7d37b0bd71e7f3397004b925927dfa8dd263439c"
+uuid = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+version = "0.6.3"
+
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
 git-tree-sha1 = "e2f47f6d8337369411569fd45ae5753ca10394c6"
@@ -343,12 +395,6 @@ deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "Printf", "SparseArray
 git-tree-sha1 = "75479b7df4167267d75294d14b58244695beb2ac"
 uuid = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 version = "0.14.2"
-
-[[CodecZlib]]
-deps = ["TranscodingStreams", "Zlib_jll"]
-git-tree-sha1 = "ded953804d019afa9a3f98981d99b33e3db7b6da"
-uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
-version = "0.7.0"
 
 [[ColorBrewer]]
 deps = ["Colors", "JSON", "Test"]
@@ -617,6 +663,12 @@ git-tree-sha1 = "2c1cf4df419938ece72de17f368a021ee162762e"
 uuid = "a2bd30eb-e257-5431-a919-1863eab51364"
 version = "1.1.0"
 
+[[Graphite2_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "344bf40dcab1073aca04aa0df4fb092f920e4011"
+uuid = "3b182d85-2403-5c21-9c21-1e1f0cc25472"
+version = "1.3.14+0"
+
 [[GridLayoutBase]]
 deps = ["GeometryBasics", "InteractiveUtils", "Match", "Observables"]
 git-tree-sha1 = "d44945bdc7a462fa68bb847759294669352bd0a4"
@@ -634,11 +686,11 @@ git-tree-sha1 = "c6a1fff2fd4b1da29d3dccaffb1e1001244d844e"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 version = "0.9.12"
 
-[[Hyperscript]]
-deps = ["Test"]
-git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
-uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
-version = "0.0.4"
+[[HarfBuzz_jll]]
+deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
+git-tree-sha1 = "8a954fed8ac097d5be04921d595f741115c1b2ad"
+uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
+version = "2.8.1+0"
 
 [[IfElse]]
 git-tree-sha1 = "28e837ff3e7a6c3cdb252ce49fb412c8eb3caeef"
@@ -656,18 +708,6 @@ deps = ["FileIO", "Netpbm", "PNGFiles", "TiffImages", "UUIDs"]
 git-tree-sha1 = "d067570b4d4870a942b19d9ceacaea4fb39b69a1"
 uuid = "82e4d734-157c-48bb-816b-45c225c6df19"
 version = "0.5.6"
-
-[[ImageMagick]]
-deps = ["FileIO", "ImageCore", "ImageMagick_jll", "InteractiveUtils", "Libdl", "Pkg", "Random"]
-git-tree-sha1 = "5bc1cb62e0c5f1005868358db0692c994c3a13c6"
-uuid = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
-version = "1.2.1"
-
-[[ImageMagick_jll]]
-deps = ["JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "1c0a2295cca535fabaf2029062912591e9b61987"
-uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
-version = "6.9.10-12+3"
 
 [[IndirectArrays]]
 git-tree-sha1 = "c2a145a145dc03a7620af1444e0264ef907bd44f"
@@ -740,18 +780,6 @@ deps = ["Dates", "Mmap", "Parsers", "Unicode"]
 git-tree-sha1 = "81690084b6198a2e1da36fcfda16eeca9f9f24e4"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.1"
-
-[[JSON3]]
-deps = ["Dates", "Mmap", "Parsers", "StructTypes", "UUIDs"]
-git-tree-sha1 = "e13a411f59a3f9ad25378b25a40ea08c2ded02e7"
-uuid = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
-version = "1.9.0"
-
-[[JSServe]]
-deps = ["Base64", "CodecZlib", "Colors", "HTTP", "Hyperscript", "JSON3", "LinearAlgebra", "Markdown", "MsgPack", "Observables", "SHA", "Sockets", "Tables", "Test", "UUIDs", "WebSockets", "WidgetsBase"]
-git-tree-sha1 = "91101a4b8ac8eefeed6ca8eb4f663fc660e4d9f9"
-uuid = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
-version = "1.2.3"
 
 [[JpegTurbo_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -961,12 +989,6 @@ version = "0.3.3"
 [[MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 
-[[MsgPack]]
-deps = ["Serialization"]
-git-tree-sha1 = "a8cbf066b54d793b9a48c5daa5d586cf2b5bd43d"
-uuid = "99f44e22-a591-53d1-9472-aa23ef4bd671"
-version = "1.1.0"
-
 [[MultivariateStats]]
 deps = ["Arpack", "LinearAlgebra", "SparseArrays", "Statistics", "StatsBase"]
 git-tree-sha1 = "8d958ff1854b166003238fe191ec34b9d592860a"
@@ -1066,6 +1088,12 @@ deps = ["OffsetArrays"]
 git-tree-sha1 = "0fa5e78929aebc3f6b56e1a88cf505bb00a354c4"
 uuid = "5432bcbf-9aad-5242-b902-cca2824c8663"
 version = "0.5.8"
+
+[[Pango_jll]]
+deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "9a336dee51d20d1ed890c4a8dca636e86e2b76ca"
+uuid = "36c8627f-9965-5494-a995-c6b170f724f3"
+version = "1.42.4+10"
 
 [[Parsers]]
 deps = ["Dates"]
@@ -1239,12 +1267,6 @@ version = "1.3.5"
 
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
-
-[[ShaderAbstractions]]
-deps = ["ColorTypes", "FixedPointNumbers", "GeometryBasics", "LinearAlgebra", "Observables", "StaticArrays", "StructArrays", "Tables"]
-git-tree-sha1 = "63c6b8796d28a1f942c29659e5519e2ef9ef4a59"
-uuid = "65257c39-d410-5151-9873-9b3e5be5013e"
-version = "0.2.7"
 
 [[SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
@@ -1424,12 +1446,6 @@ git-tree-sha1 = "53915e50200959667e78a92a418594b428dffddf"
 uuid = "1cfade01-22cf-5700-b092-accc4b62d6e1"
 version = "0.4.1"
 
-[[WGLMakie]]
-deps = ["Colors", "FileIO", "FreeTypeAbstraction", "GeometryBasics", "Hyperscript", "ImageMagick", "JSServe", "LinearAlgebra", "Makie", "Observables", "ShaderAbstractions", "StaticArrays"]
-git-tree-sha1 = "c12ec4aaa701032f10df9abc2499da37c08dca79"
-uuid = "276b4fcb-3e11-5398-bf8b-a0c2d153d008"
-version = "0.4.4"
-
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
 git-tree-sha1 = "3e61f0b86f90dacb0bc0e73a0c5a83f6a8636e23"
@@ -1442,23 +1458,11 @@ git-tree-sha1 = "2839f1c1296940218e35df0bbb220f2a79686670"
 uuid = "2381bf8a-dfd0-557d-9999-79630e7b1b91"
 version = "1.18.0+4"
 
-[[WebSockets]]
-deps = ["Base64", "Dates", "HTTP", "Logging", "Sockets"]
-git-tree-sha1 = "f91a602e25fe6b89afc93cf02a4ae18ee9384ce3"
-uuid = "104b5d7c-a370-577a-8038-80a2059c5097"
-version = "1.5.9"
-
 [[Widgets]]
 deps = ["Colors", "Dates", "Observables", "OrderedCollections"]
 git-tree-sha1 = "eae2fbbc34a79ffd57fb4c972b08ce50b8f6a00d"
 uuid = "cc8bc4a8-27d6-5769-a93b-9d913e69aa62"
 version = "0.6.3"
-
-[[WidgetsBase]]
-deps = ["Observables"]
-git-tree-sha1 = "c1ef6e02bc457c3b23aafc765b94c3dcd25f174d"
-uuid = "eead4739-05f7-45a1-878c-cee36b57321c"
-version = "0.1.3"
 
 [[WoodburyMatrices]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -1676,7 +1680,6 @@ version = "0.9.1+5"
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─a1044598-e24a-4399-983e-3a906e9fae51
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
-# ╠═0f7b1d39-faa6-4265-a80b-2640e26fe860
 # ╟─6fdaea83-8716-4b7e-82c6-57086c7e8efa
 # ╟─1d743482-02ae-4723-a35e-c23fcc79e2f5
 # ╟─5718597f-051e-42e8-ba85-d5ef5898f0f3
@@ -1686,9 +1689,10 @@ version = "0.9.1+5"
 # ╟─4238a671-6d85-481e-a67d-2176813f5795
 # ╟─767225db-5dbe-4c5f-8c89-e7029f10c62b
 # ╟─b77198eb-92aa-4328-a194-ddce40362ebc
+# ╠═2143fe13-c3f3-4a53-a92c-65e8d0263ce3
 # ╟─7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
-# ╠═0142221c-8a80-455c-b31d-c7c347882917
 # ╠═ad112d99-2cd2-48de-8a85-2c7789600ef0
+# ╠═266b84f9-978b-47dd-9554-f3e7fabf2406
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
