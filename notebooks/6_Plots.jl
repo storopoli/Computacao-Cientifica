@@ -272,13 +272,13 @@ Plots.plot(rand(10, 4))
 md"""
 ## *Backends*
 
-* `GR`: O que é o padrão e o que eu estou usando. Função `gr()`.
+* **`GR`**: O que é o padrão e o que eu estou usando. Função `gr()`.
 
 
-* `PGFPlotsX`: converte em $\LaTeX$ com o [`pgfplots`](https://ctan.org/pkg/pgfplots). Útil para publicação. Função `pgfplotsx()`.
+* **`PGFPlotsX`**: converte em $\LaTeX$ com o [`pgfplots`](https://ctan.org/pkg/pgfplots). Útil para publicação. Função `pgfplotsx()`.
 
 
-* `Plotly`: muito bom para interatividade, usa a biblioteca JavaScript [`PlotlyJS`](https://plotly.com/javascript/) no navegador. Função `plotlyjs()`.
+* **`Plotly`**: muito bom para interatividade, usa a biblioteca JavaScript [`PlotlyJS`](https://plotly.com/javascript/) no navegador. Função `plotlyjs()`.
 """
 
 # ╔═╡ e3444c25-5e2d-4525-abe3-0b24a6b4f56d
@@ -549,6 +549,11 @@ Plots.plot(
 	tickfont=font(6)
 )
 
+# ╔═╡ 2b1c1ff7-6b8b-47dd-aa1f-bdbc039180fb
+md"""
+## Temas
+"""
+
 # ╔═╡ 2ec69707-58df-4ac4-8277-8c51defab57e
 md"""
 !!! tip "💡 Temas"
@@ -559,6 +564,18 @@ md"""
 
 # ╔═╡ 3f92bf5f-8b45-471c-b53c-cad06f490afe
 Plots.showtheme(:dark)
+
+# ╔═╡ 2daed1c2-1c82-4651-9c45-827f188efceb
+md"""
+!!! info "💁 Animações"
+    É possível fazer animações muito fácil em Julia com `Plots.jl`. Mas não vou cobrir aqui. Veja a [documentação](http://docs.juliaplots.org/latest/animations/).
+"""
+
+# ╔═╡ dc9b9dae-5cbf-4de7-ae5f-5e9d905ce361
+md"""
+!!! info "💁 PlotsGallery.jl"
+    Não deixe de ver os gráficos da [`PlotsGallery.jl`](https://goropikari.github.io/PlotsGallery.jl/)
+"""
 
 # ╔═╡ 61f56d4d-053e-4f37-b8a7-9434dd27ba4b
 md"""
@@ -2202,7 +2219,7 @@ version = "0.9.1+5"
 # ╠═21f2fd59-f74d-4fd4-a645-24066643d4cc
 # ╟─36783771-3729-4fd3-893d-2ca7cab1777f
 # ╠═0378f4c1-1d4b-4255-a545-22e44d73426e
-# ╠═069fc1e2-d273-41f2-bae0-c9610b5b46fa
+# ╟─069fc1e2-d273-41f2-bae0-c9610b5b46fa
 # ╟─e3444c25-5e2d-4525-abe3-0b24a6b4f56d
 # ╟─57217a63-f17e-4dc7-b3fd-d2628a74f1bd
 # ╠═59a00010-ec1d-4c75-8645-3b7cae615bf9
@@ -2241,8 +2258,11 @@ version = "0.9.1+5"
 # ╟─12ba0fd1-47b4-4dd8-ade2-a4da178f101d
 # ╠═32f7c8d4-b8a8-48ca-9afb-e10aa8e93775
 # ╠═13e090db-9913-438e-ae7c-45b484845b7a
+# ╟─2b1c1ff7-6b8b-47dd-aa1f-bdbc039180fb
 # ╟─2ec69707-58df-4ac4-8277-8c51defab57e
 # ╠═3f92bf5f-8b45-471c-b53c-cad06f490afe
+# ╟─2daed1c2-1c82-4651-9c45-827f188efceb
+# ╟─dc9b9dae-5cbf-4de7-ae5f-5e9d905ce361
 # ╟─61f56d4d-053e-4f37-b8a7-9434dd27ba4b
 # ╠═0468bac2-5415-4416-bd92-899b1e9caa94
 # ╠═afff32c5-15cf-49ce-828f-1cc8142ad86f
