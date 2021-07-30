@@ -11,9 +11,11 @@ begin
 	
 	using AlgebraOfGraphics
 	using CairoMakie
+	using Colors
 	using CSV
 	using CategoricalArrays
 	using DataFrames
+	using LaTeXStrings
 	using StatsPlots
 	using Plots
 	using Statistics: mean, std, cor
@@ -23,6 +25,10 @@ begin
 	
 	# evitar conflitos
 	using CairoMakie: density!
+	
+	# Seed
+	using Random: seed!
+	seed!(123)
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -44,9 +50,51 @@ md"""
 # ╔═╡ a1044598-e24a-4399-983e-3a906e9fae51
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ 71876e1a-dd30-44e4-943f-af4582b74f6d
+md"""
+!!! danger "⚠️ Conflitos de Pacote"
+    Notem que eu carreguei `Plots.jl`, `StatsPlots.jl`, `AlgebraOfGraphics.jl` e `CairoMakie.jl` então eu vou ter que resolver muitos **conflitos** com:
+
+	```julia
+	Pacote.função()
+	```
+
+	Provavelmente você não tenha que fazer isso no dia-a-dia.
+"""
+
+# ╔═╡ 038653f4-7d94-4aed-92ef-c1258db95146
+md"""
+## JuliaPlots
+
+Aqui vamos falar dos pacotes de [`JuliaPlots`](https://github.com/JuliaPlots):
+
+* [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl): biblioteca original e mais utilizada de plotagem. Muito poderosa e simples de usar.
+
+
+* [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl): interface de `Plots.jl` com `DataFrame`s.
+
+
+* [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl): nova biblioteca que possui maiores custoomizações e mais poderosa que `Plots.jl`.
+
+
+* [`AlgebraOfGraphics`](https://github.com/JuliaPlots/AlgebraOfGraphics.jl): interface de `Makie.jl` com `DataFrame`s, mas muito mais poderosa pois usa o [Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448) (estilo `ggplot2`).
+"""
+
+# ╔═╡ c98b5ef9-8cce-448e-8a8d-1cd1e94fb5cd
+md"""
+!!! tip "💡 O quê usar?"
+    Uma dica pessoal.
+
+	`Plots.jl` para coisas **corriqueiras** de dia-a-dia.
+
+	`AlgebraOfGraphics.jl` para coisas envolvendo **ciência de dados**, dados tabulares ou **estatística**.
+
+	`Makie.jl` para **publicações** e coisas sérias ($\LaTeX$).
+"""
+
 # ╔═╡ 6fdaea83-8716-4b7e-82c6-57086c7e8efa
 md"""
-## Datasets Utilizados
+# Datasets Utilizados
 
 * `palmerpenguins`
 * `starwars`
@@ -54,7 +102,7 @@ md"""
 
 # ╔═╡ 1d743482-02ae-4723-a35e-c23fcc79e2f5
 md"""
-### Dataset `palmerpenguins`
+## Dataset `palmerpenguins`
 
 É um dataset aberto sobre pinguins que foram encontrados próximos da estação de Palmer na Antártica.
 
@@ -90,7 +138,7 @@ dropmissing!(penguins) # 11 missings
 
 # ╔═╡ 4238a671-6d85-481e-a67d-2176813f5795
 md"""
-### Dataset `starwars`
+## Dataset `starwars`
 
 87 personagens e 14 variáveis:
 
@@ -118,6 +166,447 @@ md"""
 
 # ╔═╡ b77198eb-92aa-4328-a194-ddce40362ebc
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/12-parsecs.gif?raw=true", :width => 800)
+
+# ╔═╡ 43c658ee-f378-450a-9d7c-97b603b56e62
+md"""
+# [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl)
+
+A primeira que vamos cobrir é [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl).
+
+```julia
+using Plots
+```
+
+`Plots.jl` possui **duas** funções principais:
+
+* **`plot`**: retorna um `plotobj`.
+* **`plot!`**: altera um `plotobj` *inplace*.
+"""
+
+# ╔═╡ b447e5e9-6647-46cd-b793-bf2ec2025a12
+p1 = Plots.plot(1:10)
+
+# ╔═╡ 670086e1-fcb5-4fd6-9685-7dbbfc50080e
+Plots.plot!(p1, 2:5)
+
+# ╔═╡ 0f79aeb6-b31f-4f9c-9e0c-2718fe650619
+md"""
+!!! tip "💡 O que está acontecendo aqui?"
+    Simples, o intervalo `1:10` é convertido para uma `Array` e `Plots.jl` entende que isso é uma série a ser plotada no eixo vertical (eixo-`y`) e então ele cria implicitamente uma série para o eixo horizontal (eixo-`x`) começando em `1` e com o mesmo tamanho de `1:10`. Logo, eixo-`y` `1:10` e eixo-`x` `1:10`.
+
+	No segundo exemplo acontece o mesmo, mas com `2:5` no eixo-`y` e `1:4` no eixo-`x`.
+"""
+
+# ╔═╡ b0953f8a-0393-4352-83d2-cd40c06d90a9
+md"""
+## `seriestype`
+
+As duas funções `plots` e `plots!` tem um argumento *keyword* chamado **`seriestype`** que define o **tipo de gráfico que você quer plotar**. Por padrão é `:line`.
+
+Mas temos outros (muitos outros):
+"""
+
+# ╔═╡ 8df33c6f-654d-4fe9-882f-cc7a17044ac4
+DataFrame(
+	series=Plots.all_seriestypes()
+)
+
+# ╔═╡ 3adba103-7866-46e2-b26f-12476d9147cc
+Plots.plot(1:10; seriestype=:scatter)
+
+# ╔═╡ 399f99e1-e4f7-4c9b-ba0c-c120cab5e4e9
+md"""
+Na verdade `Plots.jl` exporta todos esses como funções:
+"""
+
+# ╔═╡ a85cd5f2-cc1d-42e2-993a-7914a539c81e
+p2 = Plots.scatter(1:10)
+
+# ╔═╡ 71895560-48fc-4005-8898-b27d140ea468
+md"""
+E há versões com `!`:
+"""
+
+# ╔═╡ 368290eb-3968-4a9e-9d52-8790cf1b46a4
+Plots.scatter!(p2, 2:5)
+
+# ╔═╡ 288748f6-5245-4aae-a6ac-920158f1d9f6
+md"""
+!!! info "💁 Seriestype como Funções"
+    Para todas as seriestype há uma função `seriestype` que retorna um `plotobj` e uma função `seriestype!` que altera um `plotobj` *inplace*.
+"""
+
+# ╔═╡ 03ace772-d78e-4cc4-8e16-b650f16f7e9d
+md"""
+## Input Data
+
+Que tipos de dados podem ser fornecidos ao `Plots.jl`?
+
+Para `Plots.jl` inputs são argumentos posicionais e não argumento *keyword*:
+
+* **`plot(y)`**: trata `y` como input para o eixo-`y` e replica um `UnitRange` de `1:length(y)` como eixo-`x`.
+
+
+* **`plot(x, y)`**: plot 2-D "vanilla".
+
+
+* **`plot(x, y, z)`**: plot 3-D.
+
+A maneira mais fácil é usar `Vector`s (`Array`s 1-D):
+"""
+
+# ╔═╡ 21f2fd59-f74d-4fd4-a645-24066643d4cc
+Plots.scatter([1, 2, 3], [4, 5, 6])
+
+# ╔═╡ 36783771-3729-4fd3-893d-2ca7cab1777f
+md"""
+### Colunas são séries
+
+Se você passar uma matriz (`m` x `n`) `Plots.jl` criará `n` séries com `m` observações.
+"""
+
+# ╔═╡ 0378f4c1-1d4b-4255-a545-22e44d73426e
+Plots.plot(rand(10, 4))
+
+# ╔═╡ 069fc1e2-d273-41f2-bae0-c9610b5b46fa
+md"""
+## *Backends*
+
+* `GR`: O que é o padrão e o que eu estou usando. Função `gr()`.
+
+
+* `PGFPlotsX`: converte em $\LaTeX$ com o [`pgfplots`](https://ctan.org/pkg/pgfplots). Útil para publicação. Função `pgfplotsx()`.
+
+
+* `Plotly`: muito bom para interatividade, usa a biblioteca JavaScript [`PlotlyJS`](https://plotly.com/javascript/) no navegador. Função `plotlyjs()`.
+"""
+
+# ╔═╡ e3444c25-5e2d-4525-abe3-0b24a6b4f56d
+md"""
+!!! danger "⚠️ PGFPlotsX vs PGFPlots"
+    Cuidado `PGFPlots.jl` está sendo **deprecado** e **substituído** por `PGFPlotsX.jl`.
+"""
+
+# ╔═╡ 57217a63-f17e-4dc7-b3fd-d2628a74f1bd
+md"""
+## Atributos
+
+Atributos são **maneiras de customizar os seus gráficos**.
+
+São muitos eu nunca sei qual usar e eu sempre consulto a [documentação](http://docs.juliaplots.org/latest/attributes/) ou uso a função `plotattr` passando:
+
+* **`:Plots`**: para atributos que se aplicam ao **plot todo**, e.g. `dpi`, `size`.
+
+
+* **`:Series`**: para atributos que se aplicam à **séries**, e.g. `linecolor`, `markersize`.
+
+
+* **`:Subplot`**: para atributos que se aplicam à **subplots**.
+
+
+* **`:Axis`**: para atributos que se aplicam aos **eixos `x`, `y` e `z`**, e.g. `xticks`, `scales`.
+"""
+
+# ╔═╡ 59a00010-ec1d-4c75-8645-3b7cae615bf9
+with_terminal() do
+	plotattr(:Plot)
+end
+
+# ╔═╡ e379b2e7-724e-46e2-b7e7-995e181bf816
+with_terminal() do
+	plotattr(:Series)
+end
+
+# ╔═╡ a8b97406-54f0-4f5a-b3c9-fc465f6a6b38
+with_terminal() do
+	plotattr(:Subplot)
+end
+
+# ╔═╡ a0dabd50-5a90-4cc0-a20f-e4566a464123
+with_terminal() do
+	plotattr(:Axis)
+end
+
+# ╔═╡ 329b9f58-1889-4b4a-8a53-c564648a4d48
+Plots.plot(
+	rand(10, 4);
+	lw=3,
+	label=["1" "dois" "drei" "four"],
+	legend=:outerbottomright,
+	xticks=1:10,
+	yticks=0.1:0.1:1.0,
+	yformatter=(x -> string(x) * "cm"),
+	xrotation=45,
+	dpi=300
+)
+
+# ╔═╡ 5cf609a9-320c-44a7-995a-096c16862e4f
+md"""
+## Cores e Palhetas
+"""
+
+# ╔═╡ 2d6a655e-6f2b-4521-b5de-7aa7dcc06d63
+md"""
+!!! tip "💡 Fundamentals of Data Visualization"
+    Um livro que eu recomendo muito (em especial quando falando de cores e palhetas de cores é o livro [Fundamentals of Data Visualization do Claus Wilke](https://clauswilke.com/dataviz). Em especial veja o capítulo 4 e 19.
+
+$(Resource("https://clauswilke.com/dataviz/cover.png", :width => 300, :align => "center"))
+"""
+
+# ╔═╡ d5cfb8bc-bf52-4f2b-9f5b-c1ca35586e0e
+md"""
+Tem [várias maneiras de incorporar ou editar cores](http://docs.juliaplots.org/latest/generated/colorschemes/), mas eu geralmente uso o **argumento `palette`**:
+"""
+
+# ╔═╡ a3267a72-8322-474e-af11-e3cfd3b9727e
+Plots.plot(
+	rand(10, 4);
+	lw=3,
+	palette=:default
+)
+
+# ╔═╡ 2ab30ceb-31a3-4b90-a6df-816e1c2e60ef
+md"""
+### Palhetas Interessantes
+
+* **qualitativa**: coisas discretas. Eu gosto muito das palhetas do [ColorBrewer](https://colorbrewer2.org/). Em especial o `:Set1`: `:Set1_3` até `:Set1_9`.
+
+
+* **sequencial**: coisas contínuas. `:blues`, `:reds`, `:greens` e `:heat`
+
+
+* **divergente**: coisas contínuas. `:cividis` (excelente para acessibilidade), `:inferno`, `:magma` e `:viridis`. (todos do `matplotlib`)
+"""
+
+# ╔═╡ e57518d7-6a3e-4756-89be-86694ac1a1f0
+Plots.plot(
+	rand(10, 4);
+	lw=3,
+	palette=:Set1_4
+)
+
+# ╔═╡ 96c2e80b-60af-41c6-a2f3-1e03a0e17735
+function f(x, y)
+    r = sqrt(x^2 + y^2)
+    return cos(r) / (1 + r)
+end
+
+# ╔═╡ 7ae76e18-5afb-423f-9578-8a11a9e32438
+x_pallete = range(0, 2π, length = 30)
+
+# ╔═╡ 56ef1845-1a41-4b4e-8b18-1732f11b864a
+Plots.heatmap(x_pallete, x_pallete, f;
+	c=:inferno
+)
+
+# ╔═╡ 046c5fee-c1bb-4002-aa91-da98584b8358
+Plots.heatmap(x_pallete, x_pallete, f;
+	c=:cividis
+)
+
+# ╔═╡ 42c8f6a7-30d1-44e4-9bb7-4d301c6c9d2d
+Plots.heatmap(x_pallete, x_pallete, f;
+	c=:blues
+)
+
+# ╔═╡ fccf95bd-62be-4709-b569-d1bccd8e45ff
+md"""
+### Construção de Palhetas
+"""
+
+# ╔═╡ aa407b6a-6ee4-4d1b-be4b-1b8411abc1a8
+md"""
+!!! tip "💡 cgrad"
+    Você pode converter qualquer palheta em **gradiente** (contínua) com a função **`grad`**. Até misturar as cores em um gradiente único.
+"""
+
+# ╔═╡ 8b562691-03f6-4d0b-9b5d-bb583a8896d9
+Plots.cgrad([:orange, :blue])
+
+# ╔═╡ 1a2222d8-9734-4de5-97ed-4d0288299bc7
+Plots.cgrad(:thermal, rev = true)
+
+# ╔═╡ da380258-0f0f-41ce-bb15-ae205ddb3056
+Plots.cgrad(:Set1_9) # cuidado com coisas qualitativas, não fica muito bom...
+
+# ╔═╡ 7fc6ca38-bf40-491d-80f0-c1052fec667e
+md"""
+### Cores do Logo de Julia
+
+É claro que não faltou nossa queridinha. 
+
+Está no pacote [`Colors.jl`](https://github.com/JuliaGraphics/Colors.jl):
+
+```julia
+using Colors
+```
+"""
+
+# ╔═╡ b1867d6b-b425-46b0-be95-3e58c7dad4aa
+logocolors = Colors.JULIA_LOGO_COLORS
+
+# ╔═╡ d22e1a79-aa3f-4101-a02f-379104d21e21
+Plots.scatter(
+	[1, 1.5, 2], [1, 2.5, 1];
+	ms=60,
+	c=[logocolors.red, logocolors.green, logocolors.purple],
+	xlims=(0, 3), ylims=(0, 3.5),
+	xaxis=false, yaxis=false,
+	yticks=false, xticks=false,
+	grid=false,
+	title="Ta Dáaaaa",
+	label=false
+)
+
+# ╔═╡ f83aa994-3d5d-4f6a-b88f-f68989693760
+md"""
+## Layout
+
+É possível controlar o **layout e o posicionamento dos subgráficos _subplots_**.
+
+Para layouts simples é só passar um `Integer` no argumento `layout`:
+"""
+
+# ╔═╡ ef3da092-0e34-4d20-b098-3f3197cec0f1
+Plots.plot(
+	rand(100, 4);
+	layout=4
+)
+
+# ╔═╡ 516ae969-dbc6-4180-98fa-4f01b96548c7
+begin
+	x = 1:10; y = rand(10, 4);
+	
+	p_1 = Plots.plot(x, y)
+	p_2 = Plots.scatter(x, y)
+	p_3 = Plots.plot(x, y; xlabel="Esse aqui tem label", lw=3, title="Subtítulo")
+	p_4 = Plots.histogram(x, y; alpha=0.5)
+	
+	Plots.plot(p_1, p_2, p_3, p_4; layout=4, legend=false)
+end
+
+# ╔═╡ 818dc824-84cb-4cdb-883e-5e4692232fb1
+md"""
+Para layouts simples um pouco mais customizados em *grid*, passe uma `Tuple` de `Integer` especificando o tamanho o grid:
+"""
+
+# ╔═╡ 66922260-8411-4868-ad50-3e399477a1ac
+Plots.plot(
+	rand(100, 4);
+	layout=(4, 1)  # 4x1 Grid
+)
+
+# ╔═╡ ef7f506e-dd0c-4708-90a5-5768477475ea
+md"""
+Para layouts complexos, voce pode customizar com o construtor `grid(...)`:
+"""
+
+# ╔═╡ 5adf46ff-b94d-4d8a-9264-585b6e2425d0
+Plots.plot(
+	rand(100, 4);
+	layout=grid(4, 1, heights=[0.1 ,0.4, 0.4, 0.1])
+)
+
+# ╔═╡ dd4ee3ad-5da2-4e4a-883a-87dde75ea06c
+md"""
+Você consegue adicionar títulos e rótulos facilmente com `title` e `label`:
+"""
+
+# ╔═╡ 00fdd825-b00e-4205-85ca-fb9a434ccc8f
+Plots.plot(
+	rand(100, 4);
+	layout=4,
+	title=["1" "2" "3" "4"],
+	label=["a" "b" "c" "d"]
+)
+
+# ╔═╡ 12ba0fd1-47b4-4dd8-ade2-a4da178f101d
+md"""
+### Layouts Avançados com `@layout`
+
+O macro `@layout` é a maneira mais fácil de definir layouts complexos, usando a construção de `Array` multidimensional de Julia como base para uma sintaxe de layout personalizado.
+
+O dimensionamento preciso pode ser obtido com colchetes `{}`, caso contrário, o espaço livre é dividido **igualmente** entre as áreas de plotagem em subplotagens.
+
+Exemplo:
+"""
+
+# ╔═╡ 32f7c8d4-b8a8-48ca-9afb-e10aa8e93775
+l = @layout [
+    a{0.3w} [grid(3,3)   # 1 linha
+             b{0.2h}  ]  # 2 colunas
+]
+
+# ╔═╡ 13e090db-9913-438e-ae7c-45b484845b7a
+Plots.plot(
+    rand(10, 11);
+    layout=l,
+	legend=false,
+	seriestype=[:bar :scatter :line],
+    title=["($i)" for j in 1:1, i in 1:11],
+	titleloc=:right,
+	titlefont=font(8),
+	tickfont=font(6)
+)
+
+# ╔═╡ 2ec69707-58df-4ac4-8277-8c51defab57e
+md"""
+!!! tip "💡 Temas"
+    Temos vários temas com o [`PlotThemes.jl`](http://docs.juliaplots.org/latest/generated/plotthemes/).
+
+	Eu tenho uma quedinha por temas dark.
+"""
+
+# ╔═╡ 3f92bf5f-8b45-471c-b53c-cad06f490afe
+Plots.showtheme(:dark)
+
+# ╔═╡ 61f56d4d-053e-4f37-b8a7-9434dd27ba4b
+md"""
+# [`LaTeXStrings.jl`](https://github.com/stevengj/LaTeXStrings.jl)
+"""
+
+# ╔═╡ 0468bac2-5415-4416-bd92-899b1e9caa94
+md"""
+# [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
+
+Works on Types of Distributions and DataFrames, but we will only focus on DataFrames
+"""
+
+# ╔═╡ afff32c5-15cf-49ce-828f-1cc8142ad86f
+md"""
+## `@df`
+"""
+
+# ╔═╡ fbbe1c66-222d-4788-9ba9-e0c183bca725
+md"""
+- `histogram`, `histogram2d` e `ea_histogram`
+- `groupedhist` e `groupedbar`
+- `boxplot`
+- `dotplot`
+- `violin`
+- `marginalhist`, `marginalkde` e `marginalscatter`
+- `corrplot` e `cornerplot`
+"""
+
+# ╔═╡ f4a96990-a738-42e9-8f44-c20ea86d4734
+md"""
+# [`AlgebraOfGraphics.jl`](https://github.com/JuliaPlots/AlgebraOfGraphics.jl)
+"""
+
+# ╔═╡ c142f0e2-348b-4364-abfc-4feab9064975
+md"""
+!!! tip "💡 AlgebraOfGraphics.jl"
+    Tudo o que você consegue fazer com `AlgebraOfGraphics.jl` você consegue fazer com `Makie.jl`, so que de maneira muito mais cômoda e menos verbosa por conta da facilidade da sintaxe.
+"""
+
+# ╔═╡ 2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
+md"""
+## *Backends*
+
+* `CairoMakie`
+* `GLMakie`
+* `WGLMakie`
+"""
 
 # ╔═╡ 2143fe13-c3f3-4a53-a92c-65e8d0263ce3
 begin
@@ -250,12 +739,15 @@ AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
@@ -264,8 +756,10 @@ AlgebraOfGraphics = "~0.4.9"
 CSV = "~0.8.5"
 CairoMakie = "~0.6.3"
 CategoricalArrays = "~0.10.0"
+Colors = "~0.12.8"
 DataFrames = "~1.2.1"
 HTTP = "~0.9.12"
+LaTeXStrings = "~1.2.1"
 Plots = "~1.19.4"
 PlutoUI = "~0.7.9"
 StatsPlots = "~0.14.26"
@@ -1680,6 +2174,9 @@ version = "0.9.1+5"
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─a1044598-e24a-4399-983e-3a906e9fae51
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
+# ╟─71876e1a-dd30-44e4-943f-af4582b74f6d
+# ╟─038653f4-7d94-4aed-92ef-c1258db95146
+# ╟─c98b5ef9-8cce-448e-8a8d-1cd1e94fb5cd
 # ╟─6fdaea83-8716-4b7e-82c6-57086c7e8efa
 # ╟─1d743482-02ae-4723-a35e-c23fcc79e2f5
 # ╟─5718597f-051e-42e8-ba85-d5ef5898f0f3
@@ -1689,6 +2186,70 @@ version = "0.9.1+5"
 # ╟─4238a671-6d85-481e-a67d-2176813f5795
 # ╟─767225db-5dbe-4c5f-8c89-e7029f10c62b
 # ╟─b77198eb-92aa-4328-a194-ddce40362ebc
+# ╟─43c658ee-f378-450a-9d7c-97b603b56e62
+# ╠═b447e5e9-6647-46cd-b793-bf2ec2025a12
+# ╠═670086e1-fcb5-4fd6-9685-7dbbfc50080e
+# ╟─0f79aeb6-b31f-4f9c-9e0c-2718fe650619
+# ╟─b0953f8a-0393-4352-83d2-cd40c06d90a9
+# ╠═8df33c6f-654d-4fe9-882f-cc7a17044ac4
+# ╠═3adba103-7866-46e2-b26f-12476d9147cc
+# ╟─399f99e1-e4f7-4c9b-ba0c-c120cab5e4e9
+# ╠═a85cd5f2-cc1d-42e2-993a-7914a539c81e
+# ╟─71895560-48fc-4005-8898-b27d140ea468
+# ╠═368290eb-3968-4a9e-9d52-8790cf1b46a4
+# ╟─288748f6-5245-4aae-a6ac-920158f1d9f6
+# ╟─03ace772-d78e-4cc4-8e16-b650f16f7e9d
+# ╠═21f2fd59-f74d-4fd4-a645-24066643d4cc
+# ╟─36783771-3729-4fd3-893d-2ca7cab1777f
+# ╠═0378f4c1-1d4b-4255-a545-22e44d73426e
+# ╠═069fc1e2-d273-41f2-bae0-c9610b5b46fa
+# ╟─e3444c25-5e2d-4525-abe3-0b24a6b4f56d
+# ╟─57217a63-f17e-4dc7-b3fd-d2628a74f1bd
+# ╠═59a00010-ec1d-4c75-8645-3b7cae615bf9
+# ╠═e379b2e7-724e-46e2-b7e7-995e181bf816
+# ╠═a8b97406-54f0-4f5a-b3c9-fc465f6a6b38
+# ╠═a0dabd50-5a90-4cc0-a20f-e4566a464123
+# ╠═329b9f58-1889-4b4a-8a53-c564648a4d48
+# ╟─5cf609a9-320c-44a7-995a-096c16862e4f
+# ╟─2d6a655e-6f2b-4521-b5de-7aa7dcc06d63
+# ╟─d5cfb8bc-bf52-4f2b-9f5b-c1ca35586e0e
+# ╠═a3267a72-8322-474e-af11-e3cfd3b9727e
+# ╟─2ab30ceb-31a3-4b90-a6df-816e1c2e60ef
+# ╠═e57518d7-6a3e-4756-89be-86694ac1a1f0
+# ╠═96c2e80b-60af-41c6-a2f3-1e03a0e17735
+# ╠═7ae76e18-5afb-423f-9578-8a11a9e32438
+# ╠═56ef1845-1a41-4b4e-8b18-1732f11b864a
+# ╠═046c5fee-c1bb-4002-aa91-da98584b8358
+# ╠═42c8f6a7-30d1-44e4-9bb7-4d301c6c9d2d
+# ╟─fccf95bd-62be-4709-b569-d1bccd8e45ff
+# ╟─aa407b6a-6ee4-4d1b-be4b-1b8411abc1a8
+# ╠═8b562691-03f6-4d0b-9b5d-bb583a8896d9
+# ╠═1a2222d8-9734-4de5-97ed-4d0288299bc7
+# ╠═da380258-0f0f-41ce-bb15-ae205ddb3056
+# ╟─7fc6ca38-bf40-491d-80f0-c1052fec667e
+# ╠═b1867d6b-b425-46b0-be95-3e58c7dad4aa
+# ╠═d22e1a79-aa3f-4101-a02f-379104d21e21
+# ╟─f83aa994-3d5d-4f6a-b88f-f68989693760
+# ╠═ef3da092-0e34-4d20-b098-3f3197cec0f1
+# ╠═516ae969-dbc6-4180-98fa-4f01b96548c7
+# ╟─818dc824-84cb-4cdb-883e-5e4692232fb1
+# ╠═66922260-8411-4868-ad50-3e399477a1ac
+# ╟─ef7f506e-dd0c-4708-90a5-5768477475ea
+# ╠═5adf46ff-b94d-4d8a-9264-585b6e2425d0
+# ╟─dd4ee3ad-5da2-4e4a-883a-87dde75ea06c
+# ╠═00fdd825-b00e-4205-85ca-fb9a434ccc8f
+# ╟─12ba0fd1-47b4-4dd8-ade2-a4da178f101d
+# ╠═32f7c8d4-b8a8-48ca-9afb-e10aa8e93775
+# ╠═13e090db-9913-438e-ae7c-45b484845b7a
+# ╟─2ec69707-58df-4ac4-8277-8c51defab57e
+# ╠═3f92bf5f-8b45-471c-b53c-cad06f490afe
+# ╟─61f56d4d-053e-4f37-b8a7-9434dd27ba4b
+# ╠═0468bac2-5415-4416-bd92-899b1e9caa94
+# ╠═afff32c5-15cf-49ce-828f-1cc8142ad86f
+# ╠═fbbe1c66-222d-4788-9ba9-e0c183bca725
+# ╠═f4a96990-a738-42e9-8f44-c20ea86d4734
+# ╟─c142f0e2-348b-4364-abfc-4feab9064975
+# ╠═2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
 # ╠═2143fe13-c3f3-4a53-a92c-65e8d0263ce3
 # ╟─7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
 # ╠═ad112d99-2cd2-48de-8a85-2c7789600ef0
