@@ -655,6 +655,11 @@ $$C(x)= \begin{cases}
 A conjectura apresenta uma regra dizendo que, qualquer número natural inteiro, quando aplicado a esta regra, eventualmente sempre chegará a 4, que se converte em 2 e termina em 1.
 """
 
+# ╔═╡ bf0de194-4c09-404d-9ed6-ec99b4d51e8d
+HTML("
+<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/094y1Z2wpJg' frameborder='0' allowfullscreen></iframe></div>
+	")
+
 # ╔═╡ 847640e6-0f1d-4ffe-9336-44b6d5106e97
 md"""
 !!! tip "💡"
@@ -2155,6 +2160,7 @@ version = "0.9.1+5"
 # ╟─a08ba58d-9a0e-4a6e-a4f2-0711b4d6e688
 # ╟─35cc4511-29e5-4adc-80b6-5c6a0853fb49
 # ╟─47130e80-5ce1-4e9f-a79f-7700af3d98cb
+# ╟─bf0de194-4c09-404d-9ed6-ec99b4d51e8d
 # ╟─847640e6-0f1d-4ffe-9336-44b6d5106e97
 # ╠═25317cc9-14c7-4641-b417-b965ed05b3d0
 # ╟─9dd37346-1931-4905-9beb-ca14cbe43f46
