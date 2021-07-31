@@ -25,6 +25,8 @@ begin
 	
 	# evitar conflitos
 	using CairoMakie: density!
+	using AlgebraOfGraphics: histogram, density, Surface
+	
 	
 	# Seed
 	using Random: seed!
@@ -171,6 +173,8 @@ Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/
 md"""
 # [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl)
 
+$(Resource("https://github.com/JuliaPlots/PlotDocs.jl/blob/master/docs/src/assets/axis_logo.svg?raw=true", :width => 250))
+
 A primeira que vamos cobrir é [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl).
 
 ```julia
@@ -268,6 +272,18 @@ Se você passar uma matriz (`m` x `n`) `Plots.jl` criará `n` séries com `m` ob
 # ╔═╡ 0378f4c1-1d4b-4255-a545-22e44d73426e
 Plots.plot(rand(10, 4))
 
+# ╔═╡ f5c64355-fae0-4dcd-846a-bc51221cde35
+md"""
+## Salvar gráficos de `Plots.jl`
+
+Isto é a função `Plots.savefig`:
+
+```julia
+savefig("myplot.png")    # salva o CURRENT_PLOT como um .png
+savefig(p, "myplot.pdf") # salva o plot de p como um gráfico vetorizado .pdf
+```
+"""
+
 # ╔═╡ 069fc1e2-d273-41f2-bae0-c9610b5b46fa
 md"""
 ## *Backends*
@@ -279,6 +295,8 @@ md"""
 
 
 * **`Plotly`**: muito bom para interatividade, usa a biblioteca JavaScript [`PlotlyJS`](https://plotly.com/javascript/) no navegador. Função `plotlyjs()`.
+
+Todos os *backends* dão suporte à `png` and `pdf`, alguns também dão suporte à `svg`, `ps`, `eps`, `html` e `tex`.
 """
 
 # ╔═╡ e3444c25-5e2d-4525-abe3-0b24a6b4f56d
@@ -580,22 +598,84 @@ md"""
 # ╔═╡ 61f56d4d-053e-4f37-b8a7-9434dd27ba4b
 md"""
 # [`LaTeXStrings.jl`](https://github.com/stevengj/LaTeXStrings.jl)
+
+Um pacote simples que ajuda em passar strings com $\LaTeX$ para a linguagem Julia.
+
+```julia
+using LaTeXStrings
+```
+
+Ele tem um construtor de `String` com o literal `L"..."`:
 """
+
+# ╔═╡ 0d0d6f5c-523f-46b1-90d1-b7435a754a46
+L"\alpha^2"
+
+# ╔═╡ 304c23b4-eb12-4fa0-8fb3-7e26e7c70f30
+begin
+	fib = zeros(12);
+	for i = 1:12
+	    fib[i] = (((1+sqrt(5))/2)^i - ((1-sqrt(5))/2)^i)/sqrt(5);
+	end
+	
+	Plots.plot(fib;
+	    marker=:circle,
+		label=false,
+		grid=false,
+		title="Fibbonaci",
+	    xlabel=L"n", ylabel=L"F_n",
+	    annotation=(6, 100, L"F_n = \frac{1}{\sqrt{5}} \left[\left( \frac{1+\sqrt{5}}{2} \right)^n - \left( \frac{1-\sqrt{5}}{2} \right)^n \right]"))
+end
 
 # ╔═╡ 0468bac2-5415-4416-bd92-899b1e9caa94
 md"""
 # [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)
 
-Works on Types of Distributions and DataFrames, but we will only focus on DataFrames
+A interface de `Plots.jl` com `DataFrames.jl`.
+
+Possui suporte à **simbolos `:col1`** e também **`seriestype`s** específicos de **ciência de dados** e **estatística**.
+"""
+
+# ╔═╡ dfca1da3-acbd-48da-8489-2b9961e4bebf
+md"""
+!!! info "💁 Distributions.jl e StatsPlots.jl"
+    Além disso, `StatsPlots.jl` também é usado para gerar gráficos de tipos `Distribution`s do pacote `Distributions.jl` mas eu não vou cobri aqui.
+"""
+
+# ╔═╡ 9b2e62a0-660b-4193-97dc-0e815a7380f5
+md"""
+!!! tip "💡 Atributos de StatsPlots.jl"
+    Note que `StatsPlots.jl` dá suporte à todos os atributos de `Plots.jl`.
 """
 
 # ╔═╡ afff32c5-15cf-49ce-828f-1cc8142ad86f
 md"""
 ## `@df`
+
+O **macro `@df`** permite com que qualquer `seriestype` de `StatsPlots.jl` e `Plots.jl` possa ter como **input de dados** um **`Symbol`**, e.g. `:col1`, de um **`DataFrame`**.
+
+```julia
+@df d x
+```
+
+Ele converte qualquer símbolo na expressão `x` com a respective coluna de `d` se ela existir.
 """
 
-# ╔═╡ fbbe1c66-222d-4788-9ba9-e0c183bca725
+# ╔═╡ 7f9e7230-e587-4507-be47-7a40877d1318
+df = DataFrame(
+	x=1:10,
+	y=[i^2 for i ∈ 1:10]
+)
+
+# ╔═╡ 76690388-c600-449f-b5cd-d4caf0693e2b
+@df df Plots.plot(:x, :y)
+
+# ╔═╡ 8452c91f-43a4-4122-bd6b-7b695aba7912
 md"""
+## `seriestype`
+
+Além disso `StatsPlots.jl` tem **novos `seriestype`s**:
+
 - `histogram`, `histogram2d` e `ea_histogram`
 - `groupedhist` e `groupedbar`
 - `boxplot`
@@ -605,31 +685,484 @@ md"""
 - `corrplot` e `cornerplot`
 """
 
+# ╔═╡ 8a2c8c45-0a52-4aca-a507-8ac200850993
+md"""
+### Histogramas e Densidades
+"""
+
+# ╔═╡ 13055c7f-3b93-48da-9c6f-29ebce464457
+@df penguins StatsPlots.density(
+	:body_mass_g;
+	group=:species,
+	lw=3
+)
+
+# ╔═╡ 18720936-1e25-4250-abfd-12cc102b48ca
+@df penguins StatsPlots.density(
+	:body_mass_g;
+	group=(:species, :island),
+	lw=3
+)
+
+# ╔═╡ 7a5335e9-b1e1-4180-9087-0c383db345ef
+md"""
+### Histogramas Marginais etc.
+"""
+
+# ╔═╡ 351068e8-54c4-4ce9-bba8-1cfdabd13f4d
+@df penguins StatsPlots.marginalhist(
+	:bill_length_mm, :bill_depth_mm
+)
+
+# ╔═╡ d6498efd-8bc8-42fc-bed2-ed2420681a98
+@df penguins StatsPlots.marginalkde(
+	:bill_length_mm, :bill_depth_mm
+)
+
+# ╔═╡ 4ed7ff92-c17b-4d93-bca7-7b84b126fb23
+@df penguins StatsPlots.corrplot(
+	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
+	size=(800,600)
+)
+
+# ╔═╡ 3aa2401c-27ea-4f34-b99c-2adfa47cd703
+@df penguins StatsPlots.corrplot(
+	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
+	group=:island,
+	size=(800,600)
+)
+
+# ╔═╡ ea2fd5c6-d5c0-4369-9514-76e7a2017767
+@df penguins StatsPlots.cornerplot(
+	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
+	size=(800,600)
+)
+
+# ╔═╡ 5fa48e2b-cf94-40ca-8b42-6e08e8f99c1e
+md"""
+### Boxplot, Dotplot e Violin
+"""
+
+# ╔═╡ 71c747e8-79d4-4a87-b13c-4799d84ab864
+begin
+	@df penguins StatsPlots.violin(
+		:species, :body_mass_g;
+		linewidth=0, legend=false)
+	
+	@df penguins StatsPlots.boxplot!(
+		:species, :body_mass_g;
+		fillalpha=0.75, linewidth=2)
+	
+	@df penguins StatsPlots.dotplot!(
+		:species, :body_mass_g;
+		marker=(:black, stroke(0)))
+end
+
+# ╔═╡ 006be106-fb0f-4955-a4b4-9e27f0b7b50c
+md"""
+### Gráficos de Barras e Histogramas Agrupados
+"""
+
+# ╔═╡ e3524563-6a48-4a22-9316-9b4c60ec755a
+@df combine(
+	groupby(penguins, :species),
+	:body_mass_g => mean;
+	renamecols=false) StatsPlots.groupedbar(
+	:body_mass_g;
+	group=:species
+)
+
+# ╔═╡ 39c75ff3-3661-4cb2-82f6-8aec128da417
+@df combine(
+	groupby(penguins, :species),
+	:body_mass_g => mean;
+	renamecols=false) StatsPlots.groupedbar(
+	:body_mass_g;
+	group=:species,
+	bar_position=:stack,
+	legend=:outerbottomright,
+	yformatter=(x -> string(Int(x / 1_000)) * "K"),
+	palette=:Set1_3
+)
+
+# ╔═╡ 11c69906-66e0-4dfa-bb75-e8e93faf71d7
+md"""
+!!! danger "⚠️ Verboso"
+    Notem esse `groupedbar` acima como é verboso. Vamos rever isso em `AlgebraOfGraphics.jl`.
+"""
+
+# ╔═╡ 46bcee65-c7d4-4052-860e-f62f6fb37223
+@df penguins StatsPlots.groupedhist(
+	:body_mass_g;
+	group=:species,
+)
+
+# ╔═╡ 6c8757bf-35e8-40d6-a508-949acb7b1b6a
+@df penguins StatsPlots.groupedhist(
+	:body_mass_g;
+	group=:species,
+	bar_position=:stack,
+	xformatter=(x -> string(Int(x / 1_000)) * " kg"),
+	palette=:Set1_3
+)
+
+# ╔═╡ 04ec3000-42c0-497f-bf4f-83214ebe1850
+names(penguins)
+
+# ╔═╡ 5841530d-e62b-4c14-ba53-b5fc223d4d7b
+collect(1_000:1_000:7_000)
+
 # ╔═╡ f4a96990-a738-42e9-8f44-c20ea86d4734
 md"""
 # [`AlgebraOfGraphics.jl`](https://github.com/JuliaPlots/AlgebraOfGraphics.jl)
+
+$(Resource("https://github.com/JuliaPlots/AlgebraOfGraphics.jl/blob/master/docs/src/assets/logo.svg?raw=true", :width => 300))
+
+Esse é meu **pacote favorito** de visualização 😍.
+
+Ele possui como **_backend_ [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl)** que é muito mais **poderoso** que `Plots.jl` e ainda possui uma **DSL** (_**D**omain **S**pecific **L**anguage_) muito **simples** e **poderosa** baseada em [Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448) (estilo `ggplot2`):
+
+* **dados** (_data_)
+* **camadas** (_layers_)
+* **mapeamentos** (_mappings_)
+* **transformações** (_transformations_)
+
+Além disso você pode combinar tudo isso aí com:
+* **`+`**: adição
+* **`*`**: multiplicação
 """
 
 # ╔═╡ c142f0e2-348b-4364-abfc-4feab9064975
 md"""
 !!! tip "💡 AlgebraOfGraphics.jl"
-    Tudo o que você consegue fazer com `AlgebraOfGraphics.jl` você consegue fazer com `Makie.jl`, so que de maneira muito mais cômoda e menos verbosa por conta da facilidade da sintaxe.
+    Tudo o que você consegue fazer com `AlgebraOfGraphics.jl` você consegue fazer com [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl), so que de maneira muito mais cômoda e menos verbosa por conta da facilidade da sintaxe.
 """
 
 # ╔═╡ 2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
 md"""
 ## *Backends*
 
-* `CairoMakie`
-* `GLMakie`
-* `WGLMakie`
+* [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl) - Define todos os objetos. Teoricamente não é um *backend*.
+
+
+* [`CairoMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/CairoMakie) - *backend* baseado em [Cairo](https://www.cairographics.org/) para gráficos vetoriais não-interativos (para publicação).
+
+
+* [`GLMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/GLMakie) - *backend* de gráficos na GPU interativo.
+
+
+* [`WGLMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/WGLMakie) - *backend* baseado em [WebGL](https://www.khronos.org/webgl/) de gráficos interativos que roda nos browsers.
+
+Para usar `AlgebraOfGraphics.jl` importe-o com algum *backend*:
+
+```julia
+using AlgebraOfGraphics
+using CairoMakie
+```
+"""
+
+# ╔═╡ 430e4e03-2730-49d2-b68c-622774dc0d00
+md"""
+!!! info "💁 Makie.jl"
+    Note que os *backends* de `AlgebraOfGraphics.jl` são do [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl). Eu não vou cobrir `Makie.jl` nesse conteúdo. 
+
+	Mas eu recomendo fortemente ler a [documentação de `Makie.jl`](http://makie.juliaplots.org/dev/).
+"""
+
+# ╔═╡ a7483a4b-07d1-42be-abdf-5718c0a48ea5
+Resource("https://github.com/JuliaPlots/Makie.jl/blob/master/assets/makie_logo_canvas.svg?raw=true", :width => 300)
+
+# ╔═╡ a3085cb1-e1d6-4f91-926c-6c58725a4917
+md"""
+## Dados com `data`
+
+Primeiro você especifica os dados com `data`:
+"""
+
+# ╔═╡ 82bfc210-a024-44ac-8382-63ee3e87294a
+data(penguins)
+
+# ╔═╡ 570dcbbf-ac8a-41c0-a831-41e596da3aae
+md"""
+!!! info "💁 Tables.jl"
+    `AlgebraOfGraphics.data` aceita qualquer interface de dados que dê suporte ao [formato `Tables.jl`](https://github.com/JuliaData/Tables.jl/blob/main/INTEGRATIONS.md).
+
+	Isso quer dizer: `DataFrames.jl`, `Arrow.jl`, `JSON`, `MCMCChains.jl` e muitos outros...
+"""
+
+# ╔═╡ 50d7a8b0-0623-424e-8b67-d74b1dfbf5b4
+md"""
+## Mapeamentos com `mapping`
+
+1. primeira posição é **`x`**
+2. segunda posição é **`y`**
+3. terceira posição é **`z`**
+4. **`color`**
+5. **`marker`** para tipo de marcador (círculo, triângulo etc)
+6. **`dodge`** lado-a-lado
+7. **`stack`** empilhado um em cima do outro 
+8. **`group`**
+9. **`col`** facetagem por coluna
+10. **`row`** facetagem por linha
+11. **`layout`** facetagem por automática
+"""
+
+# ╔═╡ 26e12d97-5be4-4f26-b257-bf1a61564042
+md"""
+!!! info "💁 AlgebraOfGraphics.draw"
+    As funções **`AlgebraOfGraphics.draw`** e **`AlgebraOfGraphics.draw!`** pega suas camadas `Layers` e plota de acordo com o *backend*.
+"""
+
+# ╔═╡ 3a6accf0-f433-40fe-979c-cbf2c3111438
+md"""
+Por padrão é um diagrama de dispersão
+"""
+
+# ╔═╡ 9499c13c-8503-4cb4-ad90-787799b58c35
+data(penguins) *
+	mapping(
+		:body_mass_g,       # x
+		:flipper_length_mm  # y
+) |> draw
+
+# ╔═╡ 9385cda6-5de0-41ea-afd5-276ec2033536
+data(penguins) *
+	mapping(
+		:body_mass_g,       # x
+		:flipper_length_mm; # y
+		color=:sex
+) |> draw
+
+# ╔═╡ 543c957f-b52f-4a5d-a842-2570719bdec1
+data(penguins) *
+	mapping(
+		:body_mass_g,       # x
+		:flipper_length_mm; # y
+		color=:sex,
+		marker=:species
+) |> draw
+
+# ╔═╡ b33cfa68-0b75-4f95-81f3-efb62603034d
+data(penguins) *
+	mapping(
+		:body_mass_g,       # x
+		:flipper_length_mm; # y
+		color=:sex,
+		marker=:species,
+		layout=:island
+) |> draw
+
+# ╔═╡ e37ae35e-ee98-4cee-9869-b80a15e5c137
+data(penguins) *
+	mapping(
+		:body_mass_g,       # x
+		:flipper_length_mm; # y
+		color=:sex,
+		marker=:species,
+		col=:island
+) |> draw
+
+# ╔═╡ 1932ae6a-7259-4dcb-ae24-3b83c197438a
+md"""
+### Operações em `mapping`
+
+Também dá para executar operações dentro de mapping estilo `DataFrames.jl` com a [**semântica de `Pair`s**](https://bkamins.github.io/julialang/2020/12/24/minilanguage.html):
+
+```julia
+:col => transformação => :nova_col
+```
+
+Além disso tem as seguintes funções:
+
+* **`renamer`**: renomeia uma variável categórica com um vetor de `Pair`s:
+   
+  ```julia
+  renamer(["class 1" => "Class One", "class 2" => "Class Two"])
+  ```
+
+* **`sorter`**: reordena uma variável categórica com argumentos de `String`s:
+
+  ```julia
+  sorter("low", "medium", "high")
+  ```
+
+* **`nonnumeric`**: transforma uma variável numérica em categórica. Útil quando temos uma variável discreta rotulada com `Int`s.
+"""
+
+# ╔═╡ 207e64fd-d952-4559-a1bb-68e25aba60d6
+data(penguins) *
+	mapping(
+		:body_mass_g => log => "massa corporal (log gramas)",
+		:flipper_length_mm => (t -> t / 10) => "cumprimento da asa (cm)";
+		color=:sex => renamer(["male" => "macho", "female" => "fêmea"]),
+		marker=:species => sorter("Gentoo", "Adelie", "Chinstrap"),
+		col=:year => nonnumeric
+) |> draw
+
+# ╔═╡ 1077ac49-9e26-49ff-9758-4d7e76743633
+md"""
+## Transformações Visuais
+
+Todas do [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl) e algumas extras:
+
+1. [`Lines`](http://makie.juliaplots.org/dev/plotting_functions/lines.html)
+2. [`Scatter`](http://makie.juliaplots.org/dev/plotting_functions/scatter.html)
+3. [`BoxPlot`](http://makie.juliaplots.org/dev/makie_api.html#Makie.boxplot-Tuple)
+4. [`BarPlot`](http://makie.juliaplots.org/dev/makie_api.html#Makie.barplot-Tuple)
+5. [`Violin`](http://makie.juliaplots.org/dev/makie_api.html#Makie.violin-Tuple)
+6. **`QQPlot`**
+7. [`Heatmap`](http://makie.juliaplots.org/dev/plotting_functions/heatmap.html)
+8. [`Wireframe`](http://makie.juliaplots.org/dev/makie_api.html#Makie.wireframe-Tuple)
+9. [`Contour`](http://makie.juliaplots.org/dev/makie_api.html#Makie.contour-Tuple)
+10. [`Arrows`](http://makie.juliaplots.org/dev/makie_api.html#Makie.arrows-Tuple)
+11. [`Poly`](http://makie.juliaplots.org/dev/makie_api.html#Makie.poly-Tuple)
+12. [`Band`](http://makie.juliaplots.org/dev/makie_api.html#Makie.band-Tuple)
+13. [`Crossbar`](http://makie.juliaplots.org/dev/makie_api.html#Makie.crossbar-Tuple)
+14. [`Density`](http://makie.juliaplots.org/dev/makie_api.html#Makie.density-Tuple)
+15. [`Errorbars`](http://makie.juliaplots.org/dev/makie_api.html#Makie.errorbars!-Tuple)
+16. [`Hist`](http://makie.juliaplots.org/dev/makie_api.html#Makie.hist-Tuple)
+17. [`Mesh`](http://makie.juliaplots.org/dev/plotting_functions/mesh.html)
+18. [`Surface`](http://makie.juliaplots.org/dev/plotting_functions/mesh.html)
+19. [`Rangebars`](http://makie.juliaplots.org/dev/makie_api.html#Makie.rangebars-Tuple)
+20. [`Pie`](http://makie.juliaplots.org/dev/makie_api.html#Makie.pie-Tuple)
+21. [`Stem`](http://makie.juliaplots.org/dev/makie_api.html#Makie.stem-Tuple)
+22. [`StreamPlot`](http://makie.juliaplots.org/dev/makie_api.html#Makie.streamplot-Tuple)
+
+Especificamos com:
+
+```julia
+data(...) *
+	mapping(...) *
+	visual(SuaTransformaçãoVisual)
+```
+"""
+
+# ╔═╡ 70c15c98-79b4-41d4-9b0f-2873bec855e2
+# objeto Layer
+mass_flipper = data(penguins) *
+	mapping(:body_mass_g, :flipper_length_mm)
+
+# ╔═╡ 0c5876db-764d-4ab4-b6c7-874592ac3157
+# objeto Layers
+scatter_lines = mass_flipper *
+	(visual(Scatter) + visual(Lines))
+
+# ╔═╡ 2a2a49a7-89ef-4db4-aee0-4c5955859b0b
+draw(scatter_lines)
+
+# ╔═╡ fded1e6e-2d18-4b65-be9e-9dd68ccfa2ae
+data(penguins) *
+	mapping(
+		:species,
+		:bill_depth_mm;
+		color=:sex,
+		side=:sex) *
+	visual(Violin) |> draw
+
+# ╔═╡ 4f6f0034-5dc4-40c0-acbd-b2b3743ad023
+data(penguins) *
+	mapping(
+		:species,
+		:bill_depth_mm;
+		color=:sex,
+		dodge=:sex) *
+	visual(BoxPlot) |> draw
+
+# ╔═╡ a52839f7-0fc3-416a-a5be-08816ceaeed0
+md"""
+## Transformações de Dados
+
+1. [`histogram`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Histogram): computa um **histograma**.
+2. [`density`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Density): computa uma **densidade**.
+3. [`frequency`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Frequency): computa frequências (`nrow`).
+4. [`expectation`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Expectation): computa uma **média por categoria**. Vem da esperança, termo matemático de probabilidade/estatística, do inglês *expectation*.
+5. [`linear`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Linear): adiciona uma **linha (reta) de tendência**.
+6. [`smoothing`](http://juliaplots.org/AlgebraOfGraphics.jl/dev/generated/datatransformations/#Smoothing): adiciona uma **curva de tendência**.
+
+Especificamos com:
+
+```julia
+data(...) *
+	mapping(...) *
+	visual(...) *
+	sua_transformação_de_dados()
+```
 """
 
 # ╔═╡ 2143fe13-c3f3-4a53-a92c-65e8d0263ce3
-begin
-	penguin_frequency = data(penguins) * frequency() * mapping(:species)
-	draw(penguin_frequency)
-end
+data(penguins) *
+	mapping(:species) *
+	frequency() |>draw
+
+# ╔═╡ 341cc441-72be-4804-88b4-e6415b8da95c
+data(penguins) *
+	mapping(
+		:species;
+		color=:island,
+		stack=:island) *
+	frequency() |>draw
+
+# ╔═╡ d1575065-a4bf-4cc3-82cf-7200b5a37498
+data(penguins) *
+	mapping(
+		:species,
+		:body_mass_g;
+		color=:island,
+		dodge=:island) *
+	expectation() |>draw
+
+# ╔═╡ 4acb99c5-8f9c-4568-8495-2522669b11ee
+data(penguins) *
+	mapping(
+		:body_mass_g => float; # histogram não aceita `Int`s
+		color=:species) *
+	histogram() |> draw
+
+# ╔═╡ 3b9f0db5-275f-47da-a7d8-528bcd9fc154
+data(penguins) *
+	mapping(
+	:body_mass_g;
+	color=:species) *
+	density() |> draw
+
+# ╔═╡ 3d75b6ac-4735-49fd-88ec-d6b0d8d85af0
+data(penguins) *
+	mapping(
+	:body_mass_g,
+	:flipper_length_mm;
+	layout=:species) *
+	visual(Contour) *
+	density() |> draw
+
+# ╔═╡ 41718826-5264-46e5-941a-a9db5d263751
+data(penguins) *
+	mapping(
+		:bill_length_mm,
+		:bill_depth_mm;
+		col=:sex,
+		color=:species) *
+	(linear() +  # quero que o linear() replique para todos
+		mapping()) |> draw
+
+# ╔═╡ 720cd7de-a32a-436e-b4e3-f08af1c8b0e3
+data(penguins) *
+	mapping(
+		:bill_length_mm,
+		:bill_depth_mm;
+		col=:sex,
+		color=:species) *
+	(smooth() +  # quero que o smooth() replique para todos
+		mapping()) |> draw
+
+# ╔═╡ 7e21f990-8348-495a-9226-5a3bcc9ac373
+md"""
+## Axis
+"""
+
+# ╔═╡ 6c5b8a1f-6524-458a-ad24-315bbd9b90e1
+md"""
+## Salvar gráficos de `AlgebraOfGraphics.jl`
+"""
 
 # ╔═╡ 7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
 md"""
@@ -647,11 +1180,11 @@ let
 	penguin_bill = data(penguins) * mapping(:bill_length_mm  => "bill length mm",
         :bill_depth_mm  => "bill depth mm")
 
-    layers = AlgebraOfGraphics.density() * visual(Contour) + linear() +
+    layers = density() * visual(Contour) + linear() +
                 visual(alpha = 0.5, markersize = 15)
     aesPoints = penguin_bill * layers * mapping(color = :species, marker = :species,)
     aesHist = data(penguins) * mapping(:bill_length_mm  => "bill length mm",
-        color = :species, stack = :species) * AlgebraOfGraphics.histogram(;bins = 20)
+        color = :species, stack = :species) * histogram(;bins = 20)
 
     estilo = (color=["#FC7808", "#8C00EC", "#107A78"],
                 marker=[:circle, :utriangle, :rect])
@@ -2219,6 +2752,7 @@ version = "0.9.1+5"
 # ╠═21f2fd59-f74d-4fd4-a645-24066643d4cc
 # ╟─36783771-3729-4fd3-893d-2ca7cab1777f
 # ╠═0378f4c1-1d4b-4255-a545-22e44d73426e
+# ╟─f5c64355-fae0-4dcd-846a-bc51221cde35
 # ╟─069fc1e2-d273-41f2-bae0-c9610b5b46fa
 # ╟─e3444c25-5e2d-4525-abe3-0b24a6b4f56d
 # ╟─57217a63-f17e-4dc7-b3fd-d2628a74f1bd
@@ -2264,13 +2798,69 @@ version = "0.9.1+5"
 # ╟─2daed1c2-1c82-4651-9c45-827f188efceb
 # ╟─dc9b9dae-5cbf-4de7-ae5f-5e9d905ce361
 # ╟─61f56d4d-053e-4f37-b8a7-9434dd27ba4b
-# ╠═0468bac2-5415-4416-bd92-899b1e9caa94
-# ╠═afff32c5-15cf-49ce-828f-1cc8142ad86f
-# ╠═fbbe1c66-222d-4788-9ba9-e0c183bca725
-# ╠═f4a96990-a738-42e9-8f44-c20ea86d4734
+# ╠═0d0d6f5c-523f-46b1-90d1-b7435a754a46
+# ╠═304c23b4-eb12-4fa0-8fb3-7e26e7c70f30
+# ╟─0468bac2-5415-4416-bd92-899b1e9caa94
+# ╟─dfca1da3-acbd-48da-8489-2b9961e4bebf
+# ╟─9b2e62a0-660b-4193-97dc-0e815a7380f5
+# ╟─afff32c5-15cf-49ce-828f-1cc8142ad86f
+# ╠═7f9e7230-e587-4507-be47-7a40877d1318
+# ╠═76690388-c600-449f-b5cd-d4caf0693e2b
+# ╟─8452c91f-43a4-4122-bd6b-7b695aba7912
+# ╟─8a2c8c45-0a52-4aca-a507-8ac200850993
+# ╠═13055c7f-3b93-48da-9c6f-29ebce464457
+# ╠═18720936-1e25-4250-abfd-12cc102b48ca
+# ╟─7a5335e9-b1e1-4180-9087-0c383db345ef
+# ╠═351068e8-54c4-4ce9-bba8-1cfdabd13f4d
+# ╠═d6498efd-8bc8-42fc-bed2-ed2420681a98
+# ╠═4ed7ff92-c17b-4d93-bca7-7b84b126fb23
+# ╠═3aa2401c-27ea-4f34-b99c-2adfa47cd703
+# ╠═ea2fd5c6-d5c0-4369-9514-76e7a2017767
+# ╟─5fa48e2b-cf94-40ca-8b42-6e08e8f99c1e
+# ╠═71c747e8-79d4-4a87-b13c-4799d84ab864
+# ╟─006be106-fb0f-4955-a4b4-9e27f0b7b50c
+# ╠═e3524563-6a48-4a22-9316-9b4c60ec755a
+# ╠═39c75ff3-3661-4cb2-82f6-8aec128da417
+# ╟─11c69906-66e0-4dfa-bb75-e8e93faf71d7
+# ╠═46bcee65-c7d4-4052-860e-f62f6fb37223
+# ╠═6c8757bf-35e8-40d6-a508-949acb7b1b6a
+# ╠═04ec3000-42c0-497f-bf4f-83214ebe1850
+# ╠═5841530d-e62b-4c14-ba53-b5fc223d4d7b
+# ╟─f4a96990-a738-42e9-8f44-c20ea86d4734
 # ╟─c142f0e2-348b-4364-abfc-4feab9064975
-# ╠═2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
+# ╟─2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
+# ╟─430e4e03-2730-49d2-b68c-622774dc0d00
+# ╟─a7483a4b-07d1-42be-abdf-5718c0a48ea5
+# ╟─a3085cb1-e1d6-4f91-926c-6c58725a4917
+# ╠═82bfc210-a024-44ac-8382-63ee3e87294a
+# ╟─570dcbbf-ac8a-41c0-a831-41e596da3aae
+# ╟─50d7a8b0-0623-424e-8b67-d74b1dfbf5b4
+# ╟─26e12d97-5be4-4f26-b257-bf1a61564042
+# ╟─3a6accf0-f433-40fe-979c-cbf2c3111438
+# ╠═9499c13c-8503-4cb4-ad90-787799b58c35
+# ╠═9385cda6-5de0-41ea-afd5-276ec2033536
+# ╠═543c957f-b52f-4a5d-a842-2570719bdec1
+# ╠═b33cfa68-0b75-4f95-81f3-efb62603034d
+# ╠═e37ae35e-ee98-4cee-9869-b80a15e5c137
+# ╟─1932ae6a-7259-4dcb-ae24-3b83c197438a
+# ╠═207e64fd-d952-4559-a1bb-68e25aba60d6
+# ╟─1077ac49-9e26-49ff-9758-4d7e76743633
+# ╠═70c15c98-79b4-41d4-9b0f-2873bec855e2
+# ╠═0c5876db-764d-4ab4-b6c7-874592ac3157
+# ╠═2a2a49a7-89ef-4db4-aee0-4c5955859b0b
+# ╠═fded1e6e-2d18-4b65-be9e-9dd68ccfa2ae
+# ╠═4f6f0034-5dc4-40c0-acbd-b2b3743ad023
+# ╟─a52839f7-0fc3-416a-a5be-08816ceaeed0
 # ╠═2143fe13-c3f3-4a53-a92c-65e8d0263ce3
+# ╠═341cc441-72be-4804-88b4-e6415b8da95c
+# ╠═d1575065-a4bf-4cc3-82cf-7200b5a37498
+# ╠═4acb99c5-8f9c-4568-8495-2522669b11ee
+# ╠═3b9f0db5-275f-47da-a7d8-528bcd9fc154
+# ╠═3d75b6ac-4735-49fd-88ec-d6b0d8d85af0
+# ╠═41718826-5264-46e5-941a-a9db5d263751
+# ╠═720cd7de-a32a-436e-b4e3-f08af1c8b0e3
+# ╠═7e21f990-8348-495a-9226-5a3bcc9ac373
+# ╠═6c5b8a1f-6524-458a-ad24-315bbd9b90e1
 # ╟─7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
 # ╠═ad112d99-2cd2-48de-8a85-2c7789600ef0
 # ╠═266b84f9-978b-47dd-9554-f3e7fabf2406
