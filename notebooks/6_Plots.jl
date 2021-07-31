@@ -12,6 +12,7 @@ begin
 	using AlgebraOfGraphics
 	using CairoMakie
 	using Colors
+	using ColorSchemes
 	using CSV
 	using CategoricalArrays
 	using DataFrames
@@ -24,13 +25,49 @@ begin
 	import HTTP
 	
 	# evitar conflitos
-	using CairoMakie: density!
-	using AlgebraOfGraphics: histogram, density, Surface
+	using CairoMakie: boxplot, barplot!, density!, lines!, rangebars! , scatter!, surface!, xlims!
+	using AlgebraOfGraphics: density, histogram, Surface
 	
 	
 	# Seed
 	using Random: seed!
 	seed!(123)
+end
+
+# ╔═╡ ed513f16-1ff5-4ad8-a2cb-4294f15a0ff2
+let
+	using Dates
+
+	x = today() - Year(1) : Day(1) : today()
+	y = cumsum(randn(length(x)))
+	z = cumsum(randn(length(x)))
+	df = (; x, y, z)
+	labels = ["series 1", "series 2", "series 3", "series 4", "series 5"]
+	plt = data(df) *
+		mapping(:x, [:y, :z] .=> "value", color=dims(1) => renamer(labels) => "series ") *
+		visual(Lines)
+	draw(plt)
+end
+
+# ╔═╡ fee7043e-efdb-45d0-8e2f-9554eb525a12
+let
+	# Download, extract, and load shapefile
+	using Shapefile, ZipFile
+	using Downloads: download
+	t = mktempdir() do dir
+		url = "https://data.bas.ac.uk/download/7be3ab29-7caa-46b8-a355-2e3233796e86"
+		r = ZipFile.Reader(seekstart(download(url, IOBuffer())))
+		for f in r.files
+			open(joinpath(dir, f.name), write = true) do io
+				write(io, read(f, String));
+			end
+		end
+		Shapefile.Table(joinpath(dir, "add_coastline_medium_res_polygon_v7_4.shp"))
+	end
+
+	# Draw map
+	plt = geodata(t) * mapping(:geometry, color = :surface) * visual(Poly)
+	draw(plt; axis=(aspect=1,))
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -94,17 +131,9 @@ md"""
 	`Makie.jl` para **publicações** e coisas sérias ($\LaTeX$).
 """
 
-# ╔═╡ 6fdaea83-8716-4b7e-82c6-57086c7e8efa
-md"""
-# Datasets Utilizados
-
-* `palmerpenguins`
-* `starwars`
-"""
-
 # ╔═╡ 1d743482-02ae-4723-a35e-c23fcc79e2f5
 md"""
-## Dataset `palmerpenguins`
+# Dataset `palmerpenguins`
 
 É um dataset aberto sobre pinguins que foram encontrados próximos da estação de Palmer na Antártica.
 
@@ -137,37 +166,6 @@ penguins = CSV.read(penguins_file, DataFrame; missingstring="NA")
 
 # ╔═╡ ac54b4e0-33f5-426e-820e-3e9f002c2e91
 dropmissing!(penguins) # 11 missings
-
-# ╔═╡ 4238a671-6d85-481e-a67d-2176813f5795
-md"""
-## Dataset `starwars`
-
-87 personagens e 14 variáveis:
-
-- `name`: nome do personagem
-- `height`: altura em cm
-- `mass`: peso em kg
-- `hair_color`, `skin_color` ,`eye_color`: cor de cabelo, pele e olhos
-- `birth_year`: ano de nascimento em BBY (BBY = Before Battle of Yavin)
-- `sex`: o sexo biológico do personagem, `male`, `female`, `hermaphroditic`, ou `none` (no caso de Droids)
-- `gender`: a identidade de gênero do personagem determinada pela sua personalidade ou pela maneira que foram programados (no caso de Droids)oids).
-- `homeworld`: nome do mundo de origem
-- `species`: nome da espécie
-- `films`: lista de filmes que o personagem apareceu
-- `vehicles`: lista de veículos que o personagem pilotou
-- `starships`: lista de naves que o personagem pilotou
-
-> Dataset obtido por licença creative commons do StarWars API `https://swapi.dev/`
-"""
-
-# ╔═╡ 767225db-5dbe-4c5f-8c89-e7029f10c62b
-md"""
-!!! tip "💡 Julia"
-    Provavelmente Julia faz o percurso de Kessel em bem menos que 12 parsecs.
-"""
-
-# ╔═╡ b77198eb-92aa-4328-a194-ddce40362ebc
-Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/12-parsecs.gif?raw=true", :width => 800)
 
 # ╔═╡ 43c658ee-f378-450a-9d7c-97b603b56e62
 md"""
@@ -311,7 +309,7 @@ md"""
 
 Atributos são **maneiras de customizar os seus gráficos**.
 
-São muitos eu nunca sei qual usar e eu sempre consulto a [documentação](http://docs.juliaplots.org/latest/attributes/) ou uso a função `plotattr` passando:
+São muitos eu nunca sei qual usar e eu sempre consulto a [documentação](http://docs.juliaplots.org/latest/attributes/) ou uso a função **`plotattr`** passando:
 
 * **`:Plots`**: para atributos que se aplicam ao **plot todo**, e.g. `dpi`, `size`.
 
@@ -1142,6 +1140,7 @@ data(penguins) *
 		col=:sex,
 		color=:species) *
 	(linear() +  # quero que o linear() replique para todos
+				 # mapping herda o antigo mapping
 		mapping()) |> draw
 
 # ╔═╡ 720cd7de-a32a-436e-b4e3-f08af1c8b0e3
@@ -1152,16 +1151,335 @@ data(penguins) *
 		col=:sex,
 		color=:species) *
 	(smooth() +  # quero que o smooth() replique para todos
+				 # mapping herda o antigo mapping
+		mapping()) |> draw
+
+# ╔═╡ 087e170a-7ae3-4f46-bda4-3b70e2732153
+md"""
+## Atributos de Transformações Visuais
+
+Qualquer **atributo** de algum **`visual`** (e.g. `Scatter`, `BoxPlot`) podem ser listados com **`help_attributes`**:
+"""
+
+# ╔═╡ 0d97b638-e6a1-4d63-9c2d-52a7a8070d16
+with_terminal() do
+	help_attributes(boxplot)
+end
+
+# ╔═╡ 0f6fa18c-6797-4c84-b32e-7932b2f16b8c
+md"""
+!!! danger "⚠️ BoxPlot vs boxplot"
+    Note que aqui estamos usando **`boxplot`** ao invés de **`BoxPlot`**.
+
+	Isto é porque queremos acessar os atributos da **função** (snake_case) do *backend* (e.g. `CairoMakie` ao invés do **tipo** (CamelCase).
+"""
+
+# ╔═╡ 08882dce-6a3a-4a0d-8408-98ec2a122a8e
+data(penguins) *
+	mapping(
+		:species,
+		:bill_depth_mm;
+		color=:sex,
+		dodge=:sex) *
+	visual(
+		BoxPlot;
+		markersize=15,
+		show_notch=true,
+		medianlinewidth=3,
+		whiskerlinewidth=3,
+		whiskerwidth=0.5
+) |> draw
+
+# ╔═╡ c20b59f9-3401-4c8f-9c95-a8f158b04384
+md"""
+Funciona também para **transformações de dados**:
+"""
+
+# ╔═╡ ec6015b9-decb-4750-948d-5e252fbae8fe
+with_terminal() do
+	help_attributes(lines)
+end
+
+# ╔═╡ 585d1b44-34cd-485b-bd1c-b9f8a0b183ea
+data(penguins) *
+	mapping(
+		:bill_length_mm,
+		:bill_depth_mm;
+		col=:sex,
+		color=:species) * 
+	(linear() * visual(linewidth=3) +
 		mapping()) |> draw
 
 # ╔═╡ 7e21f990-8348-495a-9226-5a3bcc9ac373
 md"""
-## Axis
+## Argumentos `Figure` e `Axis`
+
+**`draw`** e **`draw!`** também aceitam argumentos de `Figure` e `Axis` com os argumentos de *keyword* `figure` e `axis`.
 """
+
+# ╔═╡ 0d0cc1a1-bce0-446a-ba20-cc278c06c04c
+md"""
+!!! danger "⚠️ NamedTuple"
+    Note que `figure` e `axis` dentro de **`draw`** e **`draw!`** devem ser tuplas nomeadas `NamedTuple`.
+
+	Então algo com uma única customização deve ser construido como:
+
+	```julia
+	figure=(atributo=valor,)  # tupla nomeada
+	figure=(; atributo=valor) # tupla nomeada construção alternativa
+	```
+"""
+
+# ╔═╡ d0344d4c-709e-4f82-8e47-f291d72bfa40
+md"""
+### Argumentos de `Figure`
+
+Tem um [monte](http://makie.juliaplots.org/dev/figure.html), mas os mais importantes é **`resolution`**:
+"""
+
+# ╔═╡ 0bb9dc80-de08-41b3-98fb-6b1a6bc09b16
+let
+	fig = data(penguins) *
+	mapping(
+		:bill_length_mm,
+		:bill_depth_mm;
+		col=:sex,
+		color=:species) * 
+	(linear() * visual(linewidth=3) +
+		mapping())
+	draw(
+		fig;
+		figure=(;
+			resolution=(800, 300),
+			figure_padding=2,
+			backgroundcolor=:pink,
+			fontsize=12
+			)
+		)
+end
+
+# ╔═╡ cb8b4f7a-aad1-464b-9dfa-2d2d177ffff3
+md"""
+### Argumentos de `Axis`
+
+També tem um [monte](http://makie.juliaplots.org/dev/makielayout/reference.html#Makie.MakieLayout.Axis), mas o mais importantes são:
+
+* **`title`**: título do gráfico
+* **`aspect`**: *aspect ratio*
+* **`limits`**: limites do eixo-`x` e eixo-`y`
+* **`xtickformat`** e **`ytickformat`**: formatação dós rótulos dos ticks do eixo `x` ou `y`. Note que a [documentação](http://makie.juliaplots.org/dev/makielayout/axis.html#Modifying-ticks) fala "_a function which takes a vector of numbers and outputs a vector of strings_". Então essa função precisa ser vetorizada (_broadcast_) com o `.`.
+* **`xticklabelrotation`** e **`ticklabelrotation`**: rotação dos rótulos dos ticks eixo `x` ou `y` em radianos
+"""
+
+# ╔═╡ 8d60fd15-e0ed-4433-8fb7-92620ce1cfbd
+let
+	fig = data(penguins) *
+	mapping(
+		:bill_length_mm => "Cumprimento do Bico (cm)",
+		:bill_depth_mm  => "Largura do Bico (cm)";
+		col=:sex,
+		color=:species) * 
+	(linear() * visual(linewidth=3) +
+		mapping())
+	draw(
+		fig;
+		axis=(;
+			title="Título",
+			aspect=4/3,
+			limits=(
+				(30, 60), # eixo-x, pode ser `nothing` para somente eixo x
+				(12, 23)  # eixo-y, pode ser `nothing` para somente eixo y
+				),
+			xtickformat=(x -> @. string(x / 10) * "\ncm"), # vetorizada com `@.`
+			ytickformat=(x -> @. string(x / 10) * "cm"),   # vetorizada com `@.`
+			yticklabelrotation=π/8
+			)
+		)
+end
+
+# ╔═╡ 743572d9-226c-40fe-bfbe-17d0631ccb87
+md"""
+## Cores de `AlgebraOfGraphics.jl`
+
+Parafraseando a [documentação](http://juliaplots.org/AlgebraOfGraphics.jl/dev/philosophy/) sobre os padrões do `AlgebraOfGraphics.jl`:
+
+> `AlgebraOfGraphics` visa fornecer configurações padrão sólidas e opinativas. Em particular, AoG usa uma [paleta conservadora e amigável para daltônicos](https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106) e um [mapa de cores perceptualmente uniforme e universalmente legível](https://www.nature.com/articles/s41467-020-19160-7). Ele segue as diretrizes da [IBM](https://www.ibm.com/design/language/typography/type-basics/#titles-and-subtitles) para diferenciar títulos e rótulos de rótulos de escala por meio do peso da fonte, enquanto usa o mesmo tipo de letra em um tamanho legível.
+
+Caso você queira mudar as cores você pode de duas maneiras:
+
+1. com um argumento **`colormap`** dentro de uma transformação visual **`visual`**:
+"""
+
+# ╔═╡ ce5d791e-64f0-449d-ba9d-2a33463386aa
+data(penguins) *
+	mapping(
+	:body_mass_g,
+	:flipper_length_mm;
+	layout=:species) *
+	visual(
+		Contour,
+		colormap=Reverse(:grays)
+	) *
+	density() |> draw
+
+# ╔═╡ f8ca7907-9872-4f1d-8dac-0ca1f054ca62
+md"""
+2. dentro do argumento **`palettes`** de **`draw`** e **`draw!`** (OBS: `NamedTuple` e [`ColorSchemes.jl`](https://github.com/JuliaGraphics/ColorSchemes.jl)):
+"""
+
+# ╔═╡ 32ac588f-3aff-4942-884b-abe7ca3e46b9
+let
+	colors=[
+		"Adelie" => ColorSchemes.Set1_3.colors[1],
+		"Chistrap" => ColorSchemes.Set1_3.colors[2],
+		"Gentoo" => ColorSchemes.Set1_3.colors[3]
+		]
+	fig = data(penguins) *
+	mapping(
+		:bill_length_mm,
+		:bill_depth_mm;
+		col=:sex,
+		color=:species) * 
+	(linear() * visual(linewidth=3) +
+		mapping())
+	draw(
+		fig;
+		palettes=(; color=ColorSchemes.Set1_3.colors)
+		)
+end
 
 # ╔═╡ 6c5b8a1f-6524-458a-ad24-315bbd9b90e1
 md"""
 ## Salvar gráficos de `AlgebraOfGraphics.jl`
+
+Apenas use o `save`:
+
+```julia
+fg = draw(...)
+save("figure.png", fg, px_per_unit = 3) # salva png alta resolução 300dpi
+save("figure.svg", fg, pt_per_unit = 2) # salva svg alta resolução
+```
+
+### Formatos Suportados
+
+- **`GLMakie`**: `.png`, `.jpeg`, e `.bmp`
+- **`CairoMakie`**: `.svg`, `.pdf`, `.png`, e `.jpeg`
+- **`WGLMakie`**: `.png`
+"""
+
+# ╔═╡ 87780a7b-dab0-4a1f-aaf4-b5c33a7bcb5f
+md"""
+## Temas de `AlgebraOfGraphics.jl`
+
+`AlgebraOfGraphics.jl` tem o seu [próprio tema](http://juliaplots.org/AlgebraOfGraphics.jl/dev/philosophy/#Opinionated-defaults) e também dá suporte aos [temas pré-definidos de `Makie.jl`](http://makie.juliaplots.org/dev/predefined_themes.html).
+"""
+
+# ╔═╡ e36ce10e-5747-4ac8-933d-87082503738c
+function demofigure()
+    f = Figure()
+    ax = Axis(f[1, 1],
+        title = "measurements",
+        xlabel = "time (s)",
+        ylabel = "amplitude")
+
+    labels = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta"]
+    for i in 1:6
+        y = cumsum(randn(10)) .* (isodd(i) ? 1 : -1)
+        lines!(y, label = labels[i])
+        scatter!(y, label = labels[i])
+    end
+
+    Legend(f[1, 2], ax, "legend", merge = true)
+
+    Axis3(f[1, 3],
+        viewmode = :stretch,
+        zlabeloffset = 40,
+        title = "sinusoid")
+
+    s = surface!(0:0.5:10, 0:0.5:10, (x, y) -> sqrt(x * y) + sin(1.5x))
+
+    Colorbar(f[1, 4], s, label = "intensity")
+
+    ax = Axis(f[2, 1:2],
+        title = "different species",
+        xlabel = "height (m)",
+        ylabel = "density",)
+    for i in 1:6
+        y = randn(200) .+ 2i
+        density!(y)
+    end
+    tightlimits!(ax, Bottom())
+    xlims!(ax, -1, 15)
+
+    Axis(f[2, 3:4],
+        title = "stock performance",
+        xticks = (1:6, labels),
+        xlabel = "company",
+        ylabel = "gain (\$)",
+        xticklabelrotation = pi/6)
+    for i in 1:6
+        data = randn(1)
+        barplot!([i], data)
+        rangebars!([i], data .- 0.2, data .+ 0.2)
+    end
+
+    f
+end;
+
+# ╔═╡ dfc0d351-a589-4f25-a00c-973bdf03f158
+md"""
+### AlgebraOfGraphics
+"""
+
+# ╔═╡ 4c8cb50e-44b3-419c-a113-6eaaa4614bfd
+let
+	set_aog_theme!()
+	demofigure()
+end
+
+# ╔═╡ d3f78785-cc9b-4028-be16-a2099ab419d3
+md"""
+### ggplot2
+"""
+
+# ╔═╡ 237f4595-fa70-498d-b548-9ce4b2d2da4b
+with_theme(demofigure, theme_ggplot2())
+
+# ╔═╡ 84abf831-6881-4116-af00-741889c33aae
+md"""
+### minimal
+"""
+
+# ╔═╡ bcac58ec-feca-46de-a291-d685907f52f0
+with_theme(demofigure, theme_minimal())
+
+# ╔═╡ 4a45ccba-c5b7-4bec-8ee1-aba72ffaf0ed
+md"""
+### black 😍
+"""
+
+# ╔═╡ 9ecc98d2-2b59-45dd-a383-9984cbcfed20
+with_theme(demofigure, theme_black())
+
+# ╔═╡ 8e6f6bec-b62a-485e-99f1-775e41c21c57
+md"""
+### light
+"""
+
+# ╔═╡ 7e4bcbcb-273e-4ef3-afc4-215dcd923ef8
+with_theme(demofigure, theme_light())
+
+# ╔═╡ 59548a54-beea-4d15-a49f-168bd2971965
+md"""
+### dark
+"""
+
+# ╔═╡ 4c4b0972-b6d4-4e7c-88cf-ff83c3162bd9
+with_theme(demofigure, theme_dark())
+
+# ╔═╡ e2927e8b-6268-46da-99b4-8f56da1241ea
+md"""
+# Galeria de Exemplos
 """
 
 # ╔═╡ 7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
@@ -1258,6 +1576,24 @@ let
     fig
 end
 
+# ╔═╡ ba45a8e0-ca7d-47eb-8782-1479a7dda6f2
+md"""
+## Séries Temporais
+"""
+
+# ╔═╡ a0d173fd-3307-422c-beb7-75f599c322a8
+md"""
+## Mapas
+"""
+
+# ╔═╡ fdf41c2b-8dfe-42eb-98bb-3b3a64f1cbdd
+md"""
+# Menções Honrosas
+
+* [`GraphMakie.jl`](https://github.com/JuliaPlots/GraphMakie.jl): plotando grafos (aquele que de "redes" com vértices e arestas).
+* [`WordCloud.jl`](https://github.com/guo-yong-zhi/WordCloud.jl): núvem de palavras.
+"""
+
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -1289,8 +1625,11 @@ AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
@@ -1298,21 +1637,26 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Shapefile = "8e980c4a-a4fe-5da2-b3a7-4b4b0353a2f4"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
+ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 
 [compat]
 AlgebraOfGraphics = "~0.4.9"
 CSV = "~0.8.5"
 CairoMakie = "~0.6.3"
 CategoricalArrays = "~0.10.0"
+ColorSchemes = "~3.13.0"
 Colors = "~0.12.8"
 DataFrames = "~1.2.1"
 HTTP = "~0.9.12"
 LaTeXStrings = "~1.2.1"
 Plots = "~1.19.4"
 PlutoUI = "~0.7.9"
+Shapefile = "~0.7.1"
 StatsPlots = "~0.14.26"
+ZipFile = "~0.9.3"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -1490,6 +1834,12 @@ version = "0.5.7"
 git-tree-sha1 = "3f71217b538d7aaee0b69ab47d9b7724ca8afa0d"
 uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 version = "4.0.4"
+
+[[DBFTables]]
+deps = ["Printf", "Tables", "WeakRefStrings"]
+git-tree-sha1 = "3887db9932c2f9f159d28bfbe34f25597048eb80"
+uuid = "75c7ada1-017a-5fb6-b8c7-2125ff2d6c93"
+version = "0.2.3"
 
 [[DataAPI]]
 git-tree-sha1 = "ee400abb2298bd13bfc3df1c412ed228061a2385"
@@ -1685,9 +2035,9 @@ version = "0.5.5"
 
 [[GeometryBasics]]
 deps = ["EarCut_jll", "IterTools", "LinearAlgebra", "StaticArrays", "StructArrays", "Tables"]
-git-tree-sha1 = "4136b8a5668341e58398bb472754bff4ba0456ff"
+git-tree-sha1 = "15ff9a14b9e1218958d3530cc288cf31465d9ae2"
 uuid = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
-version = "0.3.12"
+version = "0.3.13"
 
 [[Gettext_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "XML2_jll"]
@@ -2141,9 +2491,9 @@ version = "1.42.4+10"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "c8abc88faa3f7a3950832ac5d6e690881590d6dc"
+git-tree-sha1 = "94bf17e83a0e4b20c8d77f6af8ffe8cc3b386c0a"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "1.1.0"
+version = "1.1.1"
 
 [[Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -2312,6 +2662,12 @@ version = "1.3.5"
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
+[[Shapefile]]
+deps = ["DBFTables", "GeoInterface", "RecipesBase", "Tables"]
+git-tree-sha1 = "1f4070fed3e779b4f710583f8dacd87397cd13b1"
+uuid = "8e980c4a-a4fe-5da2-b3a7-4b4b0353a2f4"
+version = "0.7.1"
+
 [[SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
@@ -2381,9 +2737,9 @@ version = "1.0.0"
 
 [[StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "2f6792d523d7448bbe2fec99eca9218f06cc746d"
+git-tree-sha1 = "fed1ec1e65749c4d96fc20dd13bea72b55457e62"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.33.8"
+version = "0.33.9"
 
 [[StatsFuns]]
 deps = ["LogExpFunctions", "Rmath", "SpecialFunctions"]
@@ -2393,9 +2749,9 @@ version = "0.9.8"
 
 [[StatsModels]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "Printf", "ShiftedArrays", "SparseArrays", "StatsBase", "StatsFuns", "Tables"]
-git-tree-sha1 = "dfdf16cc1e531e154c7e62cd42d531e00f8d100e"
+git-tree-sha1 = "a209a68f72601f8aa0d3a7c4e50ba3f67e32e6f8"
 uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
-version = "0.6.23"
+version = "0.6.24"
 
 [[StatsPlots]]
 deps = ["Clustering", "DataStructures", "DataValues", "Distributions", "Interpolations", "KernelDensity", "LinearAlgebra", "MultivariateStats", "Observables", "Plots", "RecipesBase", "RecipesPipeline", "Reexport", "StatsBase", "TableOperations", "Tables", "Widgets"]
@@ -2404,10 +2760,10 @@ uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
 version = "0.14.26"
 
 [[StructArrays]]
-deps = ["Adapt", "DataAPI", "Tables"]
-git-tree-sha1 = "44b3afd37b17422a62aea25f04c1f7e09ce6b07f"
+deps = ["Adapt", "DataAPI", "StaticArrays", "Tables"]
+git-tree-sha1 = "000e168f5cc9aded17b6999a560b7c11dda69095"
 uuid = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
-version = "0.5.1"
+version = "0.6.0"
 
 [[StructTypes]]
 deps = ["Dates", "UUIDs"]
@@ -2501,6 +2857,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Wayland_jll"]
 git-tree-sha1 = "2839f1c1296940218e35df0bbb220f2a79686670"
 uuid = "2381bf8a-dfd0-557d-9999-79630e7b1b91"
 version = "1.18.0+4"
+
+[[WeakRefStrings]]
+deps = ["DataAPI", "Random", "Test"]
+git-tree-sha1 = "28807f85197eaad3cbd2330386fac1dcb9e7e11d"
+uuid = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
+version = "0.6.2"
 
 [[Widgets]]
 deps = ["Colors", "Dates", "Observables", "OrderedCollections"]
@@ -2652,6 +3014,12 @@ git-tree-sha1 = "79c31e7844f6ecf779705fbc12146eb190b7d845"
 uuid = "c5fb5394-a638-5e4d-96e5-b29de1b5cf10"
 version = "1.4.0+3"
 
+[[ZipFile]]
+deps = ["Libdl", "Printf", "Zlib_jll"]
+git-tree-sha1 = "c3a5637e27e914a7a445b8d0ad063d701931e9f7"
+uuid = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
+version = "0.9.3"
+
 [[Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
@@ -2727,15 +3095,11 @@ version = "0.9.1+5"
 # ╟─71876e1a-dd30-44e4-943f-af4582b74f6d
 # ╟─038653f4-7d94-4aed-92ef-c1258db95146
 # ╟─c98b5ef9-8cce-448e-8a8d-1cd1e94fb5cd
-# ╟─6fdaea83-8716-4b7e-82c6-57086c7e8efa
 # ╟─1d743482-02ae-4723-a35e-c23fcc79e2f5
 # ╟─5718597f-051e-42e8-ba85-d5ef5898f0f3
 # ╠═7ee550f4-39f8-4678-a101-eb506ea3ebc1
 # ╠═d0f51a90-f6b0-402d-bfd7-891abc065a48
 # ╠═ac54b4e0-33f5-426e-820e-3e9f002c2e91
-# ╟─4238a671-6d85-481e-a67d-2176813f5795
-# ╟─767225db-5dbe-4c5f-8c89-e7029f10c62b
-# ╟─b77198eb-92aa-4328-a194-ddce40362ebc
 # ╟─43c658ee-f378-450a-9d7c-97b603b56e62
 # ╠═b447e5e9-6647-46cd-b793-bf2ec2025a12
 # ╠═670086e1-fcb5-4fd6-9685-7dbbfc50080e
@@ -2859,11 +3223,47 @@ version = "0.9.1+5"
 # ╠═3d75b6ac-4735-49fd-88ec-d6b0d8d85af0
 # ╠═41718826-5264-46e5-941a-a9db5d263751
 # ╠═720cd7de-a32a-436e-b4e3-f08af1c8b0e3
-# ╠═7e21f990-8348-495a-9226-5a3bcc9ac373
-# ╠═6c5b8a1f-6524-458a-ad24-315bbd9b90e1
+# ╟─087e170a-7ae3-4f46-bda4-3b70e2732153
+# ╠═0d97b638-e6a1-4d63-9c2d-52a7a8070d16
+# ╟─0f6fa18c-6797-4c84-b32e-7932b2f16b8c
+# ╠═08882dce-6a3a-4a0d-8408-98ec2a122a8e
+# ╟─c20b59f9-3401-4c8f-9c95-a8f158b04384
+# ╠═ec6015b9-decb-4750-948d-5e252fbae8fe
+# ╠═585d1b44-34cd-485b-bd1c-b9f8a0b183ea
+# ╟─7e21f990-8348-495a-9226-5a3bcc9ac373
+# ╟─0d0cc1a1-bce0-446a-ba20-cc278c06c04c
+# ╟─d0344d4c-709e-4f82-8e47-f291d72bfa40
+# ╠═0bb9dc80-de08-41b3-98fb-6b1a6bc09b16
+# ╟─cb8b4f7a-aad1-464b-9dfa-2d2d177ffff3
+# ╠═8d60fd15-e0ed-4433-8fb7-92620ce1cfbd
+# ╟─743572d9-226c-40fe-bfbe-17d0631ccb87
+# ╠═ce5d791e-64f0-449d-ba9d-2a33463386aa
+# ╟─f8ca7907-9872-4f1d-8dac-0ca1f054ca62
+# ╠═32ac588f-3aff-4942-884b-abe7ca3e46b9
+# ╟─6c5b8a1f-6524-458a-ad24-315bbd9b90e1
+# ╟─87780a7b-dab0-4a1f-aaf4-b5c33a7bcb5f
+# ╟─e36ce10e-5747-4ac8-933d-87082503738c
+# ╟─dfc0d351-a589-4f25-a00c-973bdf03f158
+# ╠═4c8cb50e-44b3-419c-a113-6eaaa4614bfd
+# ╟─d3f78785-cc9b-4028-be16-a2099ab419d3
+# ╠═237f4595-fa70-498d-b548-9ce4b2d2da4b
+# ╟─84abf831-6881-4116-af00-741889c33aae
+# ╠═bcac58ec-feca-46de-a291-d685907f52f0
+# ╟─4a45ccba-c5b7-4bec-8ee1-aba72ffaf0ed
+# ╠═9ecc98d2-2b59-45dd-a383-9984cbcfed20
+# ╟─8e6f6bec-b62a-485e-99f1-775e41c21c57
+# ╠═7e4bcbcb-273e-4ef3-afc4-215dcd923ef8
+# ╟─59548a54-beea-4d15-a49f-168bd2971965
+# ╠═4c4b0972-b6d4-4e7c-88cf-ff83c3162bd9
+# ╟─e2927e8b-6268-46da-99b4-8f56da1241ea
 # ╟─7ef930ce-a8a7-4bf5-8e39-6a216d141ca4
 # ╠═ad112d99-2cd2-48de-8a85-2c7789600ef0
 # ╠═266b84f9-978b-47dd-9554-f3e7fabf2406
+# ╟─ba45a8e0-ca7d-47eb-8782-1479a7dda6f2
+# ╠═ed513f16-1ff5-4ad8-a2cb-4294f15a0ff2
+# ╟─a0d173fd-3307-422c-beb7-75f599c322a8
+# ╠═fee7043e-efdb-45d0-8e2f-9554eb525a12
+# ╟─fdf41c2b-8dfe-42eb-98bb-3b3a64f1cbdd
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
