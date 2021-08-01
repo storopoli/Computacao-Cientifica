@@ -61,6 +61,33 @@ md"""
 	**Sugestão de fonte**: Newman, M. (2018). Networks (2nd Edition). Oxford university press. [(link)](https://global.oup.com/academic/product/networks-9780198805090?cc=us&lang=en&)
 """
 
+# ╔═╡ 92bfdc9d-049f-4ebf-ae54-7056aeff738b
+md"""
+# Eu sei que vocês já sabem mas...
+
+Julia é muito rápida!
+
+Veja esses benchmarks entre cinco pacotes de grafos e redes:
+
+- [NetworkX](https://networkx.github.io/), v2.4, Python 3.8
+- [graph-tool](https://graph-tool.skewed.de/static/doc/quickstart.html), v2.31, Python 3.8
+- [Igraph](https://igraph.org/python/), v0.8.2, Python 3.8
+- [NetworKit](https://networkit.github.io/), v6.1.0, Python 3.8
+- [SNAP](https://snap.stanford.edu/snap/), v5.0.0, Python 3.7
+- [LightGraphs](https://juliagraphs.github.io/LightGraphs.jl/latest/), v2.0-dev, Julia 1.4
+
+E três datasets:
+
+- [Amazon product co-purchasing network from March 2 2003](https://snap.stanford.edu/data/amazon0302.html), 262k nodes, 1.2m edges
+ - [Web graph from Google](https://snap.stanford.edu/data/web-Google.html), 875k nodes, 5.1m edges
+- [Pokec online social network](https://snap.stanford.edu/data/soc-Pokec.html), 1.6m nodes, 30.6m edges
+
+> Fonte: timrlx [blog](https://www.timlrx.com/blog/benchmark-of-popular-graph-network-packages-v2) e código [`timlrx/graph-benchmarks`](https://github.com/timlrx/graph-benchmarks)
+"""
+
+# ╔═╡ 811325db-bb90-440d-968c-bde2b975b09d
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/LightGraphs_benchmarks.png?raw=true")
+
 # ╔═╡ 2c28dc38-77bb-4e3d-b80e-e5b2ab221171
 md"""
 # Análise de Redes (Grafos)
@@ -2183,6 +2210,8 @@ version = "3.5.0+0"
 # ╟─e8c26849-bdd0-4dd2-ad6a-e9ddf6f7ef86
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
 # ╟─94b06d53-864f-43b0-ab90-0f364ef869ee
+# ╟─92bfdc9d-049f-4ebf-ae54-7056aeff738b
+# ╟─811325db-bb90-440d-968c-bde2b975b09d
 # ╟─2c28dc38-77bb-4e3d-b80e-e5b2ab221171
 # ╟─eb902545-63e1-4be0-b679-24122107f2cd
 # ╟─ae931f3a-6953-4464-9eac-6d9b2b7462d6
