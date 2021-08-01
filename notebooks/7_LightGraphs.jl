@@ -29,7 +29,7 @@ begin
 	
 	# Seed
 	using Random: seed!
-	seed!(123)
+	seed!(1)
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -782,7 +782,7 @@ Com comunidades detectadas podemos usar a `vlist` para criar os subgrafos:
 
 # ╔═╡ 3e49645d-7203-412a-9384-c5a63e4b3c5e
 # primeiro precisamos de uma máscara booleana
-bool_mask = karate_bethe .== 1
+bool_mask = karate_nback .== 1
 
 # ╔═╡ b0efd6e0-55a9-4020-9ebc-cc60d4e8717a
 vlist_1 = vertices(g)[bool_mask]
@@ -2189,7 +2189,7 @@ version = "3.5.0+0"
 # ╟─c74c2f4c-5fae-4fed-bdc7-70ceb63afed1
 # ╟─771106a8-4e23-4bcf-a40a-75cbfc464d37
 # ╟─d7471179-87b7-41a8-903e-78f720bf3195
-# ╠═103d0652-4595-4cc7-8dc4-18068d300f0d
+# ╟─103d0652-4595-4cc7-8dc4-18068d300f0d
 # ╟─30c461b2-70b0-4487-bf94-60d92b229d07
 # ╟─bc1a7dd9-c5a7-495d-92b5-60781fe182da
 # ╟─f7f056fe-9908-4957-81e0-c45466d9818f
