@@ -29,7 +29,7 @@ begin
 	
 	# Seed
 	using Random: seed!
-	seed!(1)
+	seed!(123)
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -765,7 +765,7 @@ let
 	f, ax, p = graphplot(
 		g;
 		node_size=degree_centrality(g) .* 1e2,
-		node_color=karate_bethe)
+		node_color=karate_nback)
 	hidedecorations!(ax)
 	hidespines!(ax)
 	f
