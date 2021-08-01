@@ -68,6 +68,14 @@ md"""
 # ╔═╡ ff1ec432-ce73-4d04-8dcf-dea133894b67
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ b09513de-7df4-4fd5-95c4-d38965d6a666
+md"""
+!!! danger "⚠️ Disciplina Ferramental"
+    **Esta disciplina é uma disciplina ferramental!**
+
+	Portanto, se você não sabe o que é uma rede ou um grafo, pegue um livro-texto e estude ou pergunte pro seu orientador.
+"""
+
 # ╔═╡ 59b60d4a-04bf-425e-a443-1361af55a428
 md"""
 # O que são Séries Temporais?
@@ -890,6 +898,7 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─ff1ec432-ce73-4d04-8dcf-dea133894b67
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
+# ╟─b09513de-7df4-4fd5-95c4-d38965d6a666
 # ╟─59b60d4a-04bf-425e-a443-1361af55a428
 # ╟─9eb79017-d135-44e9-a2ea-712829418a6d
 # ╟─38581a7b-2da4-49fb-b5e0-32db22cb3616
