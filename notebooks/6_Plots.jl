@@ -83,7 +83,7 @@ TableOfContents(aside=true)
 
 # ╔═╡ 7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 md"""
-# Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics`
+# Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`
 """
 
 # ╔═╡ a1044598-e24a-4399-983e-3a906e9fae51
