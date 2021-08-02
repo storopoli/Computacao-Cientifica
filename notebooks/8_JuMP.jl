@@ -86,7 +86,7 @@ md"""
 
 **[`JuMP.jl`](https://github.com/jump-dev/JuMP.jl) é uma linguagem de modelagem e pacotes de suporte para otimização matemática em Julia**.
 
-O JuMP torna mais fácil formular e resolver programação linear, programação semidefinida, programação inteira, otimização convexa, otimização não-linear restrita e classes relacionadas de problemas de otimização. Você pode usá-lo para d[irecionar ônibus escolares](https://www.the74million.org/article/building-a-smarter-and-cheaper-school-bus-system-how-a-boston-mit-partnership-led-to-new-routes-that-are-20-more-efficient-use-400-fewer-buses-save-5-million/), [programar trens](https://www.sciencedirect.com/science/article/pii/S0191261516304830), [planejar a expansão da rede elétrica](https://juliacomputing.com/case-studies/psr/) ou até mesmo [otimizar a produção de leite](https://juliacomputing.com/case-studies/moo/).
+O JuMP torna mais fácil formular e resolver programação linear, programação semidefinida, programação inteira, otimização convexa, otimização não-linear restrita e classes relacionadas de problemas de otimização. Você pode usá-lo para [direcionar ônibus escolares](https://www.the74million.org/article/building-a-smarter-and-cheaper-school-bus-system-how-a-boston-mit-partnership-led-to-new-routes-that-are-20-more-efficient-use-400-fewer-buses-save-5-million/), [programar trens](https://www.sciencedirect.com/science/article/pii/S0191261516304830), [planejar a expansão da rede elétrica](https://juliacomputing.com/case-studies/psr/) ou até mesmo [otimizar a produção de leite](https://juliacomputing.com/case-studies/moo/).
 """
 
 # ╔═╡ 675673cd-b9dd-45ac-a950-9e91aa421253
