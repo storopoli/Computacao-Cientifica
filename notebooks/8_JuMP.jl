@@ -443,8 +443,9 @@ let
 	xs, ys = LinRange(-1.5, 1.5, 1000), LinRange(-1.5, 1.5, 1000)
 	zs = [rosenbrock(xᵢ,yᵢ) for xᵢ ∈ xs, yᵢ ∈ ys]
 	fig = Figure()
-	ax1, s = surface(fig[1, 1], xs, ys, zs; axis=(; type=Axis3, show_axis=false))
-	ax2, c = contourf(fig[1, 2], xs, ys, zs; axis=(; show_axis=false))
+	ax1, s = surface(fig[1, 1], xs, ys, zs;
+					 axis=(; type=Axis3, azimuth=2.25pi))
+	ax2, c = contourf(fig[1, 2], xs, ys, zs)
 	cbar = fig[1, end+1] = Colorbar(fig, c)
 	supertitle = fig[0, :] = Label(fig, "Rosenbrock", textsize = 36)
 	hidedecorations!(ax1)
@@ -1841,7 +1842,7 @@ version = "3.5.0+0"
 # ╟─15ab5bb5-450f-48a1-9297-01551e4d718a
 # ╟─23eed772-da51-447c-b455-799451c2c577
 # ╠═32b94549-c833-4ab6-8b04-01568d4dd817
-# ╟─08439a43-0292-4776-b9af-22a7b57e3157
+# ╠═08439a43-0292-4776-b9af-22a7b57e3157
 # ╟─efa70ec6-854e-4c24-a8a2-cb0d9248193e
 # ╟─72176675-44b4-468b-a123-2b06edb39cf6
 # ╠═49f8c981-5b66-4524-bd45-91154c8307d6
