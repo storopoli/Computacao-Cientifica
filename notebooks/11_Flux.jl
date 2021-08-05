@@ -68,13 +68,60 @@ HTML("
 <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/aircAruvnKk' frameborder='0' allowfullscreen></iframe></div>
 ")
 
+# ╔═╡ 926b21c0-04d6-4d25-be7b-10d421fe92b8
+md"""
+# O que é uma rede neural?
+
+Redes neurais artificiais (RNAs) são modelos computacionais inspirados pelo sistema nervoso central (em particular o cérebro) que são capazes de realizar o aprendizado de máquina bem como o reconhecimento de padrões.
+
+Redes neurais artificiais geralmente são apresentadas como **sistemas de "neurônios interconectados, que podem computar valores de entradas"**, simulando o comportamento de redes neurais biológicas
+"""
+
+# ╔═╡ 61fd08c4-17dd-4f48-bb44-b90395ed8146
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/redes_neurais.jpeg?raw=true")
+
+# ╔═╡ cf5581e9-1c68-4798-af3c-dd480a2ec290
+md"""
+# Como a rede neural aprende?
+
+Em cada neurônio há uma função de ativação (*activation function*) que processa uma combinação linear entre inputs e pesos sinápticos, gerando assim um sinal de saída.
+
+A informação flui da *input layer* para as *hidden layers* e por fim para a *output layer*. Nesse fluxo os inputs de dados da *input layer* são alimentados para os neurônios das *hidden layers* que por fim alimentam o neurônio final da *output layer*.
+
+A primeira passada de informação (propagação) pela rede é geralmente feita com parâmetros aleatórios para as funções de ativação dos neurônios.
+
+Ao realizar a propagação, chamada de *feed forward*, temos sinais de saídas nos neurônios da output layer. 
+
+No fim da propagação, a função custo (uma métrica de erro) é calculada e o modelo então ajusta os parâmetros dos neurônios na direção de um menor custo (por meio do gradiente - derivada multivariada).
+
+Assim uma nova propagação é gerada e a numa nova função custo e calculada. Assim como é realizado a atualização dos parâmetros dos neurônios.
+
+O nome desse algoritmo é **Retro-propagação** (*Backpropagation*). E cada vez que ele é executado denomina-se como época (*epoch*). E quandos as épocas estabelecidas se encerram, a rede neural encerra o seu treinamento/aprendizagem.
+"""
+
+# ╔═╡ 2674b100-0da8-4503-b868-2e9429b3e099
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/backpropagation.gif?raw=true")
+
+# ╔═╡ 62e019b3-9190-4dcf-8bf3-115367585619
+md"""
+# Funções de Ativação (_Activation Functions_)
+
+| **Sigmoid**                                                  | **Tanh**                                                     | **ReLU**                                                     | **Leaky ReLU**                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| $g(z)=\frac{1}{1+e^{-z}}$                                    | $g(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$                     | $g(z)=\max (0, z)$                                           | $\begin{array}{c}{g(z)=\max (\epsilon z, z)} \\ {\text { com } \epsilon \ll 1}\end{array}$ |
+| $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/sigmoid.png?raw=true", :width => 100)) | $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/tanh.png?raw=true", :width => 100)) | $(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/relu.png?raw=true", :width => 100)) | !$(Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/leaky-relu.png?raw=true", :width => 100)) |
+"""
+
 # ╔═╡ acb6dd37-b6eb-4226-88a2-6bece14c9eaf
 md"""
-# Gradiente Descendente
+# Gradiente Descendente (_Gradient Descent_)
+
+bla bla bla
 """
 
 # ╔═╡ b45ceedd-31b6-4871-b2bf-351114d3a24c
 let
+	WGLMakie.activate!()
 	function descend(
     Δ::Real,
     x0::Real,
@@ -157,6 +204,180 @@ let
 	
 	fig
 end
+
+# ╔═╡ 65ddfed1-2ae1-4df8-9948-a2d98d7c8a28
+md"""
+!!! tip "💡"
+    Se a imagem interativa acima estiver quebrada provavelmente você vai ter que rodar esse notebook no seu computador ou no `binder`.
+
+	Mas pelo menos te dou um *free sample* estático abaixo.
+"""
+
+# ╔═╡ d6250574-fa76-4e7e-b3de-cb74b851162e
+let
+	CairoMakie.activate!()
+	function descend(
+    Δ::Real,
+    x0::Real,
+    y0::Real;
+    numsteps = 10
+    )::Array{Float64, 2}
+
+    coords = zeros(numsteps, 2)
+
+    coords[1, 1] = x0
+
+    coords[1, 2] = y0
+
+    for i ∈ 2:numsteps
+
+        coords[i, :] = coords[i-1, :] + Δ*∇f(coords[i-1, :])
+
+        end
+
+    coords
+    end
+
+	f(x::Real, y::Real)  = 2/(x^2 - 4*x + y^2 + 5) + 3/(x^2 - 4*y + y^2 + 6)
+
+	f(x::Array{T, 1} where T <: Real)  = f(x[1], x[2])
+
+	∇f(x::Real, y::Real) = ForwardDiff.gradient(f, [x, y])
+	∇f(x::Array{<:AbstractFloat, 1}) = ForwardDiff.gradient(f, x)
+
+	fig = Figure(resolution=(800, 800))
+
+	# 2-D
+	ax1 = Axis(fig[1, 1])
+	# 3-D
+	ax2 = Axis3(fig[2, 1])
+
+	# different plots you can see of f and ∇f
+	xa = LinRange(-5, 5, 500)
+	ya = LinRange(-5, 5, 500)
+	za = .-[f(x, y) for x ∈ xa, y ∈ ya]
+	# ∇za = [∇f(x, y) for x ∈ xa, y ∈ ya]
+
+	plotobj2d = contour3d!(ax1, xa, ya, za; shading=false, linewidth=3, levels=20)
+	plotobj3d = surface!(ax2, xa, ya, za; shading=false)
+	# fsurf = surface!(ax1, xa, ya, za; shading = false)
+	# ∇fsurf = surface!(ax1, xa, ya, ∇za; shading = false)
+	# fcont = contour!(ax1, xa, ya, za; levels = 20, linewidth = 3)
+	# ∇fcont = contour!(ax1, xa, ya, ∇za; levels = 20, linewidth = 3)
+	# fheat = heatmap!(ax1, xa, ya, za)
+	# ∇fheat = heatmap!(ax1, xa, ya, ∇za)
+	# fcont3 = contour3d!(ax1, xa, ya, za; levels = 20, linewidth = 3)
+	# ∇fcont3 = contour3d!(ax1, xa, ya, ∇za; levels = 20, linewidth = 3)
+
+	
+	x0 = 0.0
+	y0 = 0.0
+	coords = descend(0.6, x0, y0)
+	xs = coords[:, 1]
+	ys = coords[:, 2]
+	zs = .-f.(xs, ys) # for three dimensional plots
+	scatterlines!(ax1, xs, ys, zs, color = :red, linewidth = 5)
+	scatterlines!(ax2, xs, ys, zs, color = :red, linewidth = 5)
+	hidedecorations!(ax1)
+	hidedecorations!(ax2)
+	hidespines!(ax1)
+	hidespines!(ax2)
+	
+	fig
+end
+
+# ╔═╡ 461d0516-6e5e-40f6-b54c-68c16e6371ab
+md"""
+# Algoritmos de Otimização (_Optimization_)
+
+A seguir alguns **algoritmos de otimização**, junto com as referências e o seu tipo em `Flux.jl`:
+
+* **SGD**: _**S**tochastic **G**radient **D**escent_ -- `Descent`
+
+
+* **SGD com Momento**: SGD com Momento usando a derivada (ou gradiente) do ponto atual --- `Momentum`
+
+
+* **SGD com Momento Nesterov**: SGD com Momento mas  usa a derivada (ou o gradiente) parcial do ponto seguinte (Nesterov, 1983) -- `Nesterov`
+
+
+* **RMSprop**: SGD com taxa de aprendizagem adaptativa  (Hinton, Srivastava & Swersky, 2012) -- `RMSProp`
+
+
+* **AdaGrad**: SGD com taxa de aprendizagem adaptativa (Duchi, Hazan, & Yoram, 2011) --  `AdaGrad`
+
+
+* **Adam**: SGD com taxa de aprendizagem adaptativa e momento (Kingma, Diederick & Jimmy, 2014) --- `ADAM`
+
+> Duchi, John, Elad Hazan, and Yoram Singer. "Adaptive subgradient methods for online learning and stochastic optimization." Journal of machine learning research 12.7 (2011).
+> 
+> Hinton, Geoffrey, Nitish Srivastava, and Kevin Swersky. “Neural Networks for Machine Learning Lecture 6a Overview of Mini--Batch Gradient Descent,” 2012.
+>
+> Kingma, Diederik P., and Jimmy Ba. “Adam: A Method for Stochastic Optimization,” December 22, 2014. https://arxiv.org/abs/1412.6980.
+>
+> Nesterov, Y. A method of solving a convex programming problem with convergence rate O(1/sqr(k)). _Soviet Mathematics Doklady_, 27:372–376, 1983.
+"""
+
+# ╔═╡ 25b44378-069d-48e6-8ef8-74642e50d201
+md"""
+!!! tip "💡 Algoritmos de Otimização"
+    Note que  temos uma PORRADA de algoritmos propostos pela literatura.
+
+	Veja a seção [_Optimization_ do paperswithcode.com](https://paperswithcode.com/methods/category/optimization) para uma listagem bem mais completa.
+"""
+
+# ╔═╡ 11ad6e43-e9d4-4812-b2a7-af2c57414a25
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/comparacao_otimizadores.gif?raw=true")
+
+# ╔═╡ 98d633ea-151e-4806-b879-36d258ea95f8
+md"""
+# Funções Custo (_Cost Functions_)
+
+As funções custos se dividem em dois tipos:
+
+1. Funções Custo de **Classificação**
+2. Funções Custo de **Regressão**
+"""
+
+# ╔═╡ 5949000c-bb03-4799-8af7-9c056771c3c4
+md"""
+## Funções Custo -- Regressão
+"""
+
+# ╔═╡ 8ed693b9-e24f-4d1e-83ac-b154969b264c
+md"""
+##  Funções Custo -- Classificação
+"""
+
+# ╔═╡ 81620941-c4a0-4560-a77f-deb4b5c78fe1
+md"""
+# Tamanho de Batch (_Batch Size_)
+
+Tamanho do Batch de dados que passa por vez pela rede neural antes da atualização dos parâmetros pelo *backpropagation*. Tamanhos grandes resultam em instabilidade no treinamento. Geralmente usam-se potências de $2$ $(2,4,8,16,\dots, 2^n)$.
+
+Em Abril de 2018, Yann LeCun, um dos principais pesquisadores sobre redes neurais e ganhador do "nobel" da computação (Prêmio Turing) twittou em resposta à um artigo empírico que mostrava diversos contextos de *batch size*:
+>"Friends don't let friends use mini-batches larger than 32"
+
+Então 32 é um valor empiricamente verificado que dá estabilidade ao treinamento.
+"""
+
+# ╔═╡ f90b73ba-913e-4bec-874a-95cf82636760
+md"""
+# _Dropout_
+
+_Dropout_ (Srivastava et al. 2014) é uma medida de regularização na qual evita-se overfitting proposta por Hinton em 2012. *Dropout* é um algoritmo que especifica que a cada iteração de época do treino os neurônios possuem uma probabilidade de serem removidos (não utilizados) para a aprendizagem. Geralmente a probabilidade ideal fica em torno de 20% ($0.2$).
+
+> Srivastava, Nitish, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. “Dropout: A Simple Way to Prevent Neural Networks from Overfitting.” _Journal of Machine Learning Research 15_, no. 56 (2014): 1929–58.
+"""
+
+# ╔═╡ 27de55a7-ea5a-42b9-b8f7-312b33e3c21a
+Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/dropout.gif?raw=true")
+
+# ╔═╡ fddc4e3b-1083-48df-b88b-881db060a754
+md"""
+# [`Flux.jl`](https://fluxml.ai/)
+
+"""
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
@@ -1497,8 +1718,25 @@ version = "3.5.0+0"
 # ╟─919df339-43d3-40a6-97a2-4ef77e3a562b
 # ╟─a4eda727-2d82-4100-bc74-bec00a4120e0
 # ╟─2bbe47e5-2742-493c-9829-f66a026fa840
-# ╟─acb6dd37-b6eb-4226-88a2-6bece14c9eaf
+# ╟─926b21c0-04d6-4d25-be7b-10d421fe92b8
+# ╟─61fd08c4-17dd-4f48-bb44-b90395ed8146
+# ╟─cf5581e9-1c68-4798-af3c-dd480a2ec290
+# ╟─2674b100-0da8-4503-b868-2e9429b3e099
+# ╟─62e019b3-9190-4dcf-8bf3-115367585619
+# ╠═acb6dd37-b6eb-4226-88a2-6bece14c9eaf
 # ╟─b45ceedd-31b6-4871-b2bf-351114d3a24c
+# ╟─65ddfed1-2ae1-4df8-9948-a2d98d7c8a28
+# ╟─d6250574-fa76-4e7e-b3de-cb74b851162e
+# ╟─461d0516-6e5e-40f6-b54c-68c16e6371ab
+# ╟─25b44378-069d-48e6-8ef8-74642e50d201
+# ╟─11ad6e43-e9d4-4812-b2a7-af2c57414a25
+# ╟─98d633ea-151e-4806-b879-36d258ea95f8
+# ╠═5949000c-bb03-4799-8af7-9c056771c3c4
+# ╠═8ed693b9-e24f-4d1e-83ac-b154969b264c
+# ╠═81620941-c4a0-4560-a77f-deb4b5c78fe1
+# ╠═f90b73ba-913e-4bec-874a-95cf82636760
+# ╟─27de55a7-ea5a-42b9-b8f7-312b33e3c21a
+# ╠═fddc4e3b-1083-48df-b88b-881db060a754
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
