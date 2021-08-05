@@ -16,7 +16,6 @@ begin
 	using CairoMakie
 	using WGLMakie
 	using JSServe
-	JSServe.Page(exportable=true)
 	
 	# Seed
 	using Random:seed!
@@ -42,6 +41,9 @@ md"""
 # ╔═╡ 3cf20976-2d7c-4436-bcb1-00c4f3db8985
 Resource("https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg", :width => 120, :display => "inline")
 
+# ╔═╡ b50112c8-d571-4b48-9acc-19c5a349edce
+JSServe.Page(exportable=true)
+
 # ╔═╡ 919df339-43d3-40a6-97a2-4ef77e3a562b
 md"""
 !!! danger "⚠️ Disciplina Ferramental"
@@ -54,6 +56,17 @@ md"""
 	Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. MIT Press. [(link)](https://www.deeplearningbook.org/)
 
 """
+
+# ╔═╡ a4eda727-2d82-4100-bc74-bec00a4120e0
+md"""
+!!! tip "💡 3blue1brown Neural Networks"
+    Os vídeos do [3blue1brown](https://www.youtube.com/c/3blue1brown) são excelentes. Inclusive ele tem uma **playlist sobre redes neurais**.
+"""
+
+# ╔═╡ 2bbe47e5-2742-493c-9829-f66a026fa840
+HTML("
+<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/aircAruvnKk' frameborder='0' allowfullscreen></iframe></div>
+")
 
 # ╔═╡ acb6dd37-b6eb-4226-88a2-6bece14c9eaf
 md"""
@@ -1480,9 +1493,12 @@ version = "3.5.0+0"
 # ╟─7bb67403-d2ac-4dc9-b2f1-fdea7a795329
 # ╟─3cf20976-2d7c-4436-bcb1-00c4f3db8985
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
+# ╠═b50112c8-d571-4b48-9acc-19c5a349edce
 # ╟─919df339-43d3-40a6-97a2-4ef77e3a562b
-# ╠═acb6dd37-b6eb-4226-88a2-6bece14c9eaf
-# ╠═b45ceedd-31b6-4871-b2bf-351114d3a24c
+# ╟─a4eda727-2d82-4100-bc74-bec00a4120e0
+# ╟─2bbe47e5-2742-493c-9829-f66a026fa840
+# ╟─acb6dd37-b6eb-4226-88a2-6bece14c9eaf
+# ╟─b45ceedd-31b6-4871-b2bf-351114d3a24c
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
