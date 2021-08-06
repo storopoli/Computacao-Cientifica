@@ -856,7 +856,7 @@ A função `accuracy` compara a predição `onehot` do modelo para um dado `x` c
 """
 
 # ╔═╡ 373b0fd2-3d4a-4ec4-b4cd-69b50951877c
-accuracy(x, y, model) = mean(onecold(device(cpu(x))) .== onecold(cpu(y)))
+accuracy(x, y, model) = mean(onecold(cpu(m(x))) .== onecold(cpu(y)))
 
 # ╔═╡ 395154d6-3d5e-4253-aade-dac59fb71758
 accuracy(x_test..., m)
