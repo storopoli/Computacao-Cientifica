@@ -507,6 +507,7 @@ O ecosistema de `Flux.jl` é enorme. Vou listar alguns pacotes/repositórios int
 * [`FastAI.jl`](https://github.com/FluxML/FastAI.jl): Melhores Práticas de Deep Learning inspirados em [`fastai`](https://github.com/fastai/fastai)
 * [`GeometricFlux.jl`](https://github.com/FluxML/GeometricFlux.jl): Deep Learning Geométrico
 * [`MLJFlux.jl`](https://github.com/FluxML/MLJFlux.jl): Interface de `Flux.jl` com `MLJ.jl`
+* [`EasyML.jl`](https://github.com/OML-NPA/EasyML.jl): Criando redes neurais com `Flux.jl` de maneira fácil via GUI.
 * [`Gym.jl`](https://github.com/FluxML/Gym.jl): Ambientes para Aprendizagem de Reforço
 * [`AlphaZero.jl`](https://github.com/jonathan-laurent/AlphaZero.jl): Implementação do AlphaZero de Deep Mind em Julia.
 * [`NeuralVerification.jl`](https://github.com/sisl/NeuralVerification.jl): Verificação de Redes Neurais contra ataques adversariais
@@ -851,15 +852,14 @@ onecold([false, true, false])
 # ╔═╡ 2b901334-0c7c-4484-9681-6949b614eb39
 md"""
 A função `accuracy` compara a predição `onehot` do modelo para um dado `x` convertida para `onecold` e compara com o rótulo real `y` convertido para `onecold`:
-
-> OBS: usando CPU para isso pois a computação de predição não é intensiva.
 """
 
 # ╔═╡ 373b0fd2-3d4a-4ec4-b4cd-69b50951877c
-accuracy(x, y, model) = mean(onecold(cpu(m(x))) .== onecold(cpu(y)))
+# accuracy(x, y, model) = mean(onecold(device(model.(x))) .== onecold(device(y)))
+accuracy(x, y, model) = mean(onecold(model(x)) .== onecold(y))
 
 # ╔═╡ 395154d6-3d5e-4253-aade-dac59fb71758
-accuracy(x_test..., m)
+accuracy(x_test, y_test, m)
 
 # ╔═╡ e9679cf3-32d1-41c7-906a-e0ff66e52747
 md"""
