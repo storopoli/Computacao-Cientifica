@@ -861,6 +861,12 @@ accuracy(x, y, model) = mean(onecold(device(cpu(x))) .== onecold(cpu(y)))
 # ╔═╡ 395154d6-3d5e-4253-aade-dac59fb71758
 accuracy(x_test..., m)
 
+# ╔═╡ e9679cf3-32d1-41c7-906a-e0ff66e52747
+md"""
+!!! info "💁 Flux.jl"
+    Se você gostou de redes neurais não deixe de ver a documentação de [`Flux.jl`](http://fluxml.ai)
+"""
+
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -2384,6 +2390,7 @@ version = "3.5.0+0"
 # ╟─2b901334-0c7c-4484-9681-6949b614eb39
 # ╠═373b0fd2-3d4a-4ec4-b4cd-69b50951877c
 # ╠═395154d6-3d5e-4253-aade-dac59fb71758
+# ╟─e9679cf3-32d1-41c7-906a-e0ff66e52747
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
