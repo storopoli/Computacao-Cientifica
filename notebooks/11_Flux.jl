@@ -489,6 +489,12 @@ As redes neurais convolucionais se distinguem de outras redes neurais por seu de
 # ╔═╡ 160cf645-d716-43aa-8b7c-0a764c4af623
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/deeplearning_convolutions.gif?raw=true")
 
+# ╔═╡ be9b6acb-670d-4d14-abd7-c80c2695f56f
+md"""
+!!! tip "💡 Por que Redes Neurais Convolucionais?"
+    As Redes Neurais Convolucionais têm a capacidade de **extrair automaticamente características dos padrões a serem aprendidos** (por meio das camadas de convolução), tarefa que necessariamente tem que ser implementada separadamente quando se emprega uma Rede Neural padrão ("vanilla", _**M**_ulti**l**ayer **P**erceptron_ -- MLP) ou um outro classificador convencional (por exemplo, _**S**upport **V**ector **M**achine_ -- SVM)
+"""
+
 # ╔═╡ fddc4e3b-1083-48df-b88b-881db060a754
 md"""
 # [`Flux.jl`](https://fluxml.ai/)
@@ -2329,6 +2335,7 @@ version = "3.5.0+0"
 # ╟─00aac365-a747-456d-b999-a90e250396a6
 # ╟─5fc43fe1-2807-4457-accf-2afbaee77282
 # ╟─160cf645-d716-43aa-8b7c-0a764c4af623
+# ╟─be9b6acb-670d-4d14-abd7-c80c2695f56f
 # ╟─fddc4e3b-1083-48df-b88b-881db060a754
 # ╟─332e8a34-d774-4c5b-acd0-51e2aaf9b095
 # ╟─9b9f74e3-03e7-45d5-96b1-8bbd5fbf8de0
