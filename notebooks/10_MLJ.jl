@@ -11,7 +11,7 @@ begin
 	
 	# MLJ.jl
 	using MLJ
-	using EvoTrees
+	import EvoTrees
 	
 	# Dados
 	using CSV
@@ -666,7 +666,7 @@ fit!(mach_tuning_tree)
 
 # ╔═╡ 2cc32659-9ce8-4faf-ab15-9cfc616d1f52
 md"""
-E vemos o mdelhor modelo com `fitted_params` do `best_model` do `machine`:
+E vemos o melhor modelo com `fitted_params` do `best_model` do `machine`:
 """
 
 # ╔═╡ d81bc8da-d814-4eb4-90d3-be3f11c00aff
@@ -694,7 +694,7 @@ evaluate!(
 # ╔═╡ 58723900-8aa3-42a8-8853-2b6ef025f2fb
 md"""
 !!! tip "💡 Tuning de Hiperparâmetros"
-    Tem MUITAS maneiras de "tunar"os hiperparâmetros do seu modelo. Não deixe de ver a [documentação de `MLJ.jl`]()https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models
+    Tem MUITAS maneiras de "tunar"os hiperparâmetros do seu modelo. Não deixe de ver a [documentação de `MLJ.jl`](https://alan-turing-institute.github.io/MLJ.jl/dev/tuning_models)
 """
 
 # ╔═╡ fe42d84b-e76c-464f-8d7e-78f3b7edf63c
