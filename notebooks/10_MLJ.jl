@@ -179,6 +179,17 @@ Resource("https://github.com/alan-turing-institute/MLJ.jl/blob/dev/material/MLJL
 md"""
 `MLJ.jl` (Machine Learning in Julia) é uma caixa de ferramentas escrita em Julia, fornecendo uma interface comum e meta-algoritmos para **selecionar**, **ajustar**, **avaliar**, **compor** e **comparar** os modelos de **aprendizagem de máquina** escrito em Julia e outras linguagens. Em particular, o MLJ também engloba um grande número de modelos [`scikit-learn`](https://scikit-learn.org/stable/).
 
+!!! tip "💡 Paralelismo de MLJ.jl"
+    Por padrão [**`MLJ.jl` executa de maneira serial**](https://alan-turing-institute.github.io/MLJ.jl/dev/acceleration_and_parallelism/) na CPU pelo recurso computacional `CPU1()`. Para ver qual recurso computacional `MLJ.jl` está usando use `MLJ.default_resource()`. Para **trocar** use:
+
+	```julia
+	# Computação Distribuída
+	MLJ.default_resource(CPUProcesses())
+
+	# Multithreaded
+	MLJ.default_resource(CPUThreads())
+	```
+
 ## Funcionalidades de `MLJ.jl`
 
 * **Agnóstico de Dados**, treina modelos em quaisquer dados suportados pela interface [`Tables.jl`](https://github.com/JuliaData/Tables.jl) (isso inclui `DataFrames.jl`),
