@@ -324,6 +324,11 @@ md"""
 E se colocarmos paralelismo [SIMD](https://en.wikipedia.org/wiki/SIMD) pois as operações no loop são associativas:
 """
 
+# ╔═╡ d79ec91b-353f-4986-90a6-be613b20bff7
+md"""
+> OBS resposta original no meu computador é 12.5 μs (Python) vs 2.83 μs (Julia)
+"""
+
 # ╔═╡ d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
 md"""
 ### Alguns Projetos Interessantes:
@@ -340,7 +345,7 @@ md"""
 4. [**Aceleração de 175x** para modelos de farmacologia da Pfizer usando GPUs em Julia] (https://juliacomputing.com/case-studies/pfizer/). Foi apresentado como um [pôster](https://chrisrackauckas.com/assets/Posters/ACoP11_Poster_Abstracts_2020.pdf) na 11ª Conferência Americana de Farmacometria (ACoP11) e [ganhou um prêmio de qualidade](https: //web.archive .org / web / 20210121164011 / https: //www.go-acop.org/abstract-awards).
 
 
-5. [O Subsistema de Controle de Atitude e Órbita (AOCS) do satélite brasileiro Amazônia-1 é **escrito 100% em Julia**](https://discourse.julialang.org/t/julia-and-the-satellite -amazonia-1/57541) por [Ronan Arraes Jardim Chagas](https://ronanarraes.com/)
+5. [O simulador do Subsistema de Controle de Atitude e Órbita (AOCS) do satélite brasileiro Amazonia-1 é **escrito 100% em Julia**](https://discourse.julialang.org/t/julia-and-the-satellite -amazonia-1/57541) por [Ronan Arraes Jardim Chagas](https://ronanarraes.com/). Além disso, Julia é usada para inúmeras atividades relacionadas com a Análise de Missão do mesmo satélite.
 
 
 6. [O Banco Nacional de Desenvolvimento do Brasil (BNDES) abandonou uma solução paga e optou pela modelagem Julia de código aberto e ganhou uma **aceleração 10x**.](https://youtu.be/NY0HcGqHj3g)
@@ -2817,6 +2822,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─c9be26cf-08d1-4927-b2da-a3cf4d1023ee
 # ╠═bdbe2067-2101-4f36-a64d-442afc9c20dc
 # ╠═6be5724f-78ed-49e4-8ac5-07caea58a4ee
+# ╟─d79ec91b-353f-4986-90a6-be613b20bff7
 # ╟─959e2288-ee21-4541-9ce0-537716190733
 # ╟─d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
 # ╟─9104cac0-b5a8-4a54-a636-6475c0d3489f
