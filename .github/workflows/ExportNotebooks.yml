@@ -38,14 +38,14 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install scipy
             - name: Run Pluto notebooks
-              run: julia --project=pluto-deployment-environment -e '
+              run: julia --color=yes --project=pluto-deployment-environment -e '
                   import Pkg;
                   Pkg.instantiate();
 
                   using PlutoSliderServer;
                   github_action("."; Export_cache_dir="pluto_state_cache");'
             - name: Franklin
-              run: julia -e '
+              run: julia --color=yes -e '
                   using Pkg;
                   Pkg.add(["NodeJS", "JSON", "Franklin"]);
                   using NodeJS;
