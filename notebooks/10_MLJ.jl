@@ -718,7 +718,7 @@ O legal do `MLJ.jl` é que eu consigo fazer tudo isso que fizemos até agora vir
 # ╔═╡ fc456ae3-5094-4034-9740-5092f581ec2a
 pipe = @pipeline(OneHotEncoder(),
 				 ContinuousEncoder(),
-				 EvoTreeClassifier(),
+				 EvoTree(),
 				 name="Meu Pipeline"
 )
 
