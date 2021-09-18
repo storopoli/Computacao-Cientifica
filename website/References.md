@@ -30,7 +30,7 @@
 
 * Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
 
-* Storopoli, J. & Huijzer, R. (2021).Julia Data Science. https://juliadatascience.io
+* Storopoli, J., Huijzer, R., & Alonso O<F11>L. (2021). Julia Data Science. https://juliadatascience.io
 
 * TEDx Talks. (2020). A Programming Language to Heal the Planet Together: Julia | AlanEdelman | TEDxMIT.
 

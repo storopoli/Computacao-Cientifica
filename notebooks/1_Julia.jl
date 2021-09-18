@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.16.0
 
 using Markdown
 using InteractiveUtils
@@ -11,6 +11,9 @@ begin
 	
 	using Pkg
 	using PlutoUI
+	
+	# Para printar as cores do Terminal
+	using ANSIColoredPrinters
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -36,9 +39,9 @@ Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/
 # ╔═╡ 32b4273d-06d9-4450-97d0-23740cf7bd88
 function summed(a)
 	result = 0
-  for x in a
-    result += x
-  end
+  	for x in a
+    	result += x
+  	end
   return result
 end
 
@@ -52,8 +55,8 @@ vec_a = randn(42_000)
 function sumsimd(a)
 	result = zero(eltype(a))
 	@simd for x in a
-    result += x
-  end
+    	result += x
+  	end
   return result
 end
 
@@ -118,10 +121,14 @@ HTML("<style>.embed-container { position: relative; padding-bottom: 56.25%; heig
 abstract type Pet end
 
 # ╔═╡ 461bd896-6d65-4b76-8934-2e38cfd86231
-struct Dog <: Pet name::String end
+struct Dog <: Pet
+	name::String
+end
 
 # ╔═╡ 06009452-af10-4ed6-aa52-60297536efd9
-struct Cat <: Pet name::String end
+struct Cat <: Pet
+	name::String
+end
 
 # ╔═╡ ef284b80-4fbe-4af4-9ab1-145f5d3be67d
 meets(a::Dog, b::Dog) = "sniffs"
@@ -339,7 +346,7 @@ md"""
 2. [A Climate Modeling Alliance (CliMa)](https://clima.caltech.edu/) está usando majoritariamente Julia para **modelar clima na GPU e CPU**. Lançado em 2018 em colaboração com pesquisadores da Caltech, do Laboratório de Propulsão a Jato da NASA e da Escola de Pós-Graduação Naval, o CLIMA está utilizando o progresso recente da ciência computacional para desenvolver um modelo de sistema terrestre que pode prever secas, ondas de calor e chuvas com precisão sem precedentes.
 
 
-3. [A Administração Federal de Aviação dos EUA (FAA) está desenvolvendo um **Sistema de prevenção de colisão aerotransportada (ACAS-X)** usando Julia] (https://youtu.be/19zm1Fn0S9M).Soluções anteriores usavam Matlab para desenvolver os algoritmos e C ++ para uma implementação rápida. Agora, a FAA está usando uma linguagem para fazer tudo isso: Julia.
+3. [A Administração Federal de Aviação dos EUA (FAA) está desenvolvendo um **Sistema de prevenção de colisão aerotransportada (ACAS-X)** usando Julia] (https://youtu.be/19zm1Fn0S9M). Soluções anteriores usavam Matlab para desenvolver os algoritmos e C ++ para uma implementação rápida. Agora, a FAA está usando uma linguagem para fazer tudo isso: Julia.
 
 
 4. [**Aceleração de 175x** para modelos de farmacologia da Pfizer usando GPUs em Julia] (https://juliacomputing.com/case-studies/pfizer/). Foi apresentado como um [pôster](https://chrisrackauckas.com/assets/Posters/ACoP11_Poster_Abstracts_2020.pdf) na 11ª Conferência Americana de Farmacometria (ACoP11) e [ganhou um prêmio de qualidade](https: //web.archive .org / web / 20210121164011 / https: //www.go-acop.org/abstract-awards).
@@ -383,8 +390,8 @@ import numpy as np
 n = 10000
 
 df = pd.DataFrame({'x': np.random.choice(['A', 'B', 'C', 'D'], n, replace=True),
-                   'y': np.random.randn(n),
-                   'z': np.random.rand(n)})
+                   'y': np.random.rand(n),
+                   'z': np.random.randn(n)})
 
 %timeit df.groupby('x').agg({'y': 'median', 'z': 'mean'})
 ```
@@ -688,6 +695,12 @@ Como representaríamos vetores one-hot em Julia?
 > Exemplo altamente inspirado em um [post de Vasily Pisarev](https://habr.com/ru/post/468609/)
 """
 
+# ╔═╡ 7d03d2be-d9bd-4992-bb60-a8eb266a956c
+meu_hot = OneHotVector(3, 2)
+
+# ╔═╡ 20c73247-0555-4962-bd01-152a68b3b782
+meu_hot[2]
+
 # ╔═╡ 2538921e-6b35-4f84-9e76-e246cd28ecd8
 md"""
 Como `OneHotVector` é uma estrutura derivada de `AbstractVector`, podemos usar todos os métodos já definidos para `AbstractVector` e ele simplesmente funciona imediatamente. Aqui, estamos construindo uma `Array` com uma compreensão de array:
@@ -769,26 +782,6 @@ end
 # ╔═╡ 43f8ee8b-7d74-4ef3-88fe-41c44f0a0eee
 quadratic(a, sqr_term, b) = (-b + sqr_term) / 2a
 
-# ╔═╡ 5b87ddf1-4f76-46ed-a954-e2b814dcc7a8
-with_terminal() do
-	@code_warntype quadratic(42.0, 42.0, 42.0)
-end
-
-# ╔═╡ ce5e7964-9b19-4968-89e6-6deb429fa554
-with_terminal() do 
-	@code_llvm quadratic(42.0, 42.0, 42.0)
-end
-
-# ╔═╡ efc03594-5c0f-4841-b6d1-22cb3cdeca4b
-with_terminal() do 
-	@code_llvm quadratic(42, 42, 42)
-end
-
-# ╔═╡ f530d914-e940-4be2-9d00-688faa6a13a1
-with_terminal() do
-	@code_native quadratic(42, 42.0, 42.0)
-end
-
 # ╔═╡ 238e3cc9-6ea1-4f23-8a4a-0a58de6fd014
 inner(v, A, w) = dot(v, A * w) # very general definition
 
@@ -857,12 +850,6 @@ inner_sum(A, vs)
 
 # ╔═╡ 250cbe36-059b-4681-925f-fccf1d6095d2
 inner_sum(A, onehot)
-
-# ╔═╡ 21a2f28e-dfa9-4ab3-822c-447e6262d387
-@benchmark inner_sum($A, $onehot)
-
-# ╔═╡ 62dd87d5-8a13-47eb-9a90-a10556e99b08
-@benchmark inner_sum($A, $onehot)
 
 # ╔═╡ 39ddde6a-9030-430c-ae39-1033720fd43a
 md"""
@@ -966,7 +953,7 @@ Eles diferem dos tipos primitivos (por exemplo, `Int` e `Float`) que são defini
 
 # ╔═╡ 15168171-d7db-4a53-ba90-aa066786f007
 struct Language
-    name::String
+    name::String  # Se não definir o tipo ele via ser o ::Any
     title::String
     year_of_birth::Int64
     fast::Bool
@@ -1040,7 +1027,7 @@ md"""
 md"""
 1. **Igualdade**:
    * `==`: igual
-   * `!=` ou `≠`: diferente (\neq TAB)
+   * `!=` ou `≠`: diferente (\ne TAB)
 
 
 2. **Menor**:
@@ -1063,6 +1050,9 @@ md"""
 md"""
 Funciona também para tipos diferentes:
 """
+
+# ╔═╡ baeb9aba-31bc-4557-84bd-95e80af4fd53
+temp() = println("Oi")
 
 # ╔═╡ 9dcf470b-dbdc-4903-8119-ab21412a2733
 1 == 1.0
@@ -1571,7 +1561,7 @@ md"""
 	using DataFrames
 	
 	files = filter(endswith(".csv"), readdir())
-	df = reduce(vcat, CSV.read(file, DataFrame) for file in files)
+	df = CSV.read(files, DataFrame)
 	```
 """
 
@@ -2590,6 +2580,206 @@ md"""
 	**APRENDA `git`!**
 """
 
+# ╔═╡ d5dee4ec-2b92-4106-aac5-1ea508a9b04e
+md"""
+# Printar as Cores no Terminal
+
+> Código e Hack originais do [Chris Foster](https://github.com/c42f) nesse [issue do `fonsp/PlutoUI.jl`](https://github.com/fonsp/PlutoUI.jl/issues/88):
+"""
+
+# ╔═╡ 2ab4cdba-9ae3-4293-ad75-40aa1993b8d3
+# Hacky style setup for ANSIColoredPrinters. css taken from ANSIColoredPrinters example.
+# Not sure why we need to modify the font size...
+HTML("""
+<style>
+html .content pre {
+    font-family: "JuliaMono", "Roboto Mono", "SFMono-Regular", "Menlo", "Consolas",
+        "Liberation Mono", "DejaVu Sans Mono", monospace;
+}
+html pre.documenter-example-output {
+    line-height: 125%;
+	font-size: 60%
+}
+html span.sgr1 {
+    font-weight: bolder;
+}
+html span.sgr2 {
+    font-weight: lighter;
+}
+html span.sgr3 {
+    font-style: italic;
+}
+html span.sgr4 {
+    text-decoration: underline;
+}
+html span.sgr7 {
+    color: #fff;
+    background-color: #222;
+}
+html.theme--documenter-dark span.sgr7 {
+    color: #1f2424;
+    background-color: #fff;
+}
+html span.sgr8,
+html span.sgr8 span,
+html span span.sgr8 {
+    color: transparent;
+}
+html span.sgr9 {
+    text-decoration: line-through;
+}
+html span.sgr30 {
+    color: #111;
+}
+html span.sgr31 {
+    color: #944;
+}
+html span.sgr32 {
+    color: #073;
+}
+html span.sgr33 {
+    color: #870;
+}
+html span.sgr34 {
+    color: #15a;
+}
+html span.sgr35 {
+    color: #94a;
+}
+html span.sgr36 {
+    color: #08a;
+}
+html span.sgr37 {
+    color: #ddd;
+}
+html span.sgr40 {
+    background-color: #111;
+}
+html span.sgr41 {
+    background-color: #944;
+}
+html span.sgr42 {
+    background-color: #073;
+}
+html span.sgr43 {
+    background-color: #870;
+}
+html span.sgr44 {
+    background-color: #15a;
+}
+html span.sgr45 {
+    background-color: #94a;
+}
+html span.sgr46 {
+    background-color: #08a;
+}
+html span.sgr47 {
+    background-color: #ddd;
+}
+html span.sgr90 {
+    color: #888;
+}
+html span.sgr91 {
+    color: #d57;
+}
+html span.sgr92 {
+    color: #2a5;
+}
+html span.sgr93 {
+    color: #d94;
+}
+html span.sgr94 {
+    color: #08d;
+}
+html span.sgr95 {
+    color: #b8d;
+}
+html span.sgr96 {
+    color: #0bc;
+}
+html span.sgr97 {
+    color: #eee;
+}
+html span.sgr100 {
+    background-color: #888;
+}
+html span.sgr101 {
+    background-color: #d57;
+}
+html span.sgr102 {
+    background-color: #2a5;
+}
+html span.sgr103 {
+    background-color: #d94;
+}
+html span.sgr104 {
+    background-color: #08d;
+}
+html span.sgr105 {
+    background-color: #b8d;
+}
+html span.sgr106 {
+    background-color: #0bc;
+}
+html span.sgr107 {
+    background-color: #eee;
+}
+</style>""")
+
+# ╔═╡ 821d9942-ad13-412a-9806-e3055d5cc0db
+function color_print(f)
+	io = IOBuffer()
+	f(IOContext(io, :color=>true))
+	html_str = sprint(io2->show(io2, MIME"text/html"(),
+					  HTMLPrinter(io, root_class="documenter-example-output")))
+	HTML("$html_str")
+end
+
+# ╔═╡ feef0409-838a-4d4c-af20-dffb231914da
+macro code_warntype_(args...)
+	code = macroexpand(@__MODULE__, :(@code_warntype $(args...)))
+	@assert code.head == :call
+	insert!(code.args, 2, :io)
+	esc(quote # non-hygenic :(
+		color_print() do io
+		    $code
+		end
+	end)
+end
+
+# ╔═╡ a3f71dea-7454-4771-857d-8c3db3db1b08
+macro code_llvm_(args...)
+	code = macroexpand(@__MODULE__, :(@code_llvm $(args...)))
+	@assert code.head == :call
+	insert!(code.args, 2, :io)
+	esc(quote # non-hygenic :(
+		color_print() do io
+		    $code
+		end
+	end)
+end
+
+# ╔═╡ ce5e7964-9b19-4968-89e6-6deb429fa554
+@code_llvm_ quadratic(42.0, 42.0, 42.0)
+
+# ╔═╡ efc03594-5c0f-4841-b6d1-22cb3cdeca4b
+@code_llvm_ quadratic(42, 42, 42)
+
+# ╔═╡ e79c52af-29e5-485b-ae8a-7c927ac0d917
+macro code_native_(args...)
+	code = macroexpand(@__MODULE__, :(@code_native $(args...)))
+	@assert code.head == :call
+	insert!(code.args, 2, :io)
+	esc(quote # non-hygenic :(
+		color_print() do io
+		    $code
+		end
+	end)
+end
+
+# ╔═╡ f530d914-e940-4be2-9d00-688faa6a13a1
+@code_native_ quadratic(42, 42.0, 42.0)
+
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -2617,6 +2807,7 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+ANSIColoredPrinters = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -2624,13 +2815,19 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-BenchmarkTools = "~1.1.0"
+ANSIColoredPrinters = "~0.0.1"
+BenchmarkTools = "~1.2.0"
 PlutoUI = "~0.7.9"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
+
+[[ANSIColoredPrinters]]
+git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
+uuid = "a4c015fc-c6ff-483c-b24f-f7ea428134e9"
+version = "0.0.1"
 
 [[ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -2642,10 +2839,10 @@ uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
 [[BenchmarkTools]]
-deps = ["JSON", "Logging", "Printf", "Statistics", "UUIDs"]
-git-tree-sha1 = "ffabdf5297c9038973a0a3724132aa269f38c448"
+deps = ["JSON", "Logging", "Printf", "Profile", "Statistics", "UUIDs"]
+git-tree-sha1 = "61adeb0823084487000600ef8b1c00cc2474cd47"
 uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
-version = "1.1.0"
+version = "1.2.0"
 
 [[Dates]]
 deps = ["Printf"]
@@ -2661,9 +2858,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
-git-tree-sha1 = "81690084b6198a2e1da36fcfda16eeca9f9f24e4"
+git-tree-sha1 = "8076680b162ada2a031f707ac7b4953e30667a37"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-version = "0.21.1"
+version = "0.21.2"
 
 [[LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -2710,9 +2907,9 @@ uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "c8abc88faa3f7a3950832ac5d6e690881590d6dc"
+git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "1.1.0"
+version = "2.0.3"
 
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -2728,6 +2925,10 @@ version = "0.7.9"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[Profile]]
+deps = ["Printf"]
+uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
+
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
@@ -2737,9 +2938,9 @@ deps = ["Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[Reexport]]
-git-tree-sha1 = "5f6c21241f0f655da3952fd60aa18477cf96c220"
+git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
-version = "1.1.0"
+version = "1.2.2"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -2809,7 +3010,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─6f1bec92-7703-4911-8ff5-668618185bf4
 # ╟─3712de35-d34e-4f6f-9041-cac2efb2730a
 # ╠═43f8ee8b-7d74-4ef3-88fe-41c44f0a0eee
-# ╠═5b87ddf1-4f76-46ed-a954-e2b814dcc7a8
 # ╠═ce5e7964-9b19-4968-89e6-6deb429fa554
 # ╠═efc03594-5c0f-4841-b6d1-22cb3cdeca4b
 # ╠═f530d914-e940-4be2-9d00-688faa6a13a1
@@ -2882,6 +3082,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─81ae472d-7195-4525-87ae-1429972b8816
 # ╠═8faf0fee-cad5-440f-bc2d-0fdb848ce42d
 # ╠═cb276e1e-1b81-4705-b28b-b7b3e08332bc
+# ╠═7d03d2be-d9bd-4992-bb60-a8eb266a956c
+# ╠═20c73247-0555-4962-bd01-152a68b3b782
 # ╟─2538921e-6b35-4f84-9e76-e246cd28ecd8
 # ╠═7bbbebc8-8a2b-45de-aa25-aa1bec443f43
 # ╟─8f815967-ec04-44b7-aeae-4ae48b1429c7
@@ -2896,12 +3098,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─3d3f64f4-bf19-4684-9a29-8fee1dfbe9c9
 # ╠═250cbe36-059b-4681-925f-fccf1d6095d2
 # ╟─5aa224c5-a05a-438d-ba0a-fadce5f46592
-# ╠═21a2f28e-dfa9-4ab3-822c-447e6262d387
 # ╟─41801f25-e95a-49bc-9454-0328f13684b6
 # ╠═8c7d2d8a-c547-45c1-bcf5-636584cdb3da
 # ╟─f6042d46-94bf-45ad-aa23-f5e256c67571
 # ╠═fa434fbe-0999-4c45-8ae2-87f5652c1b52
-# ╠═62dd87d5-8a13-47eb-9a90-a10556e99b08
 # ╟─39ddde6a-9030-430c-ae39-1033720fd43a
 # ╟─8e63e4f2-ef86-4a9d-ab21-4194965c32ba
 # ╟─6dfc1289-63ce-418f-be4e-8e0d56b548a8
@@ -2942,6 +3142,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═f7308afc-5477-4a51-ad9a-c7e1b421bf50
 # ╠═c5bf57a4-2a17-42a8-ab6c-e9793a75924b
 # ╟─5c7c3816-2b36-4397-9ce3-518f4766a523
+# ╠═baeb9aba-31bc-4557-84bd-95e80af4fd53
 # ╠═9dcf470b-dbdc-4903-8119-ab21412a2733
 # ╟─c696e5f1-17a4-4775-98a8-013e4ebd6a6d
 # ╠═f9575009-eecf-4f65-a149-b81ff9e25078
@@ -2968,9 +3169,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═8a2dbca6-36db-4c2d-bd6f-e07d3cd84a3d
 # ╟─8a02b02c-3bfd-405f-9163-b6b2b8880382
 # ╠═da1f1312-d3e4-42ae-aef6-eb14d3b0fee8
-# ╠═e752e5bf-9a8a-4fd1-8e4b-f39b3fad6410
+# ╟─e752e5bf-9a8a-4fd1-8e4b-f39b3fad6410
 # ╠═e9e34c57-36f2-4f10-b16f-8ba34c38c957
-# ╠═9bbb809a-27c5-47db-a5a0-ae836318868d
+# ╟─9bbb809a-27c5-47db-a5a0-ae836318868d
 # ╠═6d0a36ab-0cd4-4502-973f-85f90aa0fc03
 # ╠═dc13a6c0-3b40-43a9-9627-babfb0899e7f
 # ╟─3a3f2e64-941a-4abe-bc6b-d4fb9a53a1f5
@@ -3223,7 +3424,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═735b88f2-a3d3-452b-83d4-2346eada4e14
 # ╟─6fa9db7e-b9d3-4bdf-acc7-b33595061d22
 # ╠═d5c4877f-f5d3-41bb-bf30-3d3629ac70b3
-# ╠═88dbb4f6-ddc8-4e55-ab70-2d27e3d62d54
+# ╟─88dbb4f6-ddc8-4e55-ab70-2d27e3d62d54
 # ╠═0e538383-0fcf-4b68-834b-ae0666730120
 # ╠═1f3e2b53-7ffa-4f97-97f7-0421e15750c4
 # ╟─f2049ce2-117e-4566-aafa-2e07f12c586a
@@ -3246,6 +3447,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─1aa13f41-26bc-4583-93a2-2720eaed5203
 # ╠═76012ecf-be96-46e2-809e-3a76ed9649f8
 # ╟─6f73368a-6e88-465e-9fea-d7ce69376fd0
+# ╟─d5dee4ec-2b92-4106-aac5-1ea508a9b04e
+# ╠═2ab4cdba-9ae3-4293-ad75-40aa1993b8d3
+# ╠═821d9942-ad13-412a-9806-e3055d5cc0db
+# ╠═feef0409-838a-4d4c-af20-dffb231914da
+# ╠═a3f71dea-7454-4771-857d-8c3db3db1b08
+# ╠═e79c52af-29e5-485b-ae8a-7c927ac0d917
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4

@@ -23,7 +23,7 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 * [**The Unreasonable Effectiveness of Multiple Dispatch**](https://youtu.be/kc9HwsxE1OY). (The Julia Programming Language, 2019): um vídeo no YouTube de um dos criadores da linguagem [Julia](https://www.julialang.org), [Stefan Karpinski](https://karpinski.org/), sobre um dos principais diferenciais da linguagem, [**Despacho Múltiplo**](https://en.wikipedia.org/wiki/Multiple_dispatch) (*Multiple Dispatch*).
 * **Notebooks [Pluto](https://plutojl.org/)**: o conteúdo da disciplina é todo feito com Notebooks [Pluto](https://plutojl.org/) que são ambientes reativos e dinâmicos de fácil demonstração e exploração de código [Julia](https://www.julialang.org).
 * [**Julia Programming for Nervous Beginners**](https://juliaacademy.com/p/julia-programming-for-nervous-beginners) (Laurie, 2021): um curso de 4 semanas da [JuliaAcademy](https://juliaacademy.com/) que ensina desde o zero de computação até o básico da linguagem [Julia](https://www.julialang.org).
-* [**Julia Data Science**](https://juliadatascience.io) (Storopoli & Huijzer, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
+* [**Julia Data Science**](https://juliadatascience.io) (Storopoli, Huijzer & Alonso, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
 
 ## Objetivos da Disciplina:
 
