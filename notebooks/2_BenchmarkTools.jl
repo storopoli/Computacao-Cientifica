@@ -255,13 +255,10 @@ md"""
 """
 
 # ╔═╡ 7ed1f94e-ce96-4ef9-8372-4579a22f561f
-@benchmark sin.(X) # primeira vez
-
-# ╔═╡ f0216a31-fdaa-4323-af3f-ef1e45f087bb
-@benchmark sin.(X) # segunda vez
+@benchmark sin.(X) # LLVM vai JIT compile da segunda vez em diante
 
 # ╔═╡ 26e99f87-0f14-45fc-a55d-d6f4818dc181
-@benchmark sin($X)
+@benchmark sin.($X) # LLVM não consegue inferir o X então não temos JIT
 
 # ╔═╡ ad238529-9718-45a0-8b20-25df03182b25
 md"""
@@ -1832,7 +1829,6 @@ version = "0.9.1+5"
 # ╟─1d1550ca-61aa-4143-a039-025eb8c56efe
 # ╟─677f3b32-6196-46a2-9189-0d93cf5729d8
 # ╠═7ed1f94e-ce96-4ef9-8372-4579a22f561f
-# ╠═f0216a31-fdaa-4323-af3f-ef1e45f087bb
 # ╠═26e99f87-0f14-45fc-a55d-d6f4818dc181
 # ╟─ad238529-9718-45a0-8b20-25df03182b25
 # ╠═5744bb5f-4f0a-444c-8a9c-08540323542e
