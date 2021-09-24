@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -2817,7 +2817,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 [compat]
 ANSIColoredPrinters = "~0.0.1"
 BenchmarkTools = "~1.2.0"
-PlutoUI = "~0.7.9"
+PlutoUI = "~0.7.10"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -2851,6 +2851,11 @@ uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 [[Downloads]]
 deps = ["ArgTools", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+
+[[HypertextLiteral]]
+git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.0"
 
 [[InteractiveUtils]]
 deps = ["Markdown"]
@@ -2907,19 +2912,19 @@ uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
+git-tree-sha1 = "9d8c00ef7a8d110787ff6f170579846f776133a9"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.0.3"
+version = "2.0.4"
 
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PlutoUI]]
-deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
-git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
+deps = ["Base64", "Dates", "HypertextLiteral", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
+git-tree-sha1 = "26b4d16873562469a0a1e6ae41d90dec9e51286d"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.9"
+version = "0.7.10"
 
 [[Printf]]
 deps = ["Unicode"]

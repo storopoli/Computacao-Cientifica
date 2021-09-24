@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -1046,12 +1046,12 @@ VectorizationBase = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
 ANSIColoredPrinters = "~0.0.1"
 BenchmarkTools = "~1.2.0"
 IfElse = "~0.1.0"
-LoopVectorization = "~0.12.74"
-Plots = "~1.22.1"
-PlutoUI = "~0.7.9"
+LoopVectorization = "~0.12.77"
+Plots = "~1.22.2"
+PlutoUI = "~0.7.10"
 StaticArrays = "~1.2.12"
 ThreadsX = "~0.1.8"
-VectorizationBase = "~0.21.8"
+VectorizationBase = "~0.21.10"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -1156,9 +1156,9 @@ version = "0.12.8"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "4866e381721b30fac8dda4c8cb1d9db45c8d2994"
+git-tree-sha1 = "1a90210acd935f222ea19657f143004d2c2a1117"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "3.37.0"
+version = "3.38.0"
 
 [[CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1182,9 +1182,9 @@ uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.5.7"
 
 [[DataAPI]]
-git-tree-sha1 = "bec2532f8adb82005476c141ec23e921fc20971b"
+git-tree-sha1 = "cc70b17275652eb47bc9e5f81635981f13cea5c8"
 uuid = "9a962f9c-6df0-11e9-0e5d-c546b8b5ee8a"
-version = "1.8.0"
+version = "1.9.0"
 
 [[DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
@@ -1359,6 +1359,11 @@ git-tree-sha1 = "3395d4d4aeb3c9d31f5929d32760d8baeee88aaf"
 uuid = "e33a78d0-f292-5ffc-b300-72abe9b543c8"
 version = "2.5.0+0"
 
+[[HypertextLiteral]]
+git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.0"
+
 [[IfElse]]
 git-tree-sha1 = "28e837ff3e7a6c3cdb252ce49fb412c8eb3caeef"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
@@ -1512,9 +1517,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[LoopVectorization]]
 deps = ["ArrayInterface", "CPUSummary", "CloseOpenIntervals", "DocStringExtensions", "HostCPUFeatures", "IfElse", "LayoutPointers", "LinearAlgebra", "OffsetArrays", "PolyesterWeave", "Requires", "SLEEFPirates", "Static", "ThreadingUtilities", "UnPack", "VectorizationBase"]
-git-tree-sha1 = "d4046cd65d9c9cb328741d66bccff8eec019f81b"
+git-tree-sha1 = "4804192466f4d370ca19c9957dfb3d919e6ef77e"
 uuid = "bdcacae8-1622-11e9-2a5c-532679323890"
-version = "0.12.74"
+version = "0.12.77"
 
 [[MacroTools]]
 deps = ["Markdown", "Random"]
@@ -1609,9 +1614,9 @@ version = "8.44.0+0"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
+git-tree-sha1 = "9d8c00ef7a8d110787ff6f170579846f776133a9"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.0.3"
+version = "2.0.4"
 
 [[Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1637,15 +1642,15 @@ version = "1.0.14"
 
 [[Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
-git-tree-sha1 = "4c2637482176b1c2fb99af4d83cb2ff0328fc33c"
+git-tree-sha1 = "457b13497a3ea4deb33d273a6a5ea15c25c0ebd9"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.22.1"
+version = "1.22.2"
 
 [[PlutoUI]]
-deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
-git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
+deps = ["Base64", "Dates", "HypertextLiteral", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
+git-tree-sha1 = "26b4d16873562469a0a1e6ae41d90dec9e51286d"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.9"
+version = "0.7.10"
 
 [[PolyesterWeave]]
 deps = ["BitTwiddlingConvenienceFunctions", "CPUSummary", "IfElse", "Static", "ThreadingUtilities"]
@@ -1719,9 +1724,9 @@ version = "0.1.0"
 
 [[SLEEFPirates]]
 deps = ["IfElse", "Static", "VectorizationBase"]
-git-tree-sha1 = "947491c30d4293bebb00781bcaf787ba09e7c20d"
+git-tree-sha1 = "2e8150c7d2a14ac68537c7aac25faa6577aff046"
 uuid = "476501e8-09a2-5ece-8869-fb82de89a1fa"
-version = "0.6.26"
+version = "0.6.27"
 
 [[Scratch]]
 deps = ["Dates"]
@@ -1866,9 +1871,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[VectorizationBase]]
 deps = ["ArrayInterface", "CPUSummary", "HostCPUFeatures", "Hwloc", "IfElse", "LayoutPointers", "Libdl", "LinearAlgebra", "SIMDTypes", "Static"]
-git-tree-sha1 = "39c6e517759c70eebb1963f729243ac0ebdeb750"
+git-tree-sha1 = "3e2385f4ec895e694c24a1d5aba58cb6d27cf8b6"
 uuid = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
-version = "0.21.8"
+version = "0.21.10"
 
 [[Wayland_jll]]
 deps = ["Artifacts", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
