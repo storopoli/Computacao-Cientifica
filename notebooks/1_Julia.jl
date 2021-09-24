@@ -1051,9 +1051,6 @@ md"""
 Funciona também para tipos diferentes:
 """
 
-# ╔═╡ baeb9aba-31bc-4557-84bd-95e80af4fd53
-temp() = println("Oi")
-
 # ╔═╡ 9dcf470b-dbdc-4903-8119-ab21412a2733
 1 == 1.0
 
@@ -1304,11 +1301,11 @@ Dá até para enfiar sintaxe condicional numa função:
 # ╔═╡ f40d3038-47c9-4128-8262-1f1231da1df4
 function comparar(a, b)
 	if a < b
-		"a é menor que b"
+		return "a é menor que b"
 	elseif a > b
-		"a é maior que b"
+		return "a é maior que b"
 	else
-		"a é igual a b"
+		return "a é igual a b"
 	end
 end
 
@@ -1338,10 +1335,9 @@ O loop `while` é uma mistura das instruções condicionais anteriores e dos loo
 Aqui está um exemplo:
 """
 
-# ╔═╡ cd9b34bc-973b-499e-9dff-2adda9495c50
+# ╔═╡ 2980b180-c052-4f65-b8e6-12f8bf663f2d
 begin
 	n = 0
-	
 	while n < 3
 	    global n += 1
 	end
@@ -1374,7 +1370,7 @@ Quando você se depara com uma estrutura de dados em Julia, pode encontrar funç
 """
 
 # ╔═╡ 176fa107-cf78-4700-8952-8807792bef90
-first(methodswith(String), 20)
+last(methodswith(String), 20)
 
 # ╔═╡ bd654c6b-31eb-440f-b56d-8baa6e3be45c
 md"""
@@ -1486,7 +1482,7 @@ Como você pode ver, está faltando um espaço entre `oi` e o `tchau`. Poderíam
 """
 
 # ╔═╡ ccd7d075-8f5f-48da-bc8a-182d50ec9163
-join([goodbye, hello], " ")
+join([goodbye, hello], ". ")
 
 # ╔═╡ 5887f734-9e8c-4a5f-bac2-6251e18be96d
 md"""
@@ -1498,7 +1494,10 @@ Funciona assim: você especifica o que quer que seja incluído em sua string com
 """
 
 # ╔═╡ 04be3f46-6d12-448f-a06e-309c674fa977
-"$goodbye $hello"
+"$goodbye. $hello"
+
+# ╔═╡ de3c52fc-d3e1-46f7-976b-069d842f43c2
+"$(1 + 1 / 2 * π * ℯ)"
 
 # ╔═╡ b38f87f3-aa0c-487a-ba0e-967b694c485a
 md"""
@@ -1508,11 +1507,11 @@ Funciona também em funções. Vamos revisitar a funcão `comparar`:
 # ╔═╡ 273f1a87-b406-4bae-9499-76b7d691ada2
 function comparar_interpolado(a, b)
 	if a < b
-		"$a é menor que $b"
+		return "$a é menor que $b"
 	elseif a > b
-		"$a é maior que $b"
+		return "$a é maior que $b"
 	else
-		"$a é igual a $b"
+		return "$a é igual a $b"
 	end
 end
 
@@ -1538,20 +1537,20 @@ julia_string = "Julia é uma linguagem de programação opensource incrível"
 md"""
 #### Procurar em uma String
 
-`occursin`, `startswith` e `endswith`: Um condicional (retorna `true` ou `false`) se o primeiro argumento for um:
+`contains`, `startswith` e `endswith`: Um condicional (retorna `true` ou `false`) se o primeiro argumento for um:
 """
 
 # ╔═╡ 867f15a5-190c-415f-b17d-27835fdd32b5
 # substring
-occursin("Julia", julia_string)
+contains(julia_string, "Julia")
 
 # ╔═╡ a08230c8-b75c-4950-8efe-1c45598b8601
 # prefixo
-startswith("Julia", julia_string)
+startswith(julia_string, "Julia")
 
 # ╔═╡ 8d3c614d-0f84-40cb-a705-ede6f3739e43
 # sufixo
-endswith("Julia", julia_string)
+endswith(julia_string, "Julia")
 
 # ╔═╡ 0cf87278-3d4f-4bd4-8ff7-25b9cf349cd4
 md"""
@@ -1582,7 +1581,7 @@ uppercase(julia_string)
 titlecase(julia_string)
 
 # ╔═╡ 0667dfb3-c29e-4737-89b4-54cdaf96f93c
-lowercasefirst(julia_string)
+lowercasefirst(uppercase(julia_string))
 
 # ╔═╡ c5bd2e45-d5b5-4bbb-bbf4-53d0dd112ff6
 md"""
@@ -1775,7 +1774,7 @@ md"""
 """
 
 # ╔═╡ 6b676293-34d4-4182-bcb6-76eaef0cfa53
-0.0:0.2:1.0
+0.0:0.2:1.0 |> collect
 
 # ╔═╡ 4fe2bba3-b244-4c25-965c-fd39c8495014
 md"""
@@ -1795,7 +1794,7 @@ md"""
 Vamos começar com tipos de arrays. Existem vários, mas vamos nos concentrar em dois dos mais usados em ciência de dados e computação científica:
 
 * `Vector{T}`: array **unidimensional**. Apelido para `Array{T, 1}`.
-* `Matrix{T}` array **bidimensional**. Apelido para `Aray{T, 2}`
+* `Matrix{T}` array **bidimensional**. Apelido para `Array{T, 2}`
 
 Observe aqui que `T` é o tipo do elemento da array. Assim, por exemplo, `Vector{Int64}` é um `Vector` em que todos os elementos são `Int64`s e `Matrix{AbstractFloat}` é uma `Matrix` em que todos os elementos são subtipos de `AbstractFloat`.
 
@@ -2045,9 +2044,6 @@ md"""
 Se você deseja uma observação particular de um vetor, ou uma linha ou coluna de uma matriz; você provavelmente precisará **indexar uma array**.
 """
 
-# ╔═╡ a3f21ad3-3684-47e9-85e0-486de50b3e14
-
-
 # ╔═╡ b97ac4b5-2ce2-45f8-b85a-3e97945404de
 my_example_vector = [1, 2, 3, 4, 5]
 
@@ -2238,12 +2234,15 @@ Isso pode ser feito com a função `mapslices`. Semelhante ao map, o primeiro ar
 Por exemplo, vamos usar `mapslice` com a função `sum` em ambas as linhas (`dims = 1`) e colunas (`dims = 2`):
 """
 
+# ╔═╡ d7399528-1956-4048-9b8d-c37a96f065e0
+my_example_matrix
+
 # ╔═╡ 07a4816d-8f72-44ac-9cfc-bc2d9fcc7ceb
-# linhas
+# colunas
 mapslices(sum, my_example_matrix; dims=1)
 
 # ╔═╡ ada5b74c-4fb4-40fa-9681-c9d28100e1c8
-# colunas
+# linhas
 mapslices(sum, my_example_matrix; dims=2)
 
 # ╔═╡ 50f76d97-1830-487b-9cfc-f983b6d2e438
@@ -2307,12 +2306,12 @@ Para aqueles que estão familiarizados com outras linguagens de programação, J
 """
 
 # ╔═╡ d3cfd585-8c47-49ba-ad3a-91d11dd11dcd
-column_major = [[1 2]
-                [3 4]]
+column_major = [[1 3]
+                [2 4]]
 
 # ╔═╡ 7ea0e64e-c153-4994-ba8c-c4cfee894866
-row_major = [[1 3]
-             [2 4]]
+row_major = [[1 2]
+             [3 4]]
 
 # ╔═╡ e779cfa4-d349-4e81-bd64-fe0a8f71a067
 empty_vector_3 = Int64[]
@@ -3147,7 +3146,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═f7308afc-5477-4a51-ad9a-c7e1b421bf50
 # ╠═c5bf57a4-2a17-42a8-ab6c-e9793a75924b
 # ╟─5c7c3816-2b36-4397-9ce3-518f4766a523
-# ╠═baeb9aba-31bc-4557-84bd-95e80af4fd53
 # ╠═9dcf470b-dbdc-4903-8119-ab21412a2733
 # ╟─c696e5f1-17a4-4775-98a8-013e4ebd6a6d
 # ╠═f9575009-eecf-4f65-a149-b81ff9e25078
@@ -3199,7 +3197,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─a38739cb-1838-4957-80c6-ff8469358e05
 # ╠═57019909-33c3-4294-aa78-5e139f47f5d8
 # ╟─624afde0-6e92-4be0-b944-ac9adaf72ece
-# ╠═cd9b34bc-973b-499e-9dff-2adda9495c50
+# ╠═2980b180-c052-4f65-b8e6-12f8bf663f2d
 # ╠═05b815e4-a936-473a-b38d-f580a5803f8d
 # ╟─43286eb0-b7b3-4b2c-80f0-cdc2fa6289b0
 # ╟─af3299d2-3802-4cb5-8175-8ad26a7451aa
@@ -3228,6 +3226,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═ccd7d075-8f5f-48da-bc8a-182d50ec9163
 # ╟─5887f734-9e8c-4a5f-bac2-6251e18be96d
 # ╠═04be3f46-6d12-448f-a06e-309c674fa977
+# ╠═de3c52fc-d3e1-46f7-976b-069d842f43c2
 # ╟─b38f87f3-aa0c-487a-ba0e-967b694c485a
 # ╠═273f1a87-b406-4bae-9499-76b7d691ada2
 # ╠═f7143396-d441-4b19-b1a2-8d4b5a51808a
@@ -3340,7 +3339,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═66deda8d-c35f-4f21-9950-1702d66b8cf5
 # ╟─5691fe91-3354-4671-bc52-08219d18ebbf
 # ╟─b39f073c-832f-4e31-8d6a-2377fe3a1375
-# ╠═a3f21ad3-3684-47e9-85e0-486de50b3e14
 # ╠═b97ac4b5-2ce2-45f8-b85a-3e97945404de
 # ╠═6bcbe880-be3f-4eb0-95e6-87050e7fe2dc
 # ╟─83d6ab60-b26d-4e5f-afe1-e6be8f1ed18e
@@ -3381,6 +3379,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─82298f2d-f01f-49b4-93e2-bb93747d7251
 # ╠═949cd9c9-a365-4b16-82bb-708ce2f1777d
 # ╟─1b6a29c4-6643-443b-a0ea-5ca5489e21fc
+# ╠═d7399528-1956-4048-9b8d-c37a96f065e0
 # ╠═07a4816d-8f72-44ac-9cfc-bc2d9fcc7ceb
 # ╠═ada5b74c-4fb4-40fa-9681-c9d28100e1c8
 # ╟─50f76d97-1830-487b-9cfc-f983b6d2e438

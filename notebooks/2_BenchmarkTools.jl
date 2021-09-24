@@ -255,10 +255,12 @@ md"""
 """
 
 # ╔═╡ 7ed1f94e-ce96-4ef9-8372-4579a22f561f
-@benchmark sin.(X) # LLVM vai JIT compile da segunda vez em diante
+# LLVM vai JIT compile da segunda vez em diante e otimizar
+@benchmark sin.(X)
 
 # ╔═╡ 26e99f87-0f14-45fc-a55d-d6f4818dc181
-@benchmark sin.($X) # LLVM não consegue inferir o X então não temos JIT
+# LLVM não consegue inferir o X então nos temos JIT mas não há otimização
+@benchmark sin.($X)
 
 # ╔═╡ ad238529-9718-45a0-8b20-25df03182b25
 md"""
