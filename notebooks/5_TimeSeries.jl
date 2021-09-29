@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -21,13 +21,13 @@ begin
 			"PlutoUI",
 			"CSV",
 			"DataFrames",
+			"Forecast",
 			"Plots",
 			"RollingFunctions",
 			"ShiftedArrays",
 			"HTTP"
 			])
 	Pkg.add(url="https://github.com/pierrenodet/AutoARIMA.jl")
-	Pkg.add(url="https://github.com/viraltux/Forecast.jl")
 	
 	using PlutoUI
 	
@@ -914,7 +914,7 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╠═e78c9151-baa3-4ec3-95bc-36843a42305c
 # ╟─d67b34ed-4fd8-4f4b-9e9b-027dcef8e05f
 # ╟─d702c956-5765-433a-833a-fef06dacad8e
-# ╠═8131495e-f21a-4473-bf7d-beb84c145636
+# ╟─8131495e-f21a-4473-bf7d-beb84c145636
 # ╠═0e22fdf9-7106-4e03-b73e-df63e4612a8f
 # ╠═baa42a2f-ac93-49ac-9af3-b794466f1b8f
 # ╠═c085d76a-7d2e-48ea-820a-9baa303138b6
