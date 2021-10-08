@@ -15,9 +15,7 @@ begin
 	using DataFrames
 	using XLSX
 	using Statistics: mean, std, cor
-	
-	# evitar conflitos com stack de DataFrames
-	import HTTP
+	using Downloads: download
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
@@ -176,7 +174,7 @@ md"""
 """
 
 # ╔═╡ 50af3d7c-535d-42fc-8fc5-d124210055e5
-size(df_1)
+size(df_1) 
 
 # ╔═╡ 06a37ad8-2ff7-4999-9008-98aa96b73420
 first(df_1, 3)
@@ -245,7 +243,7 @@ Por padrão `describe` age em todas as colunas do dataset. Mas você pode defini
 """
 
 # ╔═╡ ae553b32-49a0-4c45-950b-bb4400e069ae
-describe(df_1, :mean; cols=[:x_1, :x_2])
+describe(df_1, :mean, :std; cols=[:x_1, :x_2])
 
 # ╔═╡ 8959d49d-b019-442d-adb6-99c1450ec108
 md"""
@@ -290,43 +288,37 @@ md"""
 Tem várias maneiras de ler `.csv`s:
 
 - Vanilla: `CSV.File(file) |> DataFrame` ou `CSV.read(file, DataFrame)`
-- Brasileiro/Europeu: `CSV.read(file, DataFrame; delim=";")`
+- Brasileiro/Europeu: `CSV.read(file, DataFrame; delim=";", decimal=",")`
 - Lendo da internet:
   ```julia
-  using HTTP
+  using Downloads
   url = "..."
-  CSV.read(HTTP.get(url).body, DataFrame)
+  CSV.read(Downloads.download(url), DataFrame)
   ```
 - Lendo uma porrada de CSV de um diretório:
-   - preservando a ordem:
-     ```julia
-     files = filter(endswith(".csv"), readdir())
-     reduce(vcat, CSV.read(file, DataFrame) for file in files)
-     ```
-   - não preservando a ordem (mais rápido):
-     ```julia
-     files = filter(endswith(".csv"), readdir())
-     mapreduce(x -> CSV.read(x, DataFrame), vcat, files)
-     ```
+  ```julia
+  files = filter(endswith(".csv"), readdir())
+  CSV.read(files, DataFrame)
+  ```
 - Lendo arquivos comprimidos:
    - Gzip:
      ```julia
-     using CodecZlib, Mmap
-     CSV.File(transcode(GzipDecompressor, Mmap.mmap("a.csv.gz"))) |> DataFrame
+     CSV.read("file.csv.gz", DataFrame; buffer_in_memory=true)
      ```
    - Zip:
      ```julia
      using ZipFile
-     z = ZipFile.Reader("a.zip") # or "a2.zip"
+     z = ZipFile.Reader("file.zip")
      # identificar o arquivo correto no zip
-     a_file_in_zip = filter(x->x.name == "a.csv", z.files)[1]
-     CSV.File(read(a_file_in_zip)) |> DataFrame
+     arquivo_csv_zip = filter(x->x.name == "a.csv", z.files)[1]
+     CSV.read(aquivo_csv_zip, DataFrame)
+     close(z)
      ```
 - Lendo CSV em pedaços (*chunks*): `CSV.Chunks(source; tasks::Integer=Threads.nthreads(), kwargs...)`
 - Lendo CSV de uma `String`:
   ```julia
   minha_string = "..."
-  CSV.read(IOBuffer(contents), DataFrame)
+  CSV.read(IOBuffer(minha_string), DataFrame)
   ```
 """
 
@@ -377,7 +369,7 @@ penguins = CSV.read(penguins_file, DataFrame; missingstring="NA")
 # ╔═╡ fafdd689-6c1f-4036-aeb8-47c75cc73e9f
 begin
 	url = "https://github.com/tidyverse/dplyr/blob/master/data-raw/starwars.csv?raw=true"
-	starwars = CSV.read(HTTP.get(url).body, DataFrame; missingstring="NA")
+	starwars = CSV.read(download(url), DataFrame; missingstring="NA")
 end
 
 # ╔═╡ ca69e258-32eb-479f-ab67-8d6969dc77ce
@@ -494,7 +486,7 @@ Onde:
       * `Vector{Symbol}`: `df[:, [:col1, :col2]]`
       * `Vector{String}`: `df[:, ["col1", "col2"]]`
       * `UnitRange`: um intervalo `df[:, 1:10]`
-      * `Vector{Integer}`: várias linhas `df[:, [1,2]]`
+      * `Vector{Integer}`: várias colunas `df[:, [1,2]]`
       * `Vector{Bool}`: os índices que são `true`, `df[:, [false, true, true]]`
       * RegEx: `df[:, r"^col"]`
       * `Not`: uma negação bem flexível `df[:, Not(:col)]` ou `df[:, Not(1:5)]`
@@ -614,7 +606,6 @@ select(df, ...)
 * `select(df, Not(:col1))`
 * `select(df, Between(:col1, :col5))`
 * `select(df, r"^col")`
-* `select(df, Not(:col1))`
 """
 
 # ╔═╡ 2bc2529d-8931-4300-8a64-97b349c37e2d
@@ -873,7 +864,11 @@ md"""
 """
 
 # ╔═╡ a952354f-84b0-4050-a78f-002a953b0c48
-select(penguins, :body_mass_g => ByRow(x -> ifelse(coalesce(x, 0) > mean(skipmissing(penguins.body_mass_g)), "pesado", "leve")) => :peso)
+select(penguins, :body_mass_g => ByRow(
+		x -> ifelse(coalesce(x, 0) > mean(
+				skipmissing(penguins.body_mass_g)),
+			"pesado", "leve"))
+	=> :peso)
 
 # ╔═╡ 7f96c3c1-a93e-401d-9993-2c857f4002f5
 md"""
@@ -887,6 +882,9 @@ md"""
 md"""
 ## Exemplo mais Complexo com `starwars`
 """
+
+# ╔═╡ a1bf0253-24d7-46e0-bc24-1ef2b80d793f
+names(starwars)
 
 # ╔═╡ e1abe2d3-6296-447a-a53a-d669f554ac8f
 transform(
@@ -1353,6 +1351,12 @@ md"""
 # ╔═╡ 3696de64-fdc8-49b3-a45c-47482739d45e
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/joins.png?raw=true")
 
+# ╔═╡ ebfeee0e-f776-47a3-b168-f2092377e2b5
+md"""
+!!! tip "💡 leftjoin!"
+    A versão do branch `main` e futura versão 1.3 do `DataFrames.jl` já tem uma função `leftjoin!`: *left join* sem alocações 😎.
+"""
+
 # ╔═╡ 3a2d45f0-5f1b-40ed-b720-0d2aa7f5b9ca
 people = DataFrame(ID = [20, 40], Name = ["Joãozinho", "Mariazinha"])
 
@@ -1361,32 +1365,32 @@ jobs = DataFrame(ID = [20, 40], Job = ["Advogado(a)", "Médico(a)"])
 
 # ╔═╡ 6bcdb3b1-b0be-4d23-8862-75957e2cb036
 md"""
-!!! tip "💡 Chave de *Join*"
+!!! tip "💡 Chave de Join"
     O argumento mais importante do *join* é a chave `on`.
 """
 
 # ╔═╡ 6b4a89f3-1f8d-4eb3-8ef0-c6464b9d15f1
-innerjoin(people, jobs; on = :ID)
+innerjoin(people, jobs; on=:ID)
 
 # ╔═╡ d0782f40-3def-481f-be7b-881a1dc9824e
-leftjoin(people, jobs; on = :ID)
+leftjoin(people, jobs; on=:ID)
 
 # ╔═╡ 67edfd75-3623-4e75-988d-08c0b958a9f5
-rightjoin(people, jobs; on = :ID)
+rightjoin(people, jobs; on=:ID)
 
 # ╔═╡ dd038402-c18a-4b44-a635-b749f63b13c7
-outerjoin(people, jobs; on = :ID)
+outerjoin(people, jobs; on=:ID)
 
 # ╔═╡ 7963b6de-998f-4add-bd94-cc7babe12816
-semijoin(people, jobs; on = :ID)
+semijoin(people, jobs; on=:ID)
 
 # ╔═╡ e20f890c-b49b-4cbe-bd3a-4440f7f0174b
-antijoin(people, jobs; on = :ID)
+antijoin(people, jobs; on=:ID)
 
 # ╔═╡ 8004bf73-bc80-4919-9790-e68c13cc69a7
 md"""
 !!! danger "⚠️ crossjoin"
-    `crossjoin` **não*8 tem o argumento `on`. Mas se atente ao argumento `makeunique`.
+    `crossjoin` **não** tem o argumento `on`. Mas se atente ao argumento `makeunique`.
 """
 
 # ╔═╡ 83c5c631-95e5-4353-962c-94c572b1a692
@@ -1407,7 +1411,7 @@ left => right
 jobs_new = DataFrame(IDNew = [20, 40], Job = ["Advogado(a)", "Médico(a)"])
 
 # ╔═╡ 83b0d0a8-11e8-4cbf-bde6-55164dd860ee
-innerjoin(people, jobs_new; on = :ID => :IDNew)
+innerjoin(people, jobs_new; on=:ID => :IDNew)
 
 # ╔═╡ 5cc5494d-43a7-44f3-994b-b9cd89b793c4
 md"""
@@ -1598,7 +1602,7 @@ BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CategoricalArrays = "324d7699-5711-5eae-9e2f-1d82baa6b597"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
-HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -1610,7 +1614,6 @@ BenchmarkTools = "~1.2.0"
 CSV = "~0.9.4"
 CategoricalArrays = "~0.10.1"
 DataFrames = "~1.2.2"
-HTTP = "~0.9.15"
 PlutoUI = "~0.7.12"
 XLSX = "~0.7.8"
 """
@@ -1635,10 +1638,10 @@ uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 version = "1.2.0"
 
 [[CSV]]
-deps = ["CodecZlib", "Dates", "FilePathsBase", "Mmap", "Parsers", "PooledArrays", "SentinelArrays", "Tables", "Unicode", "WeakRefStrings"]
-git-tree-sha1 = "3a877c2fc5c9b88ed7259fd0bdb7691aad6b50dc"
+deps = ["CodecZlib", "Dates", "FilePathsBase", "InlineStrings", "Mmap", "Parsers", "PooledArrays", "SentinelArrays", "Tables", "Unicode", "WeakRefStrings"]
+git-tree-sha1 = "567d865fc5702dc094e4519daeab9e9d44d66c63"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.9.4"
+version = "0.9.6"
 
 [[CategoricalArrays]]
 deps = ["DataAPI", "Future", "Missings", "Printf", "Requires", "Statistics", "Unicode"]
@@ -1709,9 +1712,9 @@ version = "1.1.0"
 
 [[FilePathsBase]]
 deps = ["Dates", "Mmap", "Printf", "Test", "UUIDs"]
-git-tree-sha1 = "6d4b609786127030d09e6b1ee0e2044ec20eb403"
+git-tree-sha1 = "7fb0eaac190a7a68a56d2407a6beff1142daf844"
 uuid = "48062228-2e41-5def-b9a4-89aafe57970f"
-version = "0.9.11"
+version = "0.9.12"
 
 [[Formatting]]
 deps = ["Printf"]
@@ -1723,16 +1726,16 @@ version = "0.4.2"
 deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
-[[HTTP]]
-deps = ["Base64", "Dates", "IniFile", "Logging", "MbedTLS", "NetworkOptions", "Sockets", "URIs"]
-git-tree-sha1 = "24675428ca27678f003414a98c9e473e45fe6a21"
-uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "0.9.15"
+[[Hyperscript]]
+deps = ["Test"]
+git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
+uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
+version = "0.0.4"
 
 [[HypertextLiteral]]
-git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+git-tree-sha1 = "f6532909bf3d40b308a0f360b6a0e626c0e263a8"
 uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
-version = "0.9.0"
+version = "0.9.1"
 
 [[IOCapture]]
 deps = ["Logging", "Random"]
@@ -1740,11 +1743,11 @@ git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
 uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
 version = "0.2.2"
 
-[[IniFile]]
-deps = ["Test"]
-git-tree-sha1 = "098e4d2c533924c921f9f9847274f2ad89e018b8"
-uuid = "83e8ac13-25f8-5344-8a64-a9f2b223428f"
-version = "0.5.0"
+[[InlineStrings]]
+deps = ["Parsers"]
+git-tree-sha1 = "19cb49649f8c41de7fea32d089d37de917b553da"
+uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
+version = "1.0.1"
 
 [[InteractiveUtils]]
 deps = ["Markdown"]
@@ -1808,12 +1811,6 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 
-[[MbedTLS]]
-deps = ["Dates", "MbedTLS_jll", "Random", "Sockets"]
-git-tree-sha1 = "1c38e51c3d08ef2278062ebceade0e46cefc96fe"
-uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
-version = "1.0.3"
-
 [[MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
@@ -1840,19 +1837,19 @@ version = "1.4.1"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "9d8c00ef7a8d110787ff6f170579846f776133a9"
+git-tree-sha1 = "a8709b968a1ea6abc2dc1967cb1db6ac9a00dfb6"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.0.4"
+version = "2.0.5"
 
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[PlutoUI]]
-deps = ["Base64", "Dates", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
-git-tree-sha1 = "f35ae11e070dbf123d5a6f54cbda45818d765ad2"
+deps = ["Base64", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
+git-tree-sha1 = "633f8a37c47982bff23461db0076a33787b17ecd"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.12"
+version = "0.7.15"
 
 [[PooledArrays]]
 deps = ["DataAPI", "Future"]
@@ -1868,9 +1865,9 @@ version = "1.2.2"
 
 [[PrettyTables]]
 deps = ["Crayons", "Formatting", "Markdown", "Reexport", "Tables"]
-git-tree-sha1 = "0d1245a357cc61c8cd61934c07447aa569ff22e6"
+git-tree-sha1 = "69fd065725ee69950f3f58eceb6d144ce32d627d"
 uuid = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
-version = "1.1.0"
+version = "1.2.2"
 
 [[Printf]]
 deps = ["Unicode"]
@@ -1944,9 +1941,9 @@ version = "1.0.1"
 
 [[Tables]]
 deps = ["DataAPI", "DataValueInterfaces", "IteratorInterfaceExtensions", "LinearAlgebra", "TableTraits", "Test"]
-git-tree-sha1 = "1162ce4a6c4b7e31e0e6b14486a6986951c73be9"
+git-tree-sha1 = "fed34d0e71b91734bf0a7e10eb1bb05296ddbcd0"
 uuid = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
-version = "1.5.2"
+version = "1.6.0"
 
 [[Tar]]
 deps = ["ArgTools", "SHA"]
@@ -1962,11 +1959,6 @@ git-tree-sha1 = "216b95ea110b5972db65aa90f88d8d89dcb8851c"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.9.6"
 
-[[URIs]]
-git-tree-sha1 = "97bbe755a53fe859669cd907f2d96aee8d2c1355"
-uuid = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
-version = "1.3.0"
-
 [[UUIDs]]
 deps = ["Random", "SHA"]
 uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
@@ -1975,10 +1967,10 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[WeakRefStrings]]
-deps = ["DataAPI", "Parsers"]
-git-tree-sha1 = "4a4cfb1ae5f26202db4f0320ac9344b3372136b0"
+deps = ["DataAPI", "InlineStrings", "Parsers"]
+git-tree-sha1 = "c69f9da3ff2f4f02e811c3323c22e5dfcb584cfa"
 uuid = "ea10d353-3f73-51f8-a26c-33c1cb351aa5"
-version = "1.3.0"
+version = "1.4.1"
 
 [[XLSX]]
 deps = ["Dates", "EzXML", "Printf", "Tables", "ZipFile"]
@@ -2143,6 +2135,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═a952354f-84b0-4050-a78f-002a953b0c48
 # ╟─7f96c3c1-a93e-401d-9993-2c857f4002f5
 # ╟─4818c8d6-d421-46ed-a31d-cade0ed1e5a8
+# ╠═a1bf0253-24d7-46e0-bc24-1ef2b80d793f
 # ╠═e1abe2d3-6296-447a-a53a-d669f554ac8f
 # ╟─857136e8-c2fc-4473-86ed-f351b2af17c6
 # ╟─7f05e0b8-2fd8-4bf6-a17a-83ed728d920f
@@ -2193,7 +2186,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═9f87b096-1879-46c6-9cb8-995e965a52e6
 # ╠═6e22e6a9-b540-4ab1-ac8e-ecc00a6ed6e6
 # ╟─971c9aa8-e5d4-41c3-9147-8bb95edb6dd7
-# ╠═d0831039-639b-4e9f-8ca5-af64ac5f57ce
+# ╟─d0831039-639b-4e9f-8ca5-af64ac5f57ce
 # ╟─d7efcd51-c6e2-44f6-adad-bdfc8bed969a
 # ╟─6df41c9e-2510-48b5-b79d-a6deca1ed1cb
 # ╠═b03af91d-789a-4441-95ce-9ac2f036c5c1
@@ -2226,6 +2219,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═bdf30fe2-59d9-4d61-81a7-84f61a769c74
 # ╟─6113bca4-9f27-4453-827c-56bd0667d9d6
 # ╟─3696de64-fdc8-49b3-a45c-47482739d45e
+# ╟─ebfeee0e-f776-47a3-b168-f2092377e2b5
 # ╠═3a2d45f0-5f1b-40ed-b720-0d2aa7f5b9ca
 # ╠═db434628-4961-405d-8d69-4f2e45976577
 # ╟─6bcdb3b1-b0be-4d23-8862-75957e2cb036
