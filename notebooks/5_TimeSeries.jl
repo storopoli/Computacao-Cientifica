@@ -21,6 +21,7 @@ begin
 			"PlutoUI",
 			"CSV",
 			"DataFrames",
+			"DataWrangler",
 			"Forecast",
 			"Plots",
 			"RollingFunctions",
@@ -34,6 +35,7 @@ begin
 	using AutoARIMA
 	using Dates
 	using DataFrames
+	using DataWrangler
 	using Forecast
 	using Plots
 	using RollingFunctions
@@ -643,6 +645,58 @@ typeof(stl_ap)
 # ╔═╡ 2b674a78-f024-459b-b0c4-b4107730e7cd
 plot(stl_ap)
 
+# ╔═╡ 90351d6b-7117-4339-9c32-e5b80832b48c
+md"""
+#  Preparações de Dados Típicas em Séries Temporais
+
+Além de colocar os dados em um `DataFrame`, muitas técnicas de séries temporais necessitam de um tratamento especial dos dados.
+O pacote [`DataWrangler.jl`](https://github.com/viraltux/DataWrangler.jl) possui diversas funções com esse propósito:
+
+* **Imputação de dados faltantes**
+* **Normalização de dados** (por escore $z$, min-max, softmax ou sigmoid)
+* **Deteção de _outliers_** (observações influentes)
+"""
+
+# ╔═╡ 8b9f03ac-e046-4279-8067-3381ae08871f
+md"""
+!!! info "💁 DataWranger.jl"
+    O Pacote [`DataWrangler.jl`](https://github.com/viraltux/DataWrangler.jl) foi criado e é mantido pelo [viraltux](https://github.com/viraltux) que também é o criador dos pacotes [`Forecast.jl`](https://github.com/viraltux/Forecast.jl) e [`ForecastPlots.jl`](https://github.com/viraltux/ForecastPlots.jl).
+"""
+
+# ╔═╡ 0d8b34df-da80-4be8-b891-1ecc1243b1e1
+let
+	n = 1000
+	x = sort(rand(n))*2*pi;
+	y = Array{Union{Missing,Float64}}(undef,n);
+	y[:] = sin.(x).+randn(n)/10;
+	mid = vcat(100:150,300:350,600:650,950:1000);
+	
+	y[mid] .= missing;
+	scatter(x,y; label="dados")
+	
+	ipy = impute(x,y; method = "normal")
+	scatter!(x[mid],ipy[mid]; label = "imputed 'normal'", color=:white)
+	
+	ipy = impute(x,y)
+	scatter!(x[mid],ipy[mid]; label = "imputed 'loess'", color=:black, markersize = 2)
+	title!("Imputação de Dados Faltantes com DataWrangler.jl")
+end
+
+# ╔═╡ 907379d8-932c-48d2-8582-d1b4d6d41df0
+let
+	n = 1000
+	x = sort(rand(n))*2*pi;
+	y = Array{Union{Missing,Float64}}(undef,n);
+	y[:] = sin.(x).+randn(n)/10
+	mid = vcat(100:150,300:350,600:650,950:1000);
+	y[mid] .= y[mid] .+ 2*(randn(length(mid)).+1)
+	
+	outlist = outlie(x,y)
+	scatter(outlist, y[outlist]; color="blue", label="outliers",ms=6)
+	scatter!(y,color="lightblue", label="dados")
+	title!("Identificação de Outliers com DataWrangler.jl")
+end
+
 # ╔═╡ c9583420-6b50-4afb-aa34-7b070fbd50d6
 md"""
 # Maneiras de Modelar Séries Temporais
@@ -651,7 +705,7 @@ md"""
    * Livro [Forecastring 3a edição](https://otexts.com/fpp3/)
    * Livro [Analysis of Financial Time Series 3a edição](https://faculty.chicagobooth.edu/ruey-s-tsay/research/analysis-of-financial-time-series-3rd-edition)
    * Pacote [`AutoARIMA.jl`](https://github.com/pierrenodet/AutoARIMA.jl): Modelos ARIMA.
-   * Pacote[`Forecast.jl`](https://github.com/viraltux/Forecast.jl): foco em predição e visualizações, apenas modelos AR, decomposição STL.
+   * Pacote [`Forecast.jl`](https://github.com/viraltux/Forecast.jl): foco em predição e visualizações, apenas modelos AR, decomposição STL.
 - **Bayesiana**:
    * Livro [Bayesian Data Analysis 3a edição](http://www.stat.columbia.edu/~gelman/book/)
    * Livro [Statistical Rethinking 2a edição](https://xcelab.net/rm/statistical-rethinking/)
@@ -1004,6 +1058,10 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╠═448a1eb3-0512-4e10-98c2-829e356ccea8
 # ╠═213f02d5-679e-4d05-9f42-fa047663af50
 # ╠═2b674a78-f024-459b-b0c4-b4107730e7cd
+# ╟─90351d6b-7117-4339-9c32-e5b80832b48c
+# ╟─8b9f03ac-e046-4279-8067-3381ae08871f
+# ╟─0d8b34df-da80-4be8-b891-1ecc1243b1e1
+# ╟─907379d8-932c-48d2-8582-d1b4d6d41df0
 # ╟─c9583420-6b50-4afb-aa34-7b070fbd50d6
 # ╟─3d98552e-014c-4939-8e93-3b3536cd0898
 # ╟─edc542c7-8f70-4fa3-abcf-c9162ced69a0
