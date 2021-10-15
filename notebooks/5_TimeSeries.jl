@@ -185,7 +185,7 @@ md"""
 md"""
 O módulo da biblioteca padrão de datas tem dois tipos para trabalhar com datas:
 
-* `Data`: representando o tempo em **dias**.
+* `Date`: representando o tempo em **dias**.
 * `DateTime`: representando o tempo na precisão de **milissegundos**.
 
 Podemos construir `Date` e `DateTime` com o construtor padrão, especificando um número inteiro para representar ano, mês, dia, horas e assim por diante:
@@ -347,7 +347,7 @@ md"""
 # ╔═╡ 66a8222a-6d38-464f-8466-59ef86f863ea
 md"""
 !!! tip "💡 Dias da Semana"
-    Aqui está uma dica útil para recuperar apenas os dias da semana de oobjetos `Date`s. Basta usar um filtro em `dayofweek(sua_data) <= 5`.
+    Aqui está uma dica útil para recuperar apenas os dias da semana de objetos `Date`s. Basta usar um filtro em `dayofweek(sua_data) <= 5`.
 
 	Para dias úteis você pode usar o pacote [`BusinessDays.jl`](`BusinessDays.jl`).
 """
