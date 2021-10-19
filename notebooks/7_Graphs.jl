@@ -30,9 +30,6 @@ begin
 	# Seed
 	using Random: seed!
 	seed!(123)
-	
-	# Hack
-	const LightGraphs = Graphs
 end
 
 # ╔═╡ f00181d3-444b-487b-9281-2207f5ec9076
@@ -940,7 +937,11 @@ HTML("
 md"""
 # CommunityDetection .jl Hacks
 
-Explain something like yada yada
+Apesar dos diversos módulos e pacotes terem sido convertidos de `LightGraphs.jl` para `Graphs.jl`, o pacote [`CommunityDetection.jl`](https://github.com/JuliaGraphs/CommunityDetection.jl) ainda está desatualizado.
+
+O seu dito cujo está tentando dar um merge num [PR](https://github.com/JuliaGraphs/CommunityDetection.jl/pull/6) que resolve isso. Vamos aguardar enquanto isso.
+
+O código é bem pequeno então eu estou apenas copiando o código aqui no notebook como um "hack" temporário.
 """
 
 # ╔═╡ 21861d1e-4df9-4cdb-9130-ab2c4accf0cb
@@ -1099,23 +1100,6 @@ end
 # precisa passar o número de comunidades
 karate_bethe = community_detection_bethe(g, 2)
 
-# ╔═╡ 8bf8563e-e49a-49e3-a674-1cb359e9948f
-md"""
-# NetworkLayout.jl Hacks
-
-I don't think this will work...
-"""
-
-# ╔═╡ 9567d220-0b07-4791-bd87-2175e77abaff
-function layout(l::NetworkLayout.AbstractLayout, g::Graphs.AbstractGraph)
-	layout(l, Graphs.adjacency_matrix(g))
-end
-
-# ╔═╡ f4888aa7-24a7-4b1a-8984-77a75d0f797b
-function LayoutIterator(l::NetworkLayout.IterativeLayout, g::Graphs.AbstractGraph)
-	LayoutIterator(l, Graphs.adjacency_matrix(g))
-end
-
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -1169,9 +1153,9 @@ Clustering = "~0.14.2"
 Colors = "~0.12.8"
 DataFrames = "~1.2.2"
 GraphIO = "~0.5.0"
-GraphMakie = "~0.2.4"
+GraphMakie = "~0.3.0"
 Graphs = "~1.4.1"
-NetworkLayout = "~0.4.2"
+NetworkLayout = "~0.4.3"
 PlutoUI = "~0.7.16"
 SNAPDatasets = "~0.1.0"
 """
@@ -1273,9 +1257,9 @@ version = "1.16.1+0"
 
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "8d954297bc51cc64f15937c2093799c3617b73e4"
+git-tree-sha1 = "d9e40e3e370ee56c5b57e0db651d8f92bce98fea"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.10.0"
+version = "1.10.1"
 
 [[Clustering]]
 deps = ["Distances", "LinearAlgebra", "NearestNeighbors", "Printf", "SparseArrays", "Statistics", "StatsBase"]
@@ -1527,10 +1511,10 @@ uuid = "aa1b3936-2fda-51b9-ab35-c553d3a640a2"
 version = "0.5.0"
 
 [[GraphMakie]]
-deps = ["GeometryBasics", "LightGraphs", "LinearAlgebra", "Makie", "NetworkLayout", "StaticArrays"]
-git-tree-sha1 = "99d5639b6403d38d3d0ef48c8d9c0e246615ebb0"
+deps = ["GeometryBasics", "Graphs", "LinearAlgebra", "Makie", "NetworkLayout", "StaticArrays"]
+git-tree-sha1 = "e39e441fd067053fd093319ecd0e90a270950baa"
 uuid = "1ecd5474-83a3-4783-bb4f-06765db800d2"
-version = "0.2.4"
+version = "0.3.0"
 
 [[Graphics]]
 deps = ["Colors", "LinearAlgebra", "NaNMath"]
@@ -1869,9 +1853,9 @@ version = "1.0.2"
 
 [[NetworkLayout]]
 deps = ["GeometryBasics", "LinearAlgebra", "Random", "Requires", "SparseArrays"]
-git-tree-sha1 = "8daa46f6e2c2eb41d94d2746823a9262351d75b5"
+git-tree-sha1 = "24e10982e84dd35cd867102243454bf8a4581a76"
 uuid = "46757867-2c16-5918-afeb-47bfcb05e46a"
-version = "0.4.2"
+version = "0.4.3"
 
 [[NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
@@ -2496,7 +2480,7 @@ version = "3.5.0+0"
 # ╟─fc57adf5-689d-4a0c-b91e-df9d6e44579f
 # ╟─7fee896e-c25d-42d8-8653-b6ededccf1cc
 # ╟─82172216-cd56-4905-b3b3-18439c557de6
-# ╠═8c3bea69-324d-4cb6-b094-17d6e7ce6405
+# ╟─8c3bea69-324d-4cb6-b094-17d6e7ce6405
 # ╠═f00181d3-444b-487b-9281-2207f5ec9076
 # ╠═ece60d2d-d4bd-4e6d-bbce-a2f9a7e78a7f
 # ╠═b00ebf7f-b73b-46e1-99d9-45ec1bacb1c0
@@ -2504,9 +2488,6 @@ version = "3.5.0+0"
 # ╠═21861d1e-4df9-4cdb-9130-ab2c4accf0cb
 # ╠═75477f56-4d9a-460c-81ce-84b9fd038c5e
 # ╠═f800b369-63a0-422a-90fb-b1f61cba928e
-# ╠═8bf8563e-e49a-49e3-a674-1cb359e9948f
-# ╠═9567d220-0b07-4791-bd87-2175e77abaff
-# ╠═f4888aa7-24a7-4b1a-8984-77a75d0f797b
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
