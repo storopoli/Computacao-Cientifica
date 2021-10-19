@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.15.1
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -59,6 +59,17 @@ md"""
 	Portanto, se você não sabe o que é uma rede ou um grafo, pegue um livro-texto e estude ou pergunte pro seu orientador.
 
 	**Sugestão de fonte**: Newman, M. (2018). Networks (2nd Edition). Oxford university press. [(link)](https://global.oup.com/academic/product/networks-9780198805090?cc=us&lang=en&)
+"""
+
+# ╔═╡ 8f974a09-1675-44da-bcb4-4a259926f77f
+md"""
+!!! info "💁 LightGraphs.jl para Graphs.jl"
+    A partir de Outubro de 2021 houve uma [mudança no desenvolvimento dos pacotes de grafos e redes de Julia](https://discourse.julialang.org/t/lightgraphs-jl-transition/69526). Os pacotes estavam peformáticos e estáveis, mas não estavam sendo atualizados regularmente. [Julia Computing](https://juliacomputing.com/) então tomou as rédeas dos pacotes de grafos e renomeou todos de `LightGraphs` para `Graphs`. Este notebook **será atualizado(( para refletir as novas direções de análise de grafos e redes em Julia com [`Graphs.jl`](https://github.com/JuliaGraphs/Graphs.jl). Os pacotes renomeados foram:
+
+	* `LightGraphs.jl` → `Graphs.jl`
+	* `LightGraphsExtras.jl` → `GraphsExtras.jl`
+	* `LightGraphsMatchings.jl` → `GraphsMatchings.jl`
+	* `LightGraphsFlows.jl` → `GraphsFlows.jl`
 """
 
 # ╔═╡ 92bfdc9d-049f-4ebf-ae54-7056aeff738b
@@ -1607,9 +1618,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "Pkg"]
-git-tree-sha1 = "c253236b0ed414624b083e6b72bfe891fbd2c7af"
+git-tree-sha1 = "5455aef09b40e5020e1520f551fa3135040d4ed0"
 uuid = "856f044c-d86e-5d09-b602-aeab76dc8ba7"
-version = "2021.1.1+1"
+version = "2021.1.1+2"
 
 [[MacroTools]]
 deps = ["Markdown", "Random"]
@@ -2210,6 +2221,7 @@ version = "3.5.0+0"
 # ╟─e8c26849-bdd0-4dd2-ad6a-e9ddf6f7ef86
 # ╠═27f62732-c909-11eb-27ee-e373dce148d9
 # ╟─94b06d53-864f-43b0-ab90-0f364ef869ee
+# ╟─8f974a09-1675-44da-bcb4-4a259926f77f
 # ╟─92bfdc9d-049f-4ebf-ae54-7056aeff738b
 # ╟─811325db-bb90-440d-968c-bde2b975b09d
 # ╟─2c28dc38-77bb-4e3d-b80e-e5b2ab221171
