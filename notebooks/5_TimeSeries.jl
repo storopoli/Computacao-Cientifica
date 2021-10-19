@@ -75,7 +75,11 @@ md"""
 !!! danger "⚠️ Disciplina Ferramental"
     **Esta disciplina é uma disciplina ferramental!**
 
-	Portanto, se você não sabe o que é uma rede ou um grafo, pegue um livro-texto e estude ou pergunte pro seu orientador.
+	Portanto, se você não sabe o que é série temporal, pegue um livro-texto e estude ou pergunte pro seu orientador.
+
+	**Sugestão de fontes**: 
+	   * Livro [Forecastring 3a edição](https://otexts.com/fpp3/)
+       * Livro [Analysis of Financial Time Series 3a edição](https://faculty.chicagobooth.edu/ruey-s-tsay/research/analysis-of-financial-time-series-3rd-edition)
 """
 
 # ╔═╡ 59b60d4a-04bf-425e-a443-1361af55a428
