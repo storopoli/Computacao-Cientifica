@@ -6,6 +6,10 @@
 
 \blurb{Bem-vindo à Disciplina de **Ciência de Dados e Computação Científica com [Julia](https://julialang.org/)** do Mestrado e Doutorado em Informática e Gestão do Conhecimento (PPGI) da [UNINOVE](https://uninove.br)}
 
+~~~
+<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/videoseries?list=PLpTXaEnTpmwPE4amQWlikU8Zt6mwmgyny' frameborder='0' allowfullscreen></iframe></div>
+~~~
+
 Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a live online Julia/Pluto textbook, <https://computationalthinking.mit.edu>".
 
 ## Julia
