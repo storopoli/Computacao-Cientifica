@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.1
+# v0.16.3
 
 using Markdown
 using InteractiveUtils
@@ -113,7 +113,7 @@ Aqui vamos falar dos pacotes de [`JuliaPlots`](https://github.com/JuliaPlots):
 * [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl): interface de `Plots.jl` com `DataFrame`s.
 
 
-* [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl): nova biblioteca que possui maiores custoomizações e mais poderosa que `Plots.jl`.
+* [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl): nova biblioteca que possui maiores customizações e mais poderosa que `Plots.jl`. É o **futuro de visualizações com Julia**.
 
 
 * [`AlgebraOfGraphics`](https://github.com/JuliaPlots/AlgebraOfGraphics.jl): interface de `Makie.jl` com `DataFrame`s, mas muito mais poderosa pois usa o [Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448) (estilo `ggplot2`).
@@ -440,7 +440,7 @@ md"""
 Plots.cgrad([:orange, :blue])
 
 # ╔═╡ 1a2222d8-9734-4de5-97ed-4d0288299bc7
-Plots.cgrad(:thermal, rev = true)
+Plots.cgrad(:thermal, rev=true)
 
 # ╔═╡ da380258-0f0f-41ce-bb15-ae205ddb3056
 Plots.cgrad(:Set1_9) # cuidado com coisas qualitativas, não fica muito bom...
@@ -468,7 +468,7 @@ Plots.scatter(
 	c=[logocolors.red, logocolors.green, logocolors.purple],
 	xlims=(0, 3), ylims=(0, 3.5),
 	xaxis=false, yaxis=false,
-	yticks=false, xticks=false,
+	xticks=false, yticks=false,
 	grid=false,
 	title="Ta Dáaaaa",
 	label=false
@@ -498,7 +498,7 @@ begin
 	p_3 = Plots.plot(x, y; xlabel="Esse aqui tem label", lw=3, title="Subtítulo")
 	p_4 = Plots.histogram(x, y; alpha=0.5)
 	
-	Plots.plot(p_1, p_2, p_3, p_4; layout=4, legend=false)
+	Plots.plot(p_1, p_2, p_3, p_4; layout=4, legend=false, plot_title="Super Título")
 end
 
 # ╔═╡ 818dc824-84cb-4cdb-883e-5e4692232fb1
@@ -542,7 +542,7 @@ md"""
 
 O macro `@layout` é a maneira mais fácil de definir layouts complexos, usando a construção de `Array` multidimensional de Julia como base para uma sintaxe de layout personalizado.
 
-O dimensionamento preciso pode ser obtido com colchetes `{}`, caso contrário, o espaço livre é dividido **igualmente** entre as áreas de plotagem em subplotagens.
+O dimensionamento preciso pode ser obtido com chaves `{}`, caso contrário, o espaço livre é dividido **igualmente** entre as áreas de plotagem em subplotagens.
 
 Exemplo:
 """
@@ -666,7 +666,11 @@ df = DataFrame(
 )
 
 # ╔═╡ 76690388-c600-449f-b5cd-d4caf0693e2b
-@df df Plots.plot(:x, :y)
+@df df Plots.plot(:x, :y;
+	title="Meu Plot de Quadrados", # todos os attributes de Plots
+	xlabel=L"x",                   # funcionam! 🆗
+	ylabel=L"x^2",
+	legend=:outerbottomright)
 
 # ╔═╡ 8452c91f-43a4-4122-bd6b-7b695aba7912
 md"""
@@ -699,7 +703,8 @@ md"""
 @df penguins StatsPlots.density(
 	:body_mass_g;
 	group=(:species, :island),
-	lw=3
+	lw=3,
+	palette=:Set1_5 # funciona com attributes!
 )
 
 # ╔═╡ 7a5335e9-b1e1-4180-9087-0c383db345ef
@@ -709,31 +714,40 @@ md"""
 
 # ╔═╡ 351068e8-54c4-4ce9-bba8-1cfdabd13f4d
 @df penguins StatsPlots.marginalhist(
-	:bill_length_mm, :bill_depth_mm
+	:bill_length_mm, :bill_depth_mm;
+	xlabel="Bill Length(mm)",
+	ylabel="Bill Depth(mm)",
+	plot_title="Marginal Histogram"
 )
 
 # ╔═╡ d6498efd-8bc8-42fc-bed2-ed2420681a98
 @df penguins StatsPlots.marginalkde(
-	:bill_length_mm, :bill_depth_mm
+	:bill_length_mm, :bill_depth_mm;
+	xlabel="Bill Length(mm)",
+	ylabel="Bill Depth(mm)",
+	plot_title="Marginal KDE"
 )
 
 # ╔═╡ 4ed7ff92-c17b-4d93-bca7-7b84b126fb23
 @df penguins StatsPlots.corrplot(
 	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
-	size=(800,600)
+	size=(800,600),
+	plot_title="Correlation Plot"
 )
 
 # ╔═╡ 3aa2401c-27ea-4f34-b99c-2adfa47cd703
 @df penguins StatsPlots.corrplot(
 	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
 	group=:island,
-	size=(800,600)
+	size=(800,600),
+	plot_title="Correlation Plot"
 )
 
 # ╔═╡ ea2fd5c6-d5c0-4369-9514-76e7a2017767
 @df penguins StatsPlots.cornerplot(
 	cols([:bill_length_mm, :bill_depth_mm, :body_mass_g, :flipper_length_mm]);
-	size=(800,600)
+	size=(800,600),
+	plot_title="Corner Plot"
 )
 
 # ╔═╡ 5fa48e2b-cf94-40ca-8b42-6e08e8f99c1e
@@ -745,7 +759,8 @@ md"""
 begin
 	@df penguins StatsPlots.violin(
 		:species, :body_mass_g;
-		linewidth=0, legend=false)
+		linewidth=0, legend=false,
+		ylabel="Body Mass (g)")
 	
 	@df penguins StatsPlots.boxplot!(
 		:species, :body_mass_g;
@@ -767,7 +782,8 @@ md"""
 	:body_mass_g => mean;
 	renamecols=false) StatsPlots.groupedbar(
 	:body_mass_g;
-	group=:species
+	group=:species,
+	ylabel="Body Mass (g)"
 )
 
 # ╔═╡ 39c75ff3-3661-4cb2-82f6-8aec128da417
@@ -777,7 +793,9 @@ md"""
 	renamecols=false) StatsPlots.groupedbar(
 	:body_mass_g;
 	group=:species,
+	ylabel="Body Mass (g)",
 	bar_position=:stack,
+	grid=false,
 	legend=:outerbottomright,
 	yformatter=(x -> string(Int(x / 1_000)) * "K"),
 	palette=:Set1_3
@@ -793,22 +811,19 @@ md"""
 @df penguins StatsPlots.groupedhist(
 	:body_mass_g;
 	group=:species,
+	ylabel="Body Mass (g)"
 )
 
 # ╔═╡ 6c8757bf-35e8-40d6-a508-949acb7b1b6a
 @df penguins StatsPlots.groupedhist(
 	:body_mass_g;
 	group=:species,
+	ylabel="Body Mass (g)",
+	grid=false,
 	bar_position=:stack,
 	xformatter=(x -> string(Int(x / 1_000)) * " kg"),
 	palette=:Set1_3
 )
-
-# ╔═╡ 04ec3000-42c0-497f-bf4f-83214ebe1850
-names(penguins)
-
-# ╔═╡ 5841530d-e62b-4c14-ba53-b5fc223d4d7b
-collect(1_000:1_000:7_000)
 
 # ╔═╡ f4a96990-a738-42e9-8f44-c20ea86d4734
 md"""
@@ -846,7 +861,7 @@ md"""
 * [`CairoMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/CairoMakie) - *backend* baseado em [Cairo](https://www.cairographics.org/) para gráficos vetoriais não-interativos (para publicação).
 
 
-* [`GLMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/GLMakie) - *backend* de gráficos na GPU interativo.
+* [`GLMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/GLMakie) - *backend* de gráficos na GPU interativo baseado em [OpenGL](https://www.opengl.org/).
 
 
 * [`WGLMakie`](https://github.com/JuliaPlots/Makie.jl/tree/master/WGLMakie) - *backend* baseado em [WebGL](https://www.khronos.org/webgl/) de gráficos interativos que roda nos browsers.
@@ -855,7 +870,7 @@ Para usar `AlgebraOfGraphics.jl` importe-o com algum *backend*:
 
 ```julia
 using AlgebraOfGraphics
-using CairoMakie
+using [Backend]Makie
 ```
 """
 
@@ -864,7 +879,7 @@ md"""
 !!! info "💁 Makie.jl"
     Note que os *backends* de `AlgebraOfGraphics.jl` são do [`Makie.jl`](https://github.com/JuliaPlots/Makie.jl). Eu não vou cobrir `Makie.jl` nesse conteúdo. 
 
-	Mas eu recomendo fortemente ler a [documentação de `Makie.jl`](http://makie.juliaplots.org/dev/).
+	Mas eu recomendo fortemente ler a [documentação de `Makie.jl`](http://makie.juliaplots.org/dev/), o [BeautifulMakie do Lázaro Alonso](https://lazarusa.github.io/BeautifulMakie) e o [capítulo de `Makie.jl` do livro Julia Data Science](https://juliadatascience.io).
 """
 
 # ╔═╡ a7483a4b-07d1-42be-abdf-5718c0a48ea5
@@ -975,7 +990,7 @@ Além disso tem as seguintes funções:
 * **`renamer`**: renomeia uma variável categórica com um vetor de `Pair`s:
    
   ```julia
-  renamer(["class 1" => "Class One", "class 2" => "Class Two"])
+  renamer(["class_1" => "Class One", "class_2" => "Class Two"])
   ```
 
 * **`sorter`**: reordena uma variável categórica com argumentos de `String`s:
@@ -1105,30 +1120,31 @@ data(penguins) *
 	mapping(
 		:species,
 		:body_mass_g;
-		color=:island,
-		dodge=:island) *
+		dodge=:island,
+		color=:island) *
 	expectation() |>draw
 
 # ╔═╡ 4acb99c5-8f9c-4568-8495-2522669b11ee
 data(penguins) *
 	mapping(
-		:body_mass_g => float; # histogram não aceita `Int`s
+		:body_mass_g;
 		color=:species) *
+	#visual(; alpha=0.5) *
 	histogram() |> draw
 
 # ╔═╡ 3b9f0db5-275f-47da-a7d8-528bcd9fc154
 data(penguins) *
 	mapping(
-	:body_mass_g;
-	color=:species) *
+		:body_mass_g;
+		color=:species) *
 	density() |> draw
 
 # ╔═╡ 3d75b6ac-4735-49fd-88ec-d6b0d8d85af0
 data(penguins) *
 	mapping(
-	:body_mass_g,
-	:flipper_length_mm;
-	layout=:species) *
+		:body_mass_g,
+		:flipper_length_mm;
+		layout=:species) *
 	visual(Contour) *
 	density() |> draw
 
@@ -1207,7 +1223,7 @@ data(penguins) *
 		:bill_depth_mm;
 		col=:sex,
 		color=:species) * 
-	(linear() * visual(linewidth=3) +
+	(linear() * visual(linewidth=3, linestyle=:dash) +
 		mapping()) |> draw
 
 # ╔═╡ 7e21f990-8348-495a-9226-5a3bcc9ac373
@@ -1234,12 +1250,12 @@ md"""
 md"""
 ### Argumentos de `Figure`
 
-Tem um [monte](http://makie.juliaplots.org/dev/figure.html), mas os mais importantes é **`resolution`**:
+Tem um [monte](https://makie.juliaplots.org/dev/documentation/figure/), mas os mais importantes é **`resolution`**:
 """
 
 # ╔═╡ 0bb9dc80-de08-41b3-98fb-6b1a6bc09b16
 let
-	fig = data(penguins) *
+	aog = data(penguins) *
 	mapping(
 		:bill_length_mm,
 		:bill_depth_mm;
@@ -1248,12 +1264,12 @@ let
 	(linear() * visual(linewidth=3) +
 		mapping())
 	draw(
-		fig;
+		aog;
 		figure=(;
 			resolution=(800, 300),
-			figure_padding=2,
+			figure_padding=6,
 			backgroundcolor=:pink,
-			fontsize=12
+			fontsize=16
 			)
 		)
 end
@@ -1262,18 +1278,18 @@ end
 md"""
 ### Argumentos de `Axis`
 
-També tem um [monte](http://makie.juliaplots.org/dev/makielayout/reference.html#Makie.MakieLayout.Axis), mas o mais importantes são:
+Também tem um [monte](https://makie.juliaplots.org/dev/documentation/api_reference/#Axis), mas o mais importantes são:
 
 * **`title`**: título do gráfico
 * **`aspect`**: *aspect ratio*
 * **`limits`**: limites do eixo-`x` e eixo-`y`
-* **`xtickformat`** e **`ytickformat`**: formatação dós rótulos dos ticks do eixo `x` ou `y`. Note que a [documentação](http://makie.juliaplots.org/dev/makielayout/axis.html#Modifying-ticks) fala "_a function which takes a vector of numbers and outputs a vector of strings_". Então essa função precisa ser vetorizada (_broadcast_) com o `.`.
-* **`xticklabelrotation`** e **`ticklabelrotation`**: rotação dos rótulos dos ticks eixo `x` ou `y` em radianos
+* **`xtickformat`** e **`ytickformat`**: formatação dós rótulos dos ticks do eixo `x` ou `y`. Note que a [documentação](https://makie.juliaplots.org/dev/documentation/layoutables/) fala "_a function which takes a vector of numbers and outputs a vector of strings_". Então essa função precisa ser vetorizada (_broadcast_) com o `.`.
+* **`xticklabelrotation`** e **`yticklabelrotation`**: rotação dos rótulos dos ticks eixo `x` ou `y` em radianos
 """
 
 # ╔═╡ 8d60fd15-e0ed-4433-8fb7-92620ce1cfbd
 let
-	fig = data(penguins) *
+	aog = data(penguins) *
 	mapping(
 		:bill_length_mm => "Cumprimento do Bico (cm)",
 		:bill_depth_mm  => "Largura do Bico (cm)";
@@ -1282,15 +1298,15 @@ let
 	(linear() * visual(linewidth=3) +
 		mapping())
 	draw(
-		fig;
+		aog;
 		axis=(;
 			title="Título",
 			aspect=4/3,
 			limits=(
-				(30, 60), # eixo-x, pode ser `nothing` para somente eixo x
-				(12, 23)  # eixo-y, pode ser `nothing` para somente eixo y
+				(30, 60), # eixo-x, pode ser `nothing` para somente eixo y
+				(12, 23)  # eixo-y, pode ser `nothing` para somente eixo x
 				),
-			xtickformat=(x -> @. string(x / 10) * "\ncm"), # vetorizada com `@.`
+			xtickformat=(x -> @. string(Int(x / 10)) * "\ncm"), # vetorizada com `@.`
 			ytickformat=(x -> @. string(x / 10) * "cm"),   # vetorizada com `@.`
 			yticklabelrotation=π/8
 			)
@@ -1334,7 +1350,7 @@ let
 		"Chistrap" => ColorSchemes.Set1_3.colors[2],
 		"Gentoo" => ColorSchemes.Set1_3.colors[3]
 		]
-	fig = data(penguins) *
+	aog = data(penguins) *
 	mapping(
 		:bill_length_mm,
 		:bill_depth_mm;
@@ -1343,7 +1359,7 @@ let
 	(linear() * visual(linewidth=3) +
 		mapping())
 	draw(
-		fig;
+		aog;
 		palettes=(; color=ColorSchemes.Set1_3.colors)
 		)
 end
@@ -1355,9 +1371,9 @@ md"""
 Apenas use o `save`:
 
 ```julia
-fg = draw(...)
-save("figure.png", fg, px_per_unit = 3) # salva png alta resolução 300dpi
-save("figure.svg", fg, pt_per_unit = 2) # salva svg alta resolução
+aog = draw(...)
+save("figure.png", aog, px_per_unit = 3) # salva png alta resolução 300dpi
+save("figure.svg", aog, pt_per_unit = 2) # salva svg alta resolução
 ```
 
 ### Formatos Suportados
@@ -1371,7 +1387,7 @@ save("figure.svg", fg, pt_per_unit = 2) # salva svg alta resolução
 md"""
 ## Temas de `AlgebraOfGraphics.jl`
 
-`AlgebraOfGraphics.jl` tem o seu [próprio tema](http://juliaplots.org/AlgebraOfGraphics.jl/dev/philosophy/#Opinionated-defaults) e também dá suporte aos [temas pré-definidos de `Makie.jl`](http://makie.juliaplots.org/dev/predefined_themes.html).
+`AlgebraOfGraphics.jl` tem o seu [próprio tema](http://juliaplots.org/AlgebraOfGraphics.jl/dev/philosophy/#Opinionated-defaults) e também dá suporte aos [temas pré-definidos de `Makie.jl`](https://makie.juliaplots.org/dev/documentation/theming/predefined_themes/index.html).
 """
 
 # ╔═╡ e36ce10e-5747-4ac8-933d-87082503738c
@@ -3248,8 +3264,6 @@ version = "0.9.1+5"
 # ╟─11c69906-66e0-4dfa-bb75-e8e93faf71d7
 # ╠═46bcee65-c7d4-4052-860e-f62f6fb37223
 # ╠═6c8757bf-35e8-40d6-a508-949acb7b1b6a
-# ╠═04ec3000-42c0-497f-bf4f-83214ebe1850
-# ╠═5841530d-e62b-4c14-ba53-b5fc223d4d7b
 # ╟─f4a96990-a738-42e9-8f44-c20ea86d4734
 # ╟─c142f0e2-348b-4364-abfc-4feab9064975
 # ╟─2a817b8a-0fa7-4a7b-9ece-fa95f8954e4f
