@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.3
+# v0.16.4
 
 using Markdown
 using InteractiveUtils
@@ -10,7 +10,7 @@ begin
 	using PlutoUI
 	
 	using Graphs
-	#using CommunityDetection
+	using CommunityDetection
 	
 	# I/O
 	using GraphIO
@@ -31,15 +31,6 @@ begin
 	using Random: seed!
 	seed!(123)
 end
-
-# ╔═╡ f00181d3-444b-487b-9281-2207f5ec9076
-using ArnoldiMethod: LR, SR
-
-# ╔═╡ ece60d2d-d4bd-4e6d-bbce-a2f9a7e78a7f
-using LinearAlgebra: I, Diagonal
-
-# ╔═╡ b00ebf7f-b73b-46e1-99d9-45ec1bacb1c0
-using Clustering: kmeans
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 begin
@@ -799,6 +790,25 @@ Em especial eu adoraria ver o [algoritmo de Louvain](https://github.com/JuliaGra
 Caso se interesse veja os links acima e também esse PR em [`EcoJulia/EcologicalNetworks.jl`](https://github.com/EcoJulia/EcologicalNetworks.jl/pull/183).
 """
 
+# ╔═╡ 1c816bc7-d5f1-4abd-a26b-e6f0c76cbead
+# precisa passar o número de comunidades
+karate_nback = community_detection_nback(g, 2)
+
+# ╔═╡ c04569e8-2efb-4b71-86a8-6f184576cecb
+# precisa passar o número de comunidades
+karate_bethe = community_detection_bethe(g, 2)
+
+# ╔═╡ 12724ba8-995b-4ab3-be6b-d575f36cfcd7
+let
+	f, ax, p = graphplot(
+		g;
+		node_size=degree_centrality(g) .* 1e2,
+		node_color=karate_nback)
+	hidedecorations!(ax)
+	hidespines!(ax)
+	f
+end
+
 # ╔═╡ 1cba3d46-9853-4646-999e-ecf0ecd2fa9e
 md"""
 ## Subgrafos
@@ -808,17 +818,52 @@ md"""
 Com comunidades detectadas podemos usar a `vlist` para criar os subgrafos:
 """
 
+# ╔═╡ 3e49645d-7203-412a-9384-c5a63e4b3c5e
+# primeiro precisamos de uma máscara booleana
+bool_mask = karate_nback .== 1
+
+# ╔═╡ b0efd6e0-55a9-4020-9ebc-cc60d4e8717a
+vlist_1 = vertices(g)[bool_mask]
+
+# ╔═╡ 23b98c4c-b474-474d-b44f-929649442c7b
+vlist_2 = vertices(g)[.!bool_mask] # .! not vetorizado 😎
+
 # ╔═╡ 9e30d937-2a72-4fd3-b95e-df670e2a4634
 md"""
 !!! danger "⚠️ induced_subgraph"
     Cuidado `induced_subgraph` retorna uma tupla de `(g, vmap)` aonde `g` é o subgrafo e `vmap` é a lista de vértices do grafo original.
 """
 
+# ╔═╡ 7b8075c3-89a8-4295-9809-2c73c8f96906
+karate_1, vmap_1 = induced_subgraph(g, vlist_1)
+
+# ╔═╡ 1ffd0624-e663-4b43-9be3-2a39e2ecf8a7
+karate_2, vmap_2 = induced_subgraph(g, vlist_2)
+
 # ╔═╡ ee5c877b-cca7-4453-85e2-69653b8bd552
 md"""
 !!! tip "💡 Indexação de Graphs"
     Sim! Você consegue indexar `Graphs` com `g[vlist]`.
 """
+
+# ╔═╡ 3d6aa0c8-1333-4f43-bed8-25f458ba5efa
+g[vlist_1]
+
+# ╔═╡ 2a4c3340-1eb0-4bd2-8db3-56d387f0ee3f
+let
+	f, ax, p = graphplot(karate_1)
+	hidedecorations!(ax)
+	hidespines!(ax)
+	f
+end
+
+# ╔═╡ 4ac4e273-4e9d-46e6-92c4-c508ae2255c1
+let
+	f, ax, p = graphplot(karate_2)
+	hidedecorations!(ax)
+	hidespines!(ax)
+	f
+end
 
 # ╔═╡ c77d2f63-3005-4ea2-8d22-678f3a4ae679
 md"""
@@ -933,173 +978,6 @@ HTML("
 <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/W18FDEA1jRQ' frameborder='0' allowfullscreen></iframe></div>
 ")
 
-# ╔═╡ 8c3bea69-324d-4cb6-b094-17d6e7ce6405
-md"""
-# CommunityDetection .jl Hacks
-
-Apesar dos diversos módulos e pacotes terem sido convertidos de `LightGraphs.jl` para `Graphs.jl`, o pacote [`CommunityDetection.jl`](https://github.com/JuliaGraphs/CommunityDetection.jl) ainda está desatualizado.
-
-O seu dito cujo está tentando dar um merge num [PR](https://github.com/JuliaGraphs/CommunityDetection.jl/pull/6) que resolve isso. Vamos aguardar enquanto isso.
-
-O código é bem pequeno então eu estou apenas copiando o código aqui no notebook como um "hack" temporário.
-"""
-
-# ╔═╡ 21861d1e-4df9-4cdb-9130-ab2c4accf0cb
-function community_detection_threshold(g::AbstractGraph, coords::AbstractArray)
-    # TODO use a more intelligent method to set the threshold
-    # 0 based thresholds are highly sensitive to errors.
-    c = ones(Int, nv(g))
-    # idx = sortperm(λ, lt=(x,y)-> abs(x) > abs(y))[2:k] #the second eigenvector is the relevant one
-    for i=1:nv(g)
-        c[i] = coords[i] > 0 ?  1 : 2
-    end
-    return c
-end
-
-# ╔═╡ 75477f56-4d9a-460c-81ce-84b9fd038c5e
-"""
-	nonbacktrack_embedding(g::AbstractGraph, k::Int)
-
-Perform spectral embedding of the non-backtracking matrix of `g`. Return
-a matrix ϕ where ϕ[:,i] are the coordinates for vertex i.
-
-### Implementation Notes
-Does not explicitly construct the `non_backtracking_matrix`.
-See `Nonbacktracking` for details.
-
-### References
-- [Krzakala et al.](http://www.pnas.org/content/110/52/20935.short).
-"""
-function nonbacktrack_embedding(g::AbstractGraph, k::Int)
-    B = Nonbacktracking(g)
-    λ, eigv = Graphs.LinAlg.eigs(B, nev=k+1, which=LR())
-    ϕ = zeros(ComplexF32, nv(g), k-1)
-    # TODO decide what to do with the stationary distribution ϕ[:,1]
-    # this code just throws it away in favor of eigv[:,2:k+1].
-    # we might also use the degree distribution to scale these vectors as is
-    # common with the laplacian/adjacency methods.
-    for n=1:k-1
-        v= eigv[:,n+1]
-        ϕ[:,n] = contract(B, v)
-    end
-    return ϕ'
-end
-
-# ╔═╡ 3a05f94d-9c30-4d92-a489-c05a6f26062f
-"""
-    community_detection_nback(g::AbstractGraph, k::Int)
-
-Return an array, indexed by vertex, containing commmunity assignments for
-graph `g` detecting `k` communities.
-Community detection is performed using the spectral properties of the 
-non-backtracking matrix of `g`.
-
-### References
-- [Krzakala et al.](http://www.pnas.org/content/110/52/20935.short)
-"""
-function community_detection_nback(g::AbstractGraph, k::Int)
-    #TODO insert check on connected_components
-    ϕ = real(nonbacktrack_embedding(g, k))
-    if k == 1
-        c = fill(1, nv(g))
-    elseif k==2
-        c = community_detection_threshold(g, ϕ[1,:])
-    else
-        c = kmeans(ϕ, k).assignments
-    end
-    return c
-end
-
-# ╔═╡ 1c816bc7-d5f1-4abd-a26b-e6f0c76cbead
-# precisa passar o número de comunidades
-karate_nback = community_detection_nback(g, 2)
-
-# ╔═╡ 12724ba8-995b-4ab3-be6b-d575f36cfcd7
-let
-	f, ax, p = graphplot(
-		g;
-		node_size=degree_centrality(g) .* 1e2,
-		node_color=karate_nback)
-	hidedecorations!(ax)
-	hidespines!(ax)
-	f
-end
-
-# ╔═╡ 3e49645d-7203-412a-9384-c5a63e4b3c5e
-# primeiro precisamos de uma máscara booleana
-bool_mask = karate_nback .== 1
-
-# ╔═╡ b0efd6e0-55a9-4020-9ebc-cc60d4e8717a
-vlist_1 = vertices(g)[bool_mask]
-
-# ╔═╡ 7b8075c3-89a8-4295-9809-2c73c8f96906
-karate_1, vmap_1 = induced_subgraph(g, vlist_1)
-
-# ╔═╡ 2a4c3340-1eb0-4bd2-8db3-56d387f0ee3f
-let
-	f, ax, p = graphplot(karate_1)
-	hidedecorations!(ax)
-	hidespines!(ax)
-	f
-end
-
-# ╔═╡ 3d6aa0c8-1333-4f43-bed8-25f458ba5efa
-g[vlist_1]
-
-# ╔═╡ 23b98c4c-b474-474d-b44f-929649442c7b
-vlist_2 = vertices(g)[.!bool_mask] # .! not vetorizado 😎
-
-# ╔═╡ 1ffd0624-e663-4b43-9be3-2a39e2ecf8a7
-karate_2, vmap_2 = induced_subgraph(g, vlist_2)
-
-# ╔═╡ 4ac4e273-4e9d-46e6-92c4-c508ae2255c1
-let
-	f, ax, p = graphplot(karate_2)
-	hidedecorations!(ax)
-	hidespines!(ax)
-	f
-end
-
-# ╔═╡ f800b369-63a0-422a-90fb-b1f61cba928e
-"""
-    community_detection_bethe(g::AbstractGraph, k=-1; kmax=15)
-
-Perform detection for `k` communities using the spectral properties of the 
-Bethe Hessian matrix associated to `g`.
-If `k` is omitted or less than `1`, the optimal number of communities
-will be automatically selected. In this case the maximum number of
-detectable communities is given by `kmax`.
-Return a vector containing the vertex assignments.
-
-### References
-- [Saade et al.](http://papers.nips.cc/paper/5520-spectral-clustering-of-graphs-with-the-bethe-hessian)
-"""
-function community_detection_bethe(g::AbstractGraph, k::Int=-1; kmax::Int=15)
-    A = adjacency_matrix(g)
-    D = Diagonal(degree(g))
-    r = (sum(degree(g)) / nv(g))^0.5
-
-    Hr = Matrix((r^2-1)*I, nv(g), nv(g)) - r*A + D;
-    #Hmr = Matrix((r^2-1)*I, nv(g), nv(g)) + r*A + D;
-    k >= 1 && (kmax = k)
-    λ, eigv = Graphs.LinAlg.eigs(Hr, which=SR(), nev=min(kmax, nv(g)))
-
-    # TODO eps() is chosen quite arbitrarily here, because some of eigenvalues
-    # don't convert exactly to zero as they should. Some analysis could show
-    # what threshold should be used instead
-    q = something(findlast(x -> (x < -eps()), λ), 0)
-    k > q && @warn("Using eigenvectors with positive eigenvalues,
-                    some communities could be meaningless. Try to reduce `k`.")
-    k < 1 && (k = q)
-    k <= 1 && return fill(1, nv(g))
-    labels = kmeans(collect(transpose(eigv[:,2:k])), k).assignments
-    return labels
-end
-
-# ╔═╡ c04569e8-2efb-4b71-86a8-6f184576cecb
-# precisa passar o número de comunidades
-karate_bethe = community_detection_bethe(g, 2)
-
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 md"""
 # Ambiente
@@ -1128,16 +1006,14 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
-ArnoldiMethod = "ec485272-7323-5ecc-a04f-4719b315124d"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
+CommunityDetection = "d427f087-d71a-5a1b-ace0-b93392eea9ff"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 GraphIO = "aa1b3936-2fda-51b9-ab35-c553d3a640a2"
 GraphMakie = "1ecd5474-83a3-4783-bb4f-06765db800d2"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 NetworkLayout = "46757867-2c16-5918-afeb-47bfcb05e46a"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -1146,18 +1022,17 @@ SNAPDatasets = "fc66bc1b-447b-53fc-8f09-bc9cfb0b0c10"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-AlgebraOfGraphics = "~0.5.4"
-ArnoldiMethod = "~0.1.0"
+AlgebraOfGraphics = "~0.6.0"
 CairoMakie = "~0.6.6"
-Clustering = "~0.14.2"
 Colors = "~0.12.8"
+CommunityDetection = "~0.2.0"
 DataFrames = "~1.2.2"
-GraphIO = "~0.5.0"
+GraphIO = "~0.6.0"
 GraphMakie = "~0.3.0"
 Graphs = "~1.4.1"
 NetworkLayout = "~0.4.3"
 PlutoUI = "~0.7.16"
-SNAPDatasets = "~0.1.0"
+SNAPDatasets = "~0.2.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -1183,9 +1058,9 @@ version = "3.3.1"
 
 [[AlgebraOfGraphics]]
 deps = ["Colors", "Dates", "FileIO", "GLM", "GeoInterface", "GeometryBasics", "GridLayoutBase", "KernelDensity", "Loess", "Makie", "PlotUtils", "PooledArrays", "RelocatableFolders", "StatsBase", "StructArrays", "Tables"]
-git-tree-sha1 = "3746ac120f8b163dbd3bda0f36b6dec20c4f795a"
+git-tree-sha1 = "a79d1facb9fb0cd858e693088aa366e328109901"
 uuid = "cbdf2221-f076-402e-a563-3d30da359d67"
-version = "0.5.4"
+version = "0.6.0"
 
 [[Animations]]
 deps = ["Colors"]
@@ -1198,15 +1073,15 @@ uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
 
 [[ArnoldiMethod]]
 deps = ["LinearAlgebra", "Random", "StaticArrays"]
-git-tree-sha1 = "f87e559f87a45bece9c9ed97458d3afe98b1ebb9"
+git-tree-sha1 = "62e51b39331de8911e4a7ff6f5aaf38a5f4cc0ae"
 uuid = "ec485272-7323-5ecc-a04f-4719b315124d"
-version = "0.1.0"
+version = "0.2.0"
 
 [[ArrayInterface]]
 deps = ["Compat", "IfElse", "LinearAlgebra", "Requires", "SparseArrays", "Static"]
-git-tree-sha1 = "b8d49c34c3da35f220e7295659cd0bab8e739fed"
+git-tree-sha1 = "1d6835607e9f214cb4210310868f8cf07eb0facc"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "3.1.33"
+version = "3.1.34"
 
 [[Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -1297,6 +1172,12 @@ git-tree-sha1 = "417b0ed7b8b838aa6ca0a87aadf1bb9eb111ce40"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
 version = "0.12.8"
 
+[[CommunityDetection]]
+deps = ["ArnoldiMethod", "Clustering", "Graphs", "LinearAlgebra"]
+git-tree-sha1 = "a57f873cf53496dcab9abee78f372507fbf9f411"
+uuid = "d427f087-d71a-5a1b-ace0-b93392eea9ff"
+version = "0.2.0"
+
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
 git-tree-sha1 = "31d0151f5716b655421d9d75b7fa74cc4e744df2"
@@ -1350,9 +1231,9 @@ uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 
 [[Distances]]
 deps = ["LinearAlgebra", "Statistics", "StatsAPI"]
-git-tree-sha1 = "9f46deb4d4ee4494ffb5a40a27a2aced67bdd838"
+git-tree-sha1 = "09d9eaef9ef719d2cd5d928a191dc95be2ec8059"
 uuid = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
-version = "0.10.4"
+version = "0.10.5"
 
 [[Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
@@ -1505,10 +1386,10 @@ uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
 version = "2.68.3+0"
 
 [[GraphIO]]
-deps = ["DelimitedFiles", "LightGraphs", "Requires", "SimpleTraits"]
-git-tree-sha1 = "0bcec60e0f5b951001beb950ed54737779ac0c83"
+deps = ["DelimitedFiles", "Graphs", "Requires", "SimpleTraits"]
+git-tree-sha1 = "c243b56234de8afbb6838129e72a4dfccd230ccc"
 uuid = "aa1b3936-2fda-51b9-ab35-c553d3a640a2"
-version = "0.5.0"
+version = "0.6.0"
 
 [[GraphMakie]]
 deps = ["GeometryBasics", "Graphs", "LinearAlgebra", "Makie", "NetworkLayout", "StaticArrays"]
@@ -1581,9 +1462,9 @@ version = "0.9.3"
 
 [[ImageIO]]
 deps = ["FileIO", "Netpbm", "OpenEXR", "PNGFiles", "TiffImages", "UUIDs"]
-git-tree-sha1 = "13c826abd23931d909e4c5538643d9691f62a617"
+git-tree-sha1 = "a2951c93684551467265e0e32b577914f69532be"
 uuid = "82e4d734-157c-48bb-816b-45c225c6df19"
-version = "0.5.8"
+version = "0.5.9"
 
 [[Imath_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1622,6 +1503,12 @@ deps = ["Dates", "EllipsisNotation", "Statistics"]
 git-tree-sha1 = "3cc368af3f110a767ac786560045dceddfc16758"
 uuid = "8197267c-284f-5f27-9208-e0e47529a953"
 version = "0.5.3"
+
+[[InverseFunctions]]
+deps = ["Test"]
+git-tree-sha1 = "f0c6489b12d28fb4c2103073ec7452f3423bd308"
+uuid = "3587e190-3f89-42d0-90ee-14403ec27112"
+version = "0.1.1"
 
 [[InvertedIndices]]
 git-tree-sha1 = "bee5f1ef5bf65df56bdd2e40447590b272a5471f"
@@ -1743,12 +1630,6 @@ git-tree-sha1 = "7f3efec06033682db852f8b3bc3c1d2b0a0ab066"
 uuid = "38a345b3-de98-5d2b-a5d3-14cd9215e700"
 version = "2.36.0+0"
 
-[[LightGraphs]]
-deps = ["ArnoldiMethod", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]
-git-tree-sha1 = "432428df5f360964040ed60418dd5601ecd240b6"
-uuid = "093fc24a-ae57-5d10-9952-331d41423f4d"
-version = "1.3.5"
-
 [[LinearAlgebra]]
 deps = ["Libdl"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -1760,10 +1641,10 @@ uuid = "4345ca2d-374a-55d4-8d30-97f9976e7612"
 version = "0.5.3"
 
 [[LogExpFunctions]]
-deps = ["ChainRulesCore", "DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "34dc30f868e368f8a17b728a1238f3fcda43931a"
+deps = ["ChainRulesCore", "DocStringExtensions", "InverseFunctions", "IrrationalConstants", "LinearAlgebra"]
+git-tree-sha1 = "6193c3815f13ba1b78a51ce391db8be016ae9214"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.3"
+version = "0.3.4"
 
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -1930,9 +1811,9 @@ version = "0.11.1"
 
 [[PNGFiles]]
 deps = ["Base64", "CEnum", "ImageCore", "IndirectArrays", "OffsetArrays", "libpng_jll"]
-git-tree-sha1 = "85e3436b18980e47604dd0909e37e2f066f54398"
+git-tree-sha1 = "33ae7d19c6ba748d30c0c08a82378aae7b64b5e9"
 uuid = "f57f5aa1-a3ce-4bc8-8ab9-96f992907883"
-version = "0.3.10"
+version = "0.3.11"
 
 [[Packing]]
 deps = ["GeometryBasics"]
@@ -1954,9 +1835,9 @@ version = "1.47.0+0"
 
 [[Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "98f59ff3639b3d9485a03a72f3ab35bab9465720"
+git-tree-sha1 = "f19e978f81eca5fd7620650d7dbea58f825802ee"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.0.6"
+version = "2.1.0"
 
 [[Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -2082,10 +1963,10 @@ uuid = "fdea26ae-647d-5447-a871-4b548cad5224"
 version = "3.3.1"
 
 [[SNAPDatasets]]
-deps = ["LightGraphs", "Test"]
-git-tree-sha1 = "4df9b4298f93608554a6f3131fd7a1ce662734eb"
+deps = ["Graphs"]
+git-tree-sha1 = "6c163282a557ac00ce86a37f605b7b8b8fa3124d"
 uuid = "fc66bc1b-447b-53fc-8f09-bc9cfb0b0c10"
-version = "0.1.0"
+version = "0.2.0"
 
 [[ScanByte]]
 deps = ["Libdl", "SIMD"]
@@ -2234,10 +2115,10 @@ deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[TiffImages]]
-deps = ["ColorTypes", "DocStringExtensions", "FileIO", "FixedPointNumbers", "IndirectArrays", "Inflate", "OffsetArrays", "OrderedCollections", "PkgVersion", "ProgressMeter"]
-git-tree-sha1 = "945b8d87c5e8d5e34e6207ee15edb9d11ae44716"
+deps = ["ColorTypes", "DataStructures", "DocStringExtensions", "FileIO", "FixedPointNumbers", "IndirectArrays", "Inflate", "OffsetArrays", "PkgVersion", "ProgressMeter", "UUIDs"]
+git-tree-sha1 = "016185e1a16c1bd83a4352b19a3b136224f22e38"
 uuid = "731e570b-9d59-4bfa-96dc-6df516fadf69"
-version = "0.4.3"
+version = "0.5.1"
 
 [[TranscodingStreams]]
 deps = ["Random", "Test"]
@@ -2260,9 +2141,9 @@ version = "0.4.1"
 
 [[WoodburyMatrices]]
 deps = ["LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "9398e8fefd83bde121d5127114bd3b6762c764a6"
+git-tree-sha1 = "de67fa59e33ad156a590055375a30b23c40299d3"
 uuid = "efce3f68-66dc-5838-9240-27a6d6f5f9b6"
-version = "0.5.4"
+version = "0.5.5"
 
 [[XML2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "Zlib_jll"]
@@ -2480,14 +2361,6 @@ version = "3.5.0+0"
 # ╟─fc57adf5-689d-4a0c-b91e-df9d6e44579f
 # ╟─7fee896e-c25d-42d8-8653-b6ededccf1cc
 # ╟─82172216-cd56-4905-b3b3-18439c557de6
-# ╟─8c3bea69-324d-4cb6-b094-17d6e7ce6405
-# ╠═f00181d3-444b-487b-9281-2207f5ec9076
-# ╠═ece60d2d-d4bd-4e6d-bbce-a2f9a7e78a7f
-# ╠═b00ebf7f-b73b-46e1-99d9-45ec1bacb1c0
-# ╠═3a05f94d-9c30-4d92-a489-c05a6f26062f
-# ╠═21861d1e-4df9-4cdb-9130-ab2c4accf0cb
-# ╠═75477f56-4d9a-460c-81ce-84b9fd038c5e
-# ╠═f800b369-63a0-422a-90fb-b1f61cba928e
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
 # ╟─228e9bf1-cfd8-4285-8b68-43762e1ae8c7
 # ╟─23974dfc-7412-4983-9dcc-16e7a3e7dcc4
