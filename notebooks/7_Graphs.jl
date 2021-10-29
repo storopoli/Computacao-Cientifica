@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.4
+# v0.17.0
 
 using Markdown
 using InteractiveUtils
@@ -181,7 +181,7 @@ Todos os pacotes pertinentes à análise de redes em Julia estão na organizaç�
 
    * [`NetworkLayout.jl`](https://github.com/JuliaGraphs/NetworkLayout.jl): algoritmos de layout para redes e árvores em Julia.
 
-   * [`GraphRecipes.`jl](https://github.com/JuliaPlots/GraphRecipes.jl): visualizações com `Plots.jl` e todos seus *backends* e atributos.
+   * [`GraphRecipes.jl`](https://github.com/JuliaPlots/GraphRecipes.jl): visualizações com `Plots.jl` e todos seus *backends* e atributos.
 
    * [`GraphMakie.jl`](https://github.com/JuliaPlots/GraphMakie.jl): visualizações com `Makie.jl` e todos seus *backends* e atributos. Este **eu recomendo!**
 
@@ -223,13 +223,13 @@ Format        | Read | Write | Multiple Graphs| Format Name  |
 
 As redes são lidas usando a função **`loadgraph`** ou, para formatos que suportam várias redes em um único arquivo, a função **`loadgraphs`**:
 
-* **`loadgraph`** retorna um objeto `LightGraph`.
-* **`loadgraphs`** retorna um **dicionário** de objetos `LightGraph`.
+* **`loadgraph`** retorna um objeto `Graph`.
+* **`loadgraphs`** retorna um **dicionário** de objetos `Graph`.
 
 Por exemplo, um arquivo em formato `EdgeList` pode ser carregado como:
 
 ```julia
-g = loadgraph ("my_edgelist.txt", "graph_key", EdgeListFormat())
+g = loadgraph("my_edgelist.txt", "graph_key", EdgeListFormat())
 ```
 
 Para salvar um arquivo em formato `EdgeList` use o `savegraph`:
@@ -291,7 +291,7 @@ Metade dos membros formaram um novo clube em torno do Sr. Hi; membros da outra p
 
 > Zachary, W. W. (1977). "An Information Flow Model for Conflict and Fission in Small Groups". _Journal of Anthropological Research_. 33 (4): 452–473.
 >
-> Girvan, M.; Newman, M. E. J. (2002). "Community structure in social and biological networks". _Proceedings of the National Academy of Sciences+. 99: 7821–7826. doi:10.1073/pnas.122653799. PMC 122977. PMID 12060727.
+> Girvan, M.; Newman, M. E. J. (2002). "Community structure in social and biological networks". _Proceedings of the National Academy of Sciences_. 99: 7821–7826. doi:10.1073/pnas.122653799. PMC 122977. PMID 12060727.
 """
 
 # ╔═╡ 31c81884-97cd-4fbe-8c4c-fcb70e14dacb
@@ -462,7 +462,7 @@ graphplot(
 	nlabels_align=(:right, :top),
 	nlabels_distance=5,
 	nlabels_color=:blue,
-	nlabels_textsize=14
+	nlabels_textsize=16
 )
 
 # ╔═╡ ed731efa-3bc9-456a-87ea-ad7ef36b960c
@@ -482,7 +482,7 @@ md"""
 graphplot(
 	g;
 	elabels=string.(1:ne(g)),
-	elabels_align=(:center, :top),
+	elabels_align=(:center, :bottom),
 	elabels_distance=0,
 	elabels_color=:blue,
 	elabels_textsize=12
@@ -628,7 +628,7 @@ Temos várias medidas:
 """
 
 # ╔═╡ ae1f1a30-c8f0-4a25-a74a-bbd4a417d57d
-centrality_df = DataFrame(
+centrality_df = DataFrame(;
 	node=vertices(g),
 	degree=degree_centrality(g; normalize=false), # normalizado entre 0 e 1
 	ndegree=degree_centrality(g),
@@ -669,7 +669,7 @@ Ela segue quase sempre uma *power law* (qualquer coisa que pode ser escrita como
 
 # ╔═╡ 88b4a637-bbcc-4305-8991-6ce296bf231f
 data(centrality_df) *
-	mapping(:degree => float) *
+	mapping(:degree) *
 	visual(color=JULIA_LOGO_COLORS.purple) *
 	histogram() |> draw
 
@@ -740,6 +740,19 @@ let
 	)
 	hidedecorations!(ax)
 	hidespines!(ax)
+	f[0,1] = title = Label(f, "Centralidade de Grau", textsize=30)
+	f
+end
+
+# ╔═╡ b3f7d8f3-8cd2-4deb-a64d-b4e074921f53
+let
+	f, ax, p = graphplot(
+		g;
+		node_size=closeness_centrality(g) .* 1e2
+	)
+	hidedecorations!(ax)
+	hidespines!(ax)
+	f[0,1] = title = Label(f, "Centralidade de Proximidade", textsize=30)
 	f
 end
 
@@ -751,6 +764,7 @@ let
 	)
 	hidedecorations!(ax)
 	hidespines!(ax)
+	f[0,1] = title = Label(f, "Centralidade de Intermediação", textsize=30)
 	f
 end
 
@@ -762,6 +776,7 @@ let
 	)
 	hidedecorations!(ax)
 	hidespines!(ax)
+	f[0,1] = title = Label(f, "Centralidade de PageRank", textsize=30)
 	f
 end
 
@@ -2319,7 +2334,7 @@ version = "3.5.0+0"
 # ╠═3b59f57d-04be-4387-b5da-079b0078dbfc
 # ╠═d632ccc4-29e9-4806-adb9-cc0f6c8f4855
 # ╟─38b29ff9-fec5-4e04-8c45-06dcd3a77eab
-# ╟─ae1f1a30-c8f0-4a25-a74a-bbd4a417d57d
+# ╠═ae1f1a30-c8f0-4a25-a74a-bbd4a417d57d
 # ╟─65bc471b-5a4d-4920-a1ec-d4d1af388161
 # ╠═69a39b60-e9e4-4d2f-a356-668d20e8720f
 # ╟─2ea69d44-cd00-4ae9-9bbc-9d9fbe0e0180
@@ -2336,6 +2351,7 @@ version = "3.5.0+0"
 # ╠═0d5c48ea-0722-4075-a841-7a2bf02d87d8
 # ╟─fe4d6481-c546-4826-931a-fb7dc4d0adfc
 # ╠═3e3de8b8-c96a-4d4c-9db7-de84bf42de23
+# ╠═b3f7d8f3-8cd2-4deb-a64d-b4e074921f53
 # ╠═baaf6c4e-d38c-4328-90ff-f393f02226fe
 # ╠═d7cf904e-7dd5-42a9-a4bf-ff7961bf5dce
 # ╟─0ee8bcd2-29f1-4dce-b8eb-8e12fe155e51
