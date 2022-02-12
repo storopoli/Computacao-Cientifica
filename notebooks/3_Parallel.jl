@@ -127,10 +127,10 @@ end
 x = rand(1_000)
 
 # ╔═╡ a9f4b7a2-dcf8-4dba-a7c0-133310802a26
-@benchmark positivo.($x)
+@benchmark $positivo.($x)
 
 # ╔═╡ 87f3d1aa-9803-4b97-a05e-fb5cd6610048
-@benchmark positivo_stable.($x)
+@benchmark $positivo_stable.($x)
 
 # ╔═╡ c5b42cd9-ff11-4118-93de-809eba145bce
 md"""
@@ -197,7 +197,7 @@ function sum_global()
 end
 
 # ╔═╡ b99fe12f-f2fb-4900-9e08-09ecded57a87
-@benchmark sum_global()
+@benchmark $sum_global()
 
 # ╔═╡ df453cda-acc3-4b26-ae95-a22e6cda2564
 function sum_arg(x)
@@ -209,7 +209,7 @@ function sum_arg(x)
 end
 
 # ╔═╡ a6997d0f-a95d-452a-8c0a-f75a744a8e0b
-@benchmark sum_arg($x)
+@benchmark $sum_arg($x)
 
 # ╔═╡ d6cf53d0-3317-4cc2-8423-317636d1f173
 md"""
@@ -234,7 +234,7 @@ function sum_const_global()
 end
 
 # ╔═╡ 962cbdff-8503-4b4e-ac3a-35247fd947b7
-@benchmark sum_const_global()
+@benchmark $sum_const_global()
 
 # ╔═╡ e2b1f4c4-abf6-4729-a93c-66fa2c8aa407
 md"""
@@ -276,10 +276,10 @@ function difference_matrix(points)
 end
 
 # ╔═╡ eaea8739-a1f9-41e0-b196-86a7eee92a30
-@benchmark difference_matrix($tuple_points) seconds=1
+@benchmark $difference_matrix($tuple_points) seconds=1
 
 # ╔═╡ 056fdaf1-03e8-4565-b2dc-8f9ea5621812
-@benchmark difference_matrix($vector_points) seconds=1
+@benchmark $difference_matrix($vector_points) seconds=1
 
 # ╔═╡ 3c5ad253-4964-48b2-871b-1daae0601848
 md"""
@@ -312,10 +312,10 @@ function mean_point(p::Point)
 end
 
 # ╔═╡ bf934236-4b43-423c-9e1e-55fad85d62ad
-@benchmark mean_point.([ImmutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
+@benchmark $mean_point.([$ImmutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
 
 # ╔═╡ f6cfd1f1-be06-412e-9aba-9766bb98a91e
-@benchmark mean_point.([MutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
+@benchmark $mean_point.([$MutablePoint(rand(), rand()) for _ ∈ 1:500_000]) seconds=1
 
 # ╔═╡ 3b7c1b4d-aa15-4aba-8f0a-bebf0cc7422e
 md"""
@@ -386,7 +386,7 @@ function f_immutable()
 end
 
 # ╔═╡ e596d60c-0ced-44a4-86bf-f0e5bb2d9c6d
-@benchmark f_immutable()
+@benchmark $f_immutable()
 
 # ╔═╡ 25686e19-6866-442b-86c2-4c987449307c
 function f_mutable()
@@ -397,7 +397,7 @@ function f_mutable()
 end
 
 # ╔═╡ 9a20d3a6-977d-44d5-aae2-6b1a418b5eff
-@benchmark f_mutable()
+@benchmark $f_mutable()
 
 # ╔═╡ a57da9ac-4e5d-43ec-ab4a-589455ccdf68
 function f_sarray()
@@ -408,7 +408,7 @@ function f_sarray()
 end
 
 # ╔═╡ 5eecb645-7ac2-4ad3-b7ef-ba0d94c832db
-@benchmark f_sarray()
+@benchmark $f_sarray()
 
 # ╔═╡ d6b1a624-a141-4950-815c-135f1e1b59ce
 md"""
@@ -421,13 +421,13 @@ function mean_meu_tipo(m::MeuTipo)
 end
 
 # ╔═╡ 589278e9-aef3-4a1f-8ff8-a593ec15546c
-@benchmark mean_meu_tipo(MyImmutable([rand(Int), rand(Int)]))
+@benchmark $mean_meu_tipo($MyImmutable([rand(Int), rand(Int)]))
 
 # ╔═╡ 9121f511-c1c4-4abb-bc4b-dab79ca83207
-@benchmark mean_meu_tipo(MyMutable([rand(Int), rand(Int)]))
+@benchmark $mean_meu_tipo($MyMutable([rand(Int), rand(Int)]))
 
 # ╔═╡ 25cf90b9-7e35-48bd-ab69-887c77ec164e
-@benchmark mean_meu_tipo(MySArray(SVector(rand(Int), rand(Int))))
+@benchmark $mean_meu_tipo($MySArray(SVector(rand(Int), rand(Int))))
 
 # ╔═╡ ece06047-04ba-47f9-856a-88417a16b17a
 md"""
@@ -462,7 +462,7 @@ function inner(x, y)
 end
 
 # ╔═╡ 5885d029-907f-41ef-8684-8e325bb0e314
-@benchmark inner($array_x, $array_y) seconds=1
+@benchmark $inner($array_x, $array_y) seconds=1
 
 # ╔═╡ e1efd4d6-c7fb-46b7-ac70-aec0a4adf655
 function inner_inbounds(x, y)
@@ -474,7 +474,7 @@ function inner_inbounds(x, y)
 end
 
 # ╔═╡ c9124896-6ca8-4d58-8b82-40b34df42bac
-@benchmark inner_inbounds($array_x, $array_y) seconds=1
+@benchmark $inner_inbounds($array_x, $array_y) seconds=1
 
 # ╔═╡ cb42709d-e4e6-4cc5-8d96-da1bfc4edab9
 md"""
@@ -495,7 +495,7 @@ function inner_simd(x, y)
 end
 
 # ╔═╡ 70de5e97-6c90-4074-a702-a57ccfc3702f
-@benchmark inner_simd($array_x, $array_y) seconds=1
+@benchmark $inner_simd($array_x, $array_y) seconds=1
 
 # ╔═╡ a26137db-3484-4a99-b842-413a8adb15d5
 md"""
@@ -715,7 +715,7 @@ md"""
 """
 
 # ╔═╡ 31afe4a9-25fb-4ae6-83df-6891b9985435
-@benchmark map(collatz_sequencia, 1:100_000)
+@benchmark map($collatz_sequencia, 1:100_000)
 
 # ╔═╡ 7bd9b091-abb0-487d-9f47-7856e7f3f5fb
 md"""
@@ -736,7 +736,7 @@ all             findall         map             prod            unique
 """
 
 # ╔═╡ 26ae4dfc-698e-4dfd-9503-2e66435a63d3
-@benchmark ThreadsX.map(collatz_sequencia, 1:100_000)
+@benchmark ThreadsX.map($collatz_sequencia, 1:100_000)
 
 # ╔═╡ 7424ee08-938a-4b38-96b5-43f7613ccd3a
 md"""
@@ -775,10 +775,10 @@ function collatz_sequencia_SIMD(x)
 end
 
 # ╔═╡ 68f42bb3-fa97-45ac-aa65-d5e0c48c36e8
-@benchmark vmap(collatz_sequencia_SIMD, 1:100_000)
+@benchmark vmap($collatz_sequencia_SIMD, 1:100_000)
 
 # ╔═╡ d999c31e-f327-4733-a68d-09c373abeb1b
-@benchmark vmapntt(collatz_sequencia_SIMD, 1:100_000)
+@benchmark vmapntt($collatz_sequencia_SIMD, 1:100_000)
 
 # ╔═╡ a97692dd-5a85-4660-8993-a79e5f39f351
 md"""
@@ -806,7 +806,7 @@ md"""
 
 # ╔═╡ b289cb48-c695-40c1-85a0-8d2285c1e3db
 # GeForce RTX 3070Ti - 111 μs
-@benchmark map(collatz_sequencia, CuArray(1:100_000))
+@benchmark map($collatz_sequencia, CuArray(1:100_000))
 
 # ╔═╡ 0e544e1b-fd02-4f5b-b1f0-448a8a1c6ebd
 md"""

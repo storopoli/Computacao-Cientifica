@@ -49,7 +49,7 @@ end
 vec_a = randn(42_000)
 
 # ╔═╡ 584973af-9d1c-4c79-ad0b-f4c8f8b39ee3
-@benchmark summed($vec_a)
+@benchmark $summed($vec_a)
 
 # ╔═╡ bdbe2067-2101-4f36-a64d-442afc9c20dc
 function sumsimd(a)
@@ -61,7 +61,7 @@ function sumsimd(a)
 end
 
 # ╔═╡ 6be5724f-78ed-49e4-8ac5-07caea58a4ee
-@benchmark sumsimd($vec_a) # 🚀
+@benchmark $sumsimd($vec_a) # 🚀
 
 # ╔═╡ 959e2288-ee21-4541-9ce0-537716190733
 Resource("https://github.com/storopoli/Computacao-Cientifica/blob/master/images/toasty.jpg?raw=true")

@@ -282,7 +282,7 @@ end
 vec_a = randn(42_000)
 
 # ╔═╡ cd71c1e7-050c-4ad0-b485-1b36cbd6b1a0
-bench_obj = @benchmark sumsimd($vec_a) seconds=1 
+bench_obj = @benchmark $sumsimd($vec_a) seconds=1 
 
 # ╔═╡ 22e4bdf1-2637-42db-b71a-aff516ca0711
 typeof(bench_obj)
@@ -343,13 +343,13 @@ md"""
 A = rand(rng, 10^k)
 
 # ╔═╡ bc051646-3f99-4052-a97a-747e4c60b000
-@benchmark insertion_sort!($A) seconds=1
+@benchmark $insertion_sort!($A) seconds=1
 
 # ╔═╡ 876c8fef-e98e-482e-9f2a-98124cc83f77
-@benchmark bubble_sort!($A) seconds=1
+@benchmark $bubble_sort!($A) seconds=1
 
 # ╔═╡ b08ee953-bd89-4805-9fda-d1c5f0133323
-@benchmark merge_sort($A) seconds=1
+@benchmark $merge_sort($A) seconds=1
 
 # ╔═╡ f0715632-54b1-4e5f-9290-a770e36c99ba
 begin
@@ -365,19 +365,19 @@ begin
 	
 	for i ∈ 1:length(rands)
 		# Insertion Sort
-		t_insertion = @benchmark insertion_sort!($(rands[i])) seconds=0.5
+		t_insertion = @benchmark $insertion_sort!($(rands[i])) seconds=0.5
 		push!(xs_insertion, i)
 		# convert from nano seconds to seconds
 		push!(ys_insertion, minimum(t_insertion).time / 10^9)
 		
 		# Bubble Sort
-		t_bubble = @benchmark bubble_sort!($(rands[i])) seconds=0.5
+		t_bubble = @benchmark $bubble_sort!($(rands[i])) seconds=0.5
 		push!(xs_bubble, i)
 		# convert from nano seconds to seconds
 		push!(ys_bubble, minimum(t_bubble).time / 10^9)
 		
 		# Insertion Sort
-		t_merge = @benchmark merge_sort($(rands[i])) seconds=0.5
+		t_merge = @benchmark $merge_sort($(rands[i])) seconds=0.5
 		push!(xs_merge, i)
 		# convert from nano seconds to seconds
 		push!(ys_merge, minimum(t_merge).time / 10^9)

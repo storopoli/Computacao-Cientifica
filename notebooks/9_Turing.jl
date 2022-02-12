@@ -585,10 +585,10 @@ md"""
 """
 
 # ╔═╡ ddd9acdc-6ea6-4bbe-bf49-ce42aaaf4470
-@benchmark sample(logreg($X_wells, $y_wells), MH(), 100)
+@benchmark sample($logreg($X_wells, $y_wells), MH(), 100)
 
 # ╔═╡ a10a99fd-56ca-4808-9921-302498bbf3ba
-@benchmark sample(logreg_vectorized($X_wells, $y_wells), MH(), 100)
+@benchmark sample($logreg_vectorized($X_wells, $y_wells), MH(), 100)
 
 # ╔═╡ e93b9152-e826-4ab1-bfdb-b3b41aacc0d5
 md"""
