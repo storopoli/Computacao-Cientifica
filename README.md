@@ -28,7 +28,7 @@ Esta disciplina foi inspirada na disciplina do MIT "Computational Thinking, a li
 * [**The Unreasonable Effectiveness of Multiple Dispatch**](https://youtu.be/kc9HwsxE1OY). (The Julia Programming Language, 2019): um vídeo no YouTube de um dos criadores da linguagem [Julia](https://www.julialang.org), [Stefan Karpinski](https://karpinski.org/), sobre um dos principais diferenciais da linguagem, [**Despacho Múltiplo**](https://en.wikipedia.org/wiki/Multiple_dispatch) (*Multiple Dispatch*).
 * **Notebooks [Pluto](https://plutojl.org/)**: o conteúdo da disciplina é todo feito com Notebooks [Pluto](https://plutojl.org/) que são ambientes reativos e dinâmicos de fácil demonstração e exploração de código [Julia](https://www.julialang.org).
 * [**Julia Programming for Nervous Beginners**](https://juliaacademy.com/p/julia-programming-for-nervous-beginners) (Laurie, 2021): um curso de 4 semanas da [JuliaAcademy](https://juliaacademy.com/) que ensina desde o zero de computação até o básico da linguagem [Julia](https://www.julialang.org).
-* [**Julia Data Science**](https://juliadatascience.io) (Storopoli & Huijzer, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
+* [**Julia Data Science**](https://juliadatascience.io) (Storopoli, Huijzer & Alonso, 2021): livro opensource e gratuito sobre `Julia`. Ainda em elaboração, será um conteúdo bilíngue Português-Inglês.
 
 ## Objetivos da Disciplina:
 
@@ -52,9 +52,9 @@ Ao completar essa disciplina, alunos estarão aptos à:
 1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
 2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
 3. [**_Performance_ e Operações Paralelas**](https://storopoli.io/Computacao-Cientifica/3_Parallel/)
-4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli & Huijzer, 2021)
-5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli & Huijzer, 2021)
-6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli & Huijzer, 2021)
+4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
 7. [**Grafos e Análise Redes com `Graphs.jl`**](https://storopoli.io/Computacao-Cientifica/7_Graphs/) (Bromberger & Contributors, 2017)
 8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.io/Computacao-Cientifica/8_JuMP/) (Dunning et al., 2017)
 9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.io/Computacao-Cientifica/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
@@ -134,7 +134,7 @@ Ou em formato BibTeX (LaTeX):
 
 * Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
 
-* Storopoli, J. & Huijzer, R. (2021). Julia Data Science. https://juliadatascience.io
+* Storopoli, J., Huijzer, R. & Alonso, L. (2021). Julia Data Science. https://juliadatascience.io
 
 * TEDx Talks. (2020). A Programming Language to Heal the Planet Together: Julia | AlanEdelman | TEDxMIT.
 
