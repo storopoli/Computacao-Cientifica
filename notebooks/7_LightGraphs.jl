@@ -29,7 +29,7 @@ begin
 	
 	# Seed
 	using Random: seed!
-	seed!(123)
+	seed!(123);
 end
 
 # ╔═╡ 228e9bf1-cfd8-4285-8b68-43762e1ae8c7

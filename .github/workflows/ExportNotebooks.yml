@@ -27,7 +27,7 @@ jobs:
             - name: Install Julia
               uses: julia-actions/setup-julia@v1
               with:
-                  version: 1.6
+                  version: '1'
             - name: Install Python # Needed for MLDatasets.jl
               uses: actions/setup-python@v2
               with:

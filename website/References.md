@@ -24,6 +24,10 @@
 
 * Lauwens, B. & Downey, A. B. (2019). *Think Julia: How to Think Like a Computer Scientist* (1st edition). O’Reilly Media.
 
+* Nazarathy, Y., & Klok, H. (2021). *Statistics with Julia: Fundamentals for Data Science, Machine Learning and Artificial Intelligence*. Springer Nature.
+
+* Novak, K. (2021). *Numerical Methods for Scientific Computing*. 2nd Edition. Equal Share Press.
+
 * Perkel, J. M. (2019). Julia: Come for the Syntax, Stay for the Speed. *Nature, 572(7767)*, 141–142. https://doi.org/10.1038/d41586-019-02310-3
 
 * Sengupta, A. & Edelman, A. (2019). *Julia High Performance: Optimizations, Distributed Computing, Multithreading, and GPU Programming with Julia 1.0 and beyond*, 2nd Edition. Packt Publishing.
