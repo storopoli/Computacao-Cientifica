@@ -229,7 +229,7 @@ md"""
 
 # ╔═╡ 89dbf386-2216-400e-ab36-05599e1fb4c7
 md"""
-## Como eu uso Júlia?
+## Como eu uso Julia?
 
 Instale acessando [julialang.org](https://julialang.org).
 """
