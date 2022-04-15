@@ -234,11 +234,13 @@ md"""
 md"""
 Um pacote bem fácil de usar. Basicamente ele roda inúmeras vezes uma operação e faz a cronometragem do tempo de execucação, compilação, memória alocada, GC etc.
 
-Ele tem dois macros:
+Ele tem três macros:
 
 1. `@benchmark`: retorna a **capivara toda do benchmark** com um histograma printado no terminal.
 
 2. `@btime`: retorna uma coisa bem **sumarizada e simples** para benchmarks rápidos.
+
+3. `@belapsed`: retorna apenas o **tempo decorrido** (_elapsed time_) para rodar a função
 """
 
 # ╔═╡ 677f3b32-6196-46a2-9189-0d93cf5729d8
@@ -418,8 +420,8 @@ function merge_sort_to(X)
     
 	@timeit to "L merge_sort" L = merge_sort(X[1:n÷2])
     @timeit to "R merge_sort" R = merge_sort(X[n÷2+1:end])
-    
-	return merge(L, R)
+
+	@timeit to "merge L R" return merge(L, R)
 end
 
 # ╔═╡ 91066a2e-2ad4-4fbe-8687-2f219c91f53f
@@ -462,7 +464,7 @@ function merge_sort_to_nested(X)
     	@timeit to_nested "R merge_sort" R = merge_sort(X[n÷2+1:end])
 	end
     
-	return merge(L, R)
+	@timeit to_nested "merge L R" return merge(L, R)
 end
 
 # ╔═╡ a41de564-299b-4ea5-a1df-8b2e3c7f5d2a
@@ -655,6 +657,7 @@ TimerOutputs = "~0.5.16"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
+julia_version = "1.7.2"
 manifest_format = "2.0"
 
 [[deps.AbstractFFTs]]
