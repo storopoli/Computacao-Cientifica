@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.3
 
 using Markdown
 using InteractiveUtils
@@ -151,6 +151,9 @@ Por exemplo qualquer subtipo concreto de `Real`:
 
 # ╔═╡ d93c4592-bd6d-49ce-b8e0-8d6a02928477
 subtypes(Real)
+
+# ╔═╡ 0d20dad3-7711-4486-81de-14b99b8002e7
+<:
 
 # ╔═╡ c17a5fbe-6d4e-4ef6-99c5-667d059df6f6
 function positivo_stable2(x::T) where T <: Real
@@ -747,7 +750,7 @@ Paralelização de operações com SIMD. O uso principal são os macros `@turbo`
 Possui umas funções vetorizadas prontas:
 
 * `vmap` e `vmap!`: `map` e `map!` vetorizado em SIMD
-* `vmapnt` e `vmapntt`: igual ao `vmap` mas usa armazenagem **n**ão-**t**emporal para evitar a poluição do cache. Se você não vai ler os valores logo de cara provavlmente dê algum desempenho.
+* `vmapnt` e `vmapntt`: igual ao `vmap` mas usa armazenagem **n**ão-**t**emporal para evitar a poluição do cache. Se você não vai ler os valores logo de cara provavelmente dê algum desempenho.
 * `vfilter` e `vfilter!`: `filter` e `filter!` vetorizado em SIMD
 * `vmapreduce` e `vmapreduce!`: `mapreduce` e `mapreduce!` vetorizado em SIMD
 """
@@ -796,7 +799,9 @@ md"""
 * [`OnlineStats.jl`](https://github.com/joshday/OnlineStats.jl): Algoritmos de "passada única" (*single-pass*) para Estatísticas e Visualizações de Dados.
 
 
-* [`VectorizedStatistics`](https://github.com/JuliaSIMD/VectorizedStatistics.jl): Funções de Estatística Descritiva (`mean`, `std`, ...) baseadas em `LoopVectorization.jl` com SIMD.
+* [`VectorizedStatistics.jl`](https://github.com/JuliaSIMD/VectorizedStatistics.jl): Funções de Estatística Descritiva (`mean`, `std`, ...) baseadas em `LoopVectorization.jl` com SIMD.
+
+* [`VectorizedReduction.jl`](https://github.com/andrewjradcliffe/VectorizedReduction.jl): Funções de Redução (`mapreduce`, `reduce`, `sum`, `prod`, `minimum`, `maximum`, `extrema` etc.) baseadas em `LoopVectorization.jl` com SIMD.
 """
 
 # ╔═╡ 5dd037c1-63ef-49f1-a34e-e5bc1dda4775
@@ -806,7 +811,7 @@ md"""
 
 # ╔═╡ b289cb48-c695-40c1-85a0-8d2285c1e3db
 # GeForce RTX 3070Ti - 111 μs
-#@benchmark map($collatz_sequencia, CuArray(1:100_000))
+#@benchmark map($collatz_sequencia, CuArray(1:100_000)) seconds=30
 
 # ╔═╡ 0e544e1b-fd02-4f5b-b1f0-448a8a1c6ebd
 md"""
@@ -1085,6 +1090,7 @@ VectorizationBase = "~0.21.26"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
+julia_version = "1.7.2"
 manifest_format = "2.0"
 
 [[deps.ANSIColoredPrinters]]
@@ -1849,9 +1855,9 @@ uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
 
 [[deps.Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "ad368663a5e20dbb8d6dc2fddeefe4dae0781ae8"
+git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+0"
+version = "5.15.3+1"
 
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
@@ -2337,6 +2343,7 @@ version = "0.9.1+5"
 # ╟─c5b42cd9-ff11-4118-93de-809eba145bce
 # ╟─3ae994ee-35d4-4f6f-964e-82022690f573
 # ╠═d93c4592-bd6d-49ce-b8e0-8d6a02928477
+# ╠═0d20dad3-7711-4486-81de-14b99b8002e7
 # ╠═c17a5fbe-6d4e-4ef6-99c5-667d059df6f6
 # ╠═a372ccf0-07fb-4fd7-b813-ede5d12507ea
 # ╠═4a052112-9a45-4f63-aedf-eecd1bee403d
