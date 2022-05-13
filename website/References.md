@@ -32,7 +32,7 @@
 
 * Sengupta, A. & Edelman, A. (2019). *Julia High Performance: Optimizations, Distributed Computing, Multithreading, and GPU Programming with Julia 1.0 and beyond*, 2nd Edition. Packt Publishing.
 
-* Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
+* Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.github.io/Bayesian-Julia
 
 * Storopoli, J., Huijzer, R., & Alonso L. (2021). Julia Data Science. https://juliadatascience.io
 

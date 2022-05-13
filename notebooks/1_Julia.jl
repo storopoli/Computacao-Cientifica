@@ -2382,7 +2382,7 @@ my_pair.second
 # ╔═╡ 7d71bd8b-887b-42b8-b26c-7b9914e46a23
 md"""
 !!! tip "💡 Uso dos Pairs"
-	`Pair`s serão muito usados na manipulação e visualização de dados, uma vez que as funções principais de `DataFrames.jl` ([Aula 4](https://storopoli.io/Computacao-Cientifica/4_DataFrames/)) e `Plots.jl` ([Aula 6](https://storopoli.io/Computacao-Cientifica/6_Plots/)) usam `Pair` como tipo de argumentos em diversas funcões.
+	`Pair`s serão muito usados na manipulação e visualização de dados, uma vez que as funções principais de `DataFrames.jl` ([Aula 4](https://storopoli.github.io/Computacao-Cientifica/4_DataFrames/)) e `Plots.jl` ([Aula 6](https://storopoli.github.io/Computacao-Cientifica/6_Plots/)) usam `Pair` como tipo de argumentos em diversas funcões.
 """
 
 # ╔═╡ 95168671-e9b0-4f43-8782-bd083511fdf6
@@ -2512,7 +2512,7 @@ sym2 = Symbol(s1)
 # ╔═╡ ede362d3-537f-45a0-b546-449aabeae3e1
 md"""
 !!! tip "💡 Uso dos Symbols"
-	`Symbol`s serão muito usados na manipulação e visualização de dados, uma vez que as funções principais de `DataFrames.jl` ([Aula 4](https://storopoli.io/Computacao-Cientifica/4_DataFrames/)) e `Plots.jl` ([Aula 6](https://storopoli.io/Computacao-Cientifica/6_Plots/)) usam `Symbol` como tipo de argumentos em diversas funcões.
+	`Symbol`s serão muito usados na manipulação e visualização de dados, uma vez que as funções principais de `DataFrames.jl` ([Aula 4](https://storopoli.github.io/Computacao-Cientifica/4_DataFrames/)) e `Plots.jl` ([Aula 6](https://storopoli.github.io/Computacao-Cientifica/6_Plots/)) usam `Symbol` como tipo de argumentos em diversas funcões.
 """
 
 # ╔═╡ 367e7fb2-445d-467c-9a46-78e34f0a95d7

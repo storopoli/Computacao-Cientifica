@@ -26,7 +26,7 @@ you might not want. Indicate directories by ending the name with a `/`.
              deployed page to be in a subfolder e.g.: `YourPackage.jl/web/`.
 -->
 @def title       = "Ciência de Dados e Computação Científica com Julia"
-@def website_url = "https://storopoli.io/Computacao-Cientifica/"
+@def website_url = "https://storopoli.github.io/Computacao-Cientifica/"
 @def description = """
                    Ciência de Dados e Computação Científica com Julia. Website da Disciplina
                    """

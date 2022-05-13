@@ -103,7 +103,7 @@ HTML(
 # ╔═╡ 5a0ed069-6f99-47ac-bfe5-831ab396d470
 md"""
 !!! tip "💡 Tutorias de Turing"
-    Não deixe de ver os tutoriais de **Estatística Bayesiana com `Turing.jl` e Julia** que eu fiz: <https://storopoli.io/Bayesian-Julia>
+    Não deixe de ver os tutoriais de **Estatística Bayesiana com `Turing.jl` e Julia** que eu fiz: <https://storopoli.github.io/Bayesian-Julia>
 """
 
 # ╔═╡ 4ea61753-a2ff-442e-ac91-55060fd52db9

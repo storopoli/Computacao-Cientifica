@@ -10,7 +10,7 @@ date-released: 2021-08-01
 identifiers: 
   - 
     type: url
-    value: "https://storopoli.io/Computacao-Cientifica"
+    value: "https://storopoli.github.io/Computacao-Cientifica"
 license: "CC-BY-SA-4.0"
 message: "Se você usa esse software, por favor cite-o com esses metadados."
 repository-code: "https://github.com/storopoli/Computacao-Cientifica"

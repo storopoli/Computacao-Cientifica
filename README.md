@@ -49,21 +49,21 @@ Ao completar essa disciplina, alunos estarão aptos à:
 
 ## Tópicos
 
-1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
-2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
-3. [**_Performance_ e Operações Paralelas**](https://storopoli.io/Computacao-Cientifica/3_Parallel/)
-4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
-5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
-6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
-7. [**Grafos e Análise Redes com `Graphs.jl`**](https://storopoli.io/Computacao-Cientifica/7_Graphs/) (Bromberger & Contributors, 2017)
-8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.io/Computacao-Cientifica/8_JuMP/) (Dunning et al., 2017)
-9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.io/Computacao-Cientifica/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
-10. [**_Machine Learning_ com `MLJ.jl`**](https://storopoli.io/Computacao-Cientifica/10_MLJ/) (Blaom et al., 2020)
-11. [**_Deep Learning_ com `Flux.jl`**](https://storopoli.io/Computacao-Cientifica/11_Flux/) (Innes et al., 2018; Innes, 2018)
+1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.github.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
+2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.github.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
+3. [**_Performance_ e Operações Paralelas**](https://storopoli.github.io/Computacao-Cientifica/3_Parallel/)
+4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.github.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
+7. [**Grafos e Análise Redes com `Graphs.jl`**](https://storopoli.github.io/Computacao-Cientifica/7_Graphs/) (Bromberger & Contributors, 2017)
+8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.github.io/Computacao-Cientifica/8_JuMP/) (Dunning et al., 2017)
+9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.github.io/Computacao-Cientifica/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
+10. [**_Machine Learning_ com `MLJ.jl`**](https://storopoli.github.io/Computacao-Cientifica/10_MLJ/) (Blaom et al., 2020)
+11. [**_Deep Learning_ com `Flux.jl`**](https://storopoli.github.io/Computacao-Cientifica/11_Flux/) (Innes et al., 2018; Innes, 2018)
 
 ## Autor
 
-Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.io>
+Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.github.io>
 
 ## Como usar esse conteúdo?
 
@@ -87,14 +87,14 @@ Para configurar um ambiente local:
 
 Para citar o conteúdo use:
 
-    Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
+    Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.github.io/Computacao-Cientifica.
 
 Ou em formato BibTeX (LaTeX):
 
     @misc{storopoli2021computacaocientificajulia,
       author = {Storopoli, Jose},
       title = {Ciência de Dados e Computação Científica com Julia},
-      url = {https://storopoli.io/Computacao-Cientifica},
+      url = {https://storopoli.github.io/Computacao-Cientifica},
       year = {2021}
     }
 
@@ -132,7 +132,7 @@ Ou em formato BibTeX (LaTeX):
 
 * Sengupta, A. & Edelman, A. (2019). *Julia High Performance: Optimizations, Distributed Computing, Multithreading, and GPU Programming with Julia 1.0 and beyond*, 2nd Edition. Packt Publishing.
 
-* Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.io/Bayesian-Julia
+* Storopoli, J. (2021). Bayesian Statistics with Julia and Turing. https://storopoli.github.io/Bayesian-Julia
 
 * Storopoli, J., Huijzer, R. & Alonso, L. (2021). Julia Data Science. https://juliadatascience.io
 

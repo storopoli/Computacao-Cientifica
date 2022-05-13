@@ -65,7 +65,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 
 ## Autor
 
-Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.io>
+Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.github.io>
 
 ## Como usar esse conteúdo?
 
@@ -74,7 +74,7 @@ Este conteúdo possui *licença livre para uso* (CC BY-SA). Você é mais do que
 Para citar este conteúdo, use:
 
 ```plaintext
-Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.io/Computacao-Cientifica.
+Storopoli (2021). Ciência de Dados e Computação Científica com Julia. https://storopoli.github.io/Computacao-Cientifica.
 ```
 
 Ou em formato BibTeX para $\LaTeX$:
@@ -83,7 +83,7 @@ Ou em formato BibTeX para $\LaTeX$:
 @misc{storopoli2021programacaojulia,
   author = {Storopoli, Jose},
   title = {Ciência de Dados e Computação Científica com Julia},
-  url = {https://storopoli.io/Computacao-Cientifica},
+  url = {https://storopoli.github.io/Computacao-Cientifica},
   year = {2021}
 }
 ```

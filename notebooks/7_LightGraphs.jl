@@ -417,7 +417,7 @@ graphplot(g)
 md"""
 #### Atributos de `graphplot`
 
-Assim como vimos atributos de `Makie.jl` na [**Aula 6 - Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.io/Computacao-Cientifica/6_Plots/), também temos atributos de **`graphplot`**:
+Assim como vimos atributos de `Makie.jl` na [**Aula 6 - Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.github.io/Computacao-Cientifica/6_Plots/), também temos atributos de **`graphplot`**:
 
 * **Atributos Principais**:
    * `layout=Spring()`: determina o layout (mais sobre isso em breve).
