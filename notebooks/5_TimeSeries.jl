@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.18.4
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -44,6 +44,7 @@ begin
 	
 	using Statistics: mean
 	using ShiftedArrays: lag, lead
+	using Random: seed!, shuffle
 
 	# evitar conflitos
 	import HTTP # stack de DataFrames
@@ -102,6 +103,11 @@ plot(Plots.fakedata(N_1), label=:none, lw=3, marker=:circle, xlab="\$N\$")
 md"""
 !!! info "💁 Por quê Series Temporais são tão Especiais?"
     Dada a ordenação temporal dos dados, as observações não possuem o pressuposto de independência, portanto há uma **dependência temporal** que precisamos lidar.
+"""
+
+# ╔═╡ 0789f729-df96-4a1d-8ea2-e0ad51302305
+md"""
+$$X_{i+1} \perp X_{i} \mid \Theta$$
 """
 
 # ╔═╡ aa89ebab-573c-4819-b1c6-ffce3fff5a18
@@ -242,6 +248,17 @@ Assim, poderíamos, alternativamente, construir a hora oficial de nascimento do 
 
 # ╔═╡ 08eb4bd9-b812-40ee-b941-8c9ccde84771
 DateTime(Year(1987), Month(9), Day(13), Hour(21), Minute(21))
+
+# ╔═╡ 8621a1ae-260c-4fff-b106-3b5765f71a55
+md"""
+Notem que podemos embaralhar a ordem da maneira que quisermos:
+"""
+
+# ╔═╡ c013bc66-dc2c-41b4-af7c-6ffe122f5f46
+begin
+	periods = [Year(1987), Month(9), Day(13), Hour(21), Minute(21)]
+	DateTime(shuffle(seed!(1), periods)...) == DateTime(shuffle(seed!(2), periods)...)
+end
 
 # ╔═╡ b3621dc3-c897-4673-a15b-f79e993d0018
 md"""
@@ -479,7 +496,8 @@ Podemos também usar as funcionalidades de `Dates` para manipular dados:
 # ╔═╡ 4ffbc763-16a4-4a63-90ea-ee8466423e75
 transform!(ap,
 	:Date => ByRow(dayofweek) => :DayWeek,
-	:Date => ByRow(month) => :Month)
+	:Date => ByRow(month) => :Month
+)
 
 # ╔═╡ e4ea794a-4a6b-4a63-808b-fc93cabb7971
 md"""
@@ -564,13 +582,13 @@ md"""
 (length(v), length(w))
 
 # ╔═╡ 1d77ec4b-d94a-487a-a910-fb6fc6aa6f6a
-rollmean(v,1) # ndata - windowsize + 1
+rollmean(v, 1) # ndata - windowsize + 1
 
 # ╔═╡ b253f241-a503-4932-951b-6cd890bbd70b
-rollmean(v,2) # ndata - windowsize + 1
+rollmean(v, 2) # ndata - windowsize + 1
 
 # ╔═╡ 87004299-9a20-4dca-aeaf-41d19bd772ed
-rollmean(w,1) # ndata - windowsize + 1
+rollmean(w, 1) # ndata - windowsize + 1
 
 # ╔═╡ 825bbd9c-f084-4a5e-b55c-376571b37e51
 runmean(v, 1) # ndata
@@ -605,7 +623,7 @@ Tem várias maneiras de decompor uma série temporal:
 * [**SEATS**](https://otexts.com/fpp3/methods-used-by-official-statistics-agencies.html#seats-method): **Se**asonal **E**xtraction in **A**RIMA **T**ime **S**eries. Procedimento foi desenvolvido no Banco da Espanha e agora é amplamente utilizado por agências governamentais em todo o mundo.
 
 
-* [**STL**](): **S**easonal and **T**rend decomposition using **L**OESS. E LOESS é _**l**ocally **e**stimated **s**catterplot **s**moothing_ (basicamente uma interpolação polinomial)
+* [**STL**](https://otexts.com/fpp3/stl.html): **S**easonal and **T**rend decomposition using **L**OESS. E LOESS é _**l**ocally **e**stimated **s**catterplot **s**moothing_ (basicamente uma interpolação polinomial)
 """
 
 # ╔═╡ 6de89a61-a3d8-47f4-8c1d-0a5369da0bc5
@@ -899,8 +917,11 @@ md"""
 """
 
 # ╔═╡ 661a485e-5721-4acc-96a4-39674ec27c1e
-function generate_fake_data(N::Int; seasonality=false, noise=false, stationary=true)
-	values = collect(1:N) .* 0.4
+function generate_fake_data(N::Int; seasonality=false, noise=false, stationary=true, linear=true)
+	values = ones(N) .* 1.2
+	if !linear
+		values += collect(1:N) .^ 1.2
+	end
 	if seasonality
 		repeats = Int(floor(N/50))
 		values = collect(1:50) .* 0.25
@@ -919,10 +940,10 @@ end
 
 # ╔═╡ 849d7757-f5ff-41fc-9330-a83e063316b6
 plot([
-		generate_fake_data(N_2),
-		generate_fake_data(N_2; seasonality=true),
-		generate_fake_data(N_2; seasonality=true, noise=true),
-		generate_fake_data(N_2; seasonality=true, noise=true, stationary=false)
+		generate_fake_data(N_2; stationary=false),
+		generate_fake_data(N_2; stationary=true, seasonality=true),
+		generate_fake_data(N_2; stationary=true, seasonality=false, noise=true),
+		generate_fake_data(N_2; stationary=false, seasonality=true, noise=true)
 		];
 	layout=4, label=:none,
 	title = ["Tendência" "Sazonalidade" "Ruído" "Não-Estacionária"] 
@@ -962,6 +983,7 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╟─9eb79017-d135-44e9-a2ea-712829418a6d
 # ╟─38581a7b-2da4-49fb-b5e0-32db22cb3616
 # ╟─23e24ad3-296b-4316-bb1b-617262b93a9b
+# ╟─0789f729-df96-4a1d-8ea2-e0ad51302305
 # ╟─aa89ebab-573c-4819-b1c6-ffce3fff5a18
 # ╟─f8ab9748-2002-4e48-82d2-60518e06f5cd
 # ╟─849d7757-f5ff-41fc-9330-a83e063316b6
@@ -985,8 +1007,10 @@ Este conteúdo possui licença [Creative Commons Attribution-ShareAlike 4.0 Inte
 # ╟─a5e761fa-b3dd-46d9-95e0-ea72dd3d4dfc
 # ╠═ab016abb-10ed-41cf-94a5-070440e96940
 # ╠═550f7cec-138d-40af-886c-878b8a17b974
-# ╟─f0f81619-b99e-4329-9d7e-5d4831712937
+# ╠═f0f81619-b99e-4329-9d7e-5d4831712937
 # ╠═08eb4bd9-b812-40ee-b941-8c9ccde84771
+# ╠═8621a1ae-260c-4fff-b106-3b5765f71a55
+# ╠═c013bc66-dc2c-41b4-af7c-6ffe122f5f46
 # ╟─b3621dc3-c897-4673-a15b-f79e993d0018
 # ╠═eb05091f-a13b-453a-b1bc-6a86b3e2a044
 # ╟─facc2961-abb3-4452-862e-fb5917a37ef8
