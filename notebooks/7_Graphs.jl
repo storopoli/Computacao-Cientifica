@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -251,7 +251,7 @@ md"""
   g = MetaGraph(df, origin, destination;
                 weight=Symbol,
                 edge_attributes=Vector{Symbol},
-                vertex_attributes=DataFrame
+                vertex_attributes=DataFrame,
                 vertex_id_col=Symbol)
   ```
 
@@ -261,7 +261,7 @@ md"""
   g = MetaDiGraph(df, origin, destination;
                 weight=Symbol,
                 edge_attributes=Vector{Symbol},
-                vertex_attributes=DataFrame
+                vertex_attributes=DataFrame,
                 vertex_id_col=Symbol)
   ```
 
@@ -273,7 +273,7 @@ md"""
 # ╔═╡ bc1a7dd9-c5a7-495d-92b5-60781fe182da
 md"""
 !!! info "💁 Criando Redes"
-    Além de I/O, é possível também criar seu próprio `Graph`. Veja a [documentação de `Graphs.jl`](https://juliagraphs.org/Graphs.jl/dev/generators/).
+    Além de I/O, é possível também criar seu próprio `Graph`. Veja a [documentação de `Graphs.jl`](https://juliagraphs.org/Graphs.jl/stable/generators/).
 
 	Isto pode ser útil se você está criando algum algoritmo ou fazendo alguma operação que cria os nodes e edges de maneira iterativa.
 """
@@ -918,6 +918,7 @@ let
 	
 	# achar os vertices do caminho curto
 	# tanto src quanto dst (grafo não-direcionado)
+	# ∪ é \cup<TAB>
 	vertices_caminho = src.(caminho_minimo_11_27) ∪ dst.(caminho_minimo_11_27)
 	
 	# colorir todas as arestas de preto
@@ -1054,6 +1055,7 @@ SNAPDatasets = "~0.2.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.AbstractFFTs]]
@@ -1299,7 +1301,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.6"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[deps.DualNumbers]]
@@ -1355,6 +1357,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "80ced645013a5dbdc52cf70329399c35ce007fae"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.13.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
