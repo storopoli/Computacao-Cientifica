@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.6
 
 using Markdown
 using InteractiveUtils
@@ -68,7 +68,7 @@ Em matemática, o termo **otimização** refere-se ao **estudo de problemas em q
 Um problema de otimização (no caso um problema de achar o mínimo) pode ser representado da seguinte maneira:
 
 * *Dado*: uma função $f: A \to  R$ de um conjunto $A$ para os números reais $\mathbb{R}$
-* *Encontre*: um elemento $x_0 \in A$ tal que $f(x0) \leq f(x)$ para todos $x \in A$
+* *Encontre*: um elemento $x_0 \in A$ tal que $f(x_0) \leq f(x)$ para todos $x \in A$
 
 Na otimização contínua, $A$ é algum subconjunto do espaço euclidiano $\mathbb{R}^n$, freqüentemente especificado por um conjunto de restrições, igualdades ou desigualdades que os membros de $A$ devem satisfazer.
 
@@ -196,8 +196,8 @@ md"""
 
 	```julia
 	@variable(model, x_free)
-	@variable(model, x_lower >= 0)
-	@variable(model, x_upper <= 1)
+	@variable(model, x_upper >= 0)
+	@variable(model, x_lower <= 1)
 	@variable(model, 2 <= x_interval <= 3)
 	@variable(model, x_fixed == 4)
 	```
@@ -267,7 +267,7 @@ md"""
     JuMP também oferece suporte à modelagem com matrizes semidefinidas positivas. Uma matriz quadrada simétrica $\mathbf{X}$ é semidefinida positiva se todos os autovalores forem não negativos.
 
 	```julia
-	@variable(model, psd_x[1:2, 1:2], PSD) # Positive SemiDefinite
+	@variable(model, psd_X[1:2, 1:2], PSD) # Positive SemiDefinite
 	```
 """
 
@@ -461,7 +461,7 @@ let
 	cbar = fig[1, end+1] = Colorbar(fig, c)
 	supertitle = fig[0, :] = Label(fig, "Rosenbrock", textsize = 36)
 	hidedecorations!(ax1)
-	hidedecorations!(ax2)
+	# hidedecorations!(ax2)
 	hidespines!(ax1)
 	hidespines!(ax2)
 	fig
@@ -478,9 +478,6 @@ Tem três mudanças principais em solucionar problemas não-lineares (**NL**) em
 * **use `@NLexpression` ao invés de `@expression`**
 """
 
-# ╔═╡ de56ce67-0a4b-43d2-8360-ee0c999fd99c
-set_start_value
-
 # ╔═╡ 72176675-44b4-468b-a123-2b06edb39cf6
 md"""
 !!! tip "💡 Ipopt"
@@ -495,7 +492,7 @@ let
     @NLobjective(model, Min, (1 - x)^2 + 100 * (y - x^2)^2)
     optimize!(model)
 	solution_summary(model)
-	#value(x); value(y)
+	println("valor de x = $(value(x)) e valor de y = $(value(y))")
 end
 
 # ╔═╡ d548bc1a-2e20-4b7f-971b-1b07faaa4c13
@@ -549,6 +546,7 @@ TableScraper = "~0.1.3"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.ASL_jll]]
@@ -806,7 +804,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.6"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[deps.DualNumbers]]
@@ -862,6 +860,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "80ced645013a5dbdc52cf70329399c35ce007fae"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.13.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
@@ -1969,7 +1970,6 @@ version = "3.5.0+0"
 # ╠═32b94549-c833-4ab6-8b04-01568d4dd817
 # ╠═08439a43-0292-4776-b9af-22a7b57e3157
 # ╟─efa70ec6-854e-4c24-a8a2-cb0d9248193e
-# ╠═de56ce67-0a4b-43d2-8360-ee0c999fd99c
 # ╟─72176675-44b4-468b-a123-2b06edb39cf6
 # ╠═49f8c981-5b66-4524-bd45-91154c8307d6
 # ╟─d548bc1a-2e20-4b7f-971b-1b07faaa4c13
