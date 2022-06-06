@@ -50,15 +50,15 @@ Ao completar essa disciplina, alunos estarão aptos à:
 
 ## Tópicos
 
-1. [**Linguagem Julia e Estrutura de Dados Nativas**](/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
-2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](/2_BenchmarkTools/) (Chen & Revels, 2016)
-3. [**_Performance_ e Operações Paralelas**](/3_Parallel/)
-4. [**Dados Tabulares com `DataFrames.jl`**](/4_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
-5. [**Séries Temporais `DataFrames.jl`**](/5_TimeSeries/)(White et al., 2020; Storopoli Storopoli, Huijzer & Alonso, 2021)
-6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](/6_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
-7. [**Grafos e Análise Redes com `Graphs.jl`**](/7_Graphs/) (Bromberger & Contributors, 2017)
-8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/8_JuMP/) (Dunning et al., 2017)
-9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
+1. [**Linguagem Julia e Estrutura de Dados Nativas**](/01_Julia/) (Bezanson et al., 2017; Perkel, 2019)
+2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](/02_BenchmarkTools/) (Chen & Revels, 2016)
+3. [**_Performance_ e Operações Paralelas**](/03_Parallel/)
+4. [**Dados Tabulares com `DataFrames.jl`**](/04_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](/05_TimeSeries/)(White et al., 2020; Storopoli Storopoli, Huijzer & Alonso, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](/06_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
+7. [**Grafos e Análise Redes com `Graphs.jl`**](/07_Graphs/) (Bromberger & Contributors, 2017)
+8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](/08_JuMP/) (Dunning et al., 2017)
+9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](/09_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
 10. [**_Machine Learning_ com `MLJ.jl`**](/10_MLJ/) (Blaom et al., 2020)
 11. [**_Deep Learning_ com `Flux.jl`**](/11_Flux/) (Innes et al., 2018; Innes, 2018)
 

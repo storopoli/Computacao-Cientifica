@@ -49,15 +49,15 @@ Ao completar essa disciplina, alunos estarão aptos à:
 
 ## Tópicos
 
-1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.github.io/Computacao-Cientifica/1_Julia/) (Bezanson et al., 2017; Perkel, 2019)
-2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.github.io/Computacao-Cientifica/2_BenchmarkTools/) (Chen & Revels, 2016)
-3. [**_Performance_ e Operações Paralelas**](https://storopoli.github.io/Computacao-Cientifica/3_Parallel/)
-4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/4_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
-5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/5_TimeSeries/)(White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
-6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.github.io/Computacao-Cientifica/6_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
-7. [**Grafos e Análise Redes com `Graphs.jl`**](https://storopoli.github.io/Computacao-Cientifica/7_Graphs/) (Bromberger & Contributors, 2017)
-8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.github.io/Computacao-Cientifica/8_JuMP/) (Dunning et al., 2017)
-9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.github.io/Computacao-Cientifica/9_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
+1. [**Linguagem Julia e Estrutura de Dados Nativas**](https://storopoli.github.io/Computacao-Cientifica/01_Julia/) (Bezanson et al., 2017; Perkel, 2019)
+2. [**Algoritmos e *Benchmarks* com `BenchmarkTools.jl`**](https://storopoli.github.io/Computacao-Cientifica/02_BenchmarkTools/) (Chen & Revels, 2016)
+3. [**_Performance_ e Operações Paralelas**](https://storopoli.github.io/Computacao-Cientifica/03_Parallel/)
+4. [**Dados Tabulares com `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/04_DataFrames/) (White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+5. [**Séries Temporais `DataFrames.jl`**](https://storopoli.github.io/Computacao-Cientifica/05_TimeSeries/)(White et al., 2020; Storopoli, Huijzer & Alonso, 2021)
+6. [**Visualização de Dados com `Plots.jl`, `StatsPlots.jl` e `AlgebraOfGraphics.jl`**](https://storopoli.github.io/Computacao-Cientifica/06_Plots/) (Breloff et al., 2021; Storopoli, Huijzer & Alonso, 2021)
+7. [**Grafos e Análise Redes com `Graphs.jl`**](https://storopoli.github.io/Computacao-Cientifica/07_Graphs/) (Bromberger & Contributors, 2017)
+8.  [**Modelagem e Otimizações Matemáticas com `JuMP.jl`**](https://storopoli.github.io/Computacao-Cientifica/08_JuMP/) (Dunning et al., 2017)
+9.  [**Modelos Probabilísticos Bayesianos com `Turing.jl`**](https://storopoli.github.io/Computacao-Cientifica/09_Turing/) (Ge et al., 2018; Xu et al., 2020; Storopoli, 2021)
 10. [**_Machine Learning_ com `MLJ.jl`**](https://storopoli.github.io/Computacao-Cientifica/10_MLJ/) (Blaom et al., 2020)
 11. [**_Deep Learning_ com `Flux.jl`**](https://storopoli.github.io/Computacao-Cientifica/11_Flux/) (Innes et al., 2018; Innes, 2018)
 

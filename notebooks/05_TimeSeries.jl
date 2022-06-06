@@ -416,9 +416,9 @@ md"""
 
 Uma coisa boa sobre o módulo `Dates` é que também podemos construir facilmente **intervalos de data e hora**.
 
-Julia é inteligente o suficiente para não precisar definir todos os tipos de intervalo e operações que cobrimos na [Aula 1 - Linguagem Julia e Estrutura de Dados Nativas](https://storopoli.github.io/Computacao-Cientifica/1_Julia/). Julia apenas estende as funções e operações definidas para `UnitRange` para os tipos de `Date`.
+Julia é inteligente o suficiente para não precisar definir todos os tipos de intervalo e operações que cobrimos na [Aula 1 - Linguagem Julia e Estrutura de Dados Nativas](https://storopoli.github.io/Computacao-Cientifica/01_Julia/). Julia apenas estende as funções e operações definidas para `UnitRange` para os tipos de `Date`.
 
-> Isso é conhecido como despacho múltiplo e já abordamos na [Aula 1 - Linguagem Julia e Estrutura de Dados Nativas](https://storopoli.github.io/Computacao-Cientifica/1_Julia/).
+> Isso é conhecido como despacho múltiplo e já abordamos na [Aula 1 - Linguagem Julia e Estrutura de Dados Nativas](https://storopoli.github.io/Computacao-Cientifica/01_Julia/).
 
 Por exemplo, suponha que você deseja criar um intervalo de `Day`. Isso é feito facilmente com o operador dois pontos `:`
 """
@@ -481,7 +481,7 @@ my_date_interval_vector .+ Day(10)
 md"""
 # O que Fazemos com Dados Temporais?
 
-O mais importante é colocar eles em um `DataFrame` (veja [Aula 4 - Dados Tabulares com DataFrames.jl](https://storopoli.github.io/Computacao-Cientifica/4_DataFrames/)).
+O mais importante é colocar eles em um `DataFrame` (veja [Aula 4 - Dados Tabulares com DataFrames.jl](https://storopoli.github.io/Computacao-Cientifica/04_DataFrames/)).
 
 Depois disso tem várias coisas que podemos fazer....
 """
@@ -734,7 +734,7 @@ md"""
    * Livro [Statistical Rethinking 2a edição](https://xcelab.net/rm/statistical-rethinking/)
    * Manual do [`Stan`, seção 2 de Modelos de Séries Temporais](https://mc-stan.org/docs/stan-users-guide/time-series-chapter.html): ARIMA, GARCH, HMM etc.
    * Versão Bayesiana em `Stan` dos modelos do Livro Analysis of Financial Time Series 3a edição: [`marcomarconi/AFTS_with_Stan`](https://github.com/marcomarconi/AFTS_with_Stan) e [blog](https://notimeforbayes.blogspot.com/)
-   * Pacote [`Turing.jl`](https://github.com/TuringLang/Turing.jl): [meus tutoriais em inglês](https://storopoli.github.io/Bayesian-Julia) e vamos falar sobre ele na [Aula 9 - Modelos Probabilísticos Bayesianos com `Turing.jl`](https://storopoli.github.io/Computacao-Cientifica/9_Turing/)
+   * Pacote [`Turing.jl`](https://github.com/TuringLang/Turing.jl): [meus tutoriais em inglês](https://storopoli.github.io/Bayesian-Julia) e vamos falar sobre ele na [Aula 9 - Modelos Probabilísticos Bayesianos com `Turing.jl`](https://storopoli.github.io/Computacao-Cientifica/09_Turing/)
 """
 
 # ╔═╡ 3d98552e-014c-4939-8e93-3b3536cd0898
