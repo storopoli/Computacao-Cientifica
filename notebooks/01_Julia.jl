@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.9
 
 using Markdown
 using InteractiveUtils
@@ -183,6 +183,7 @@ begin
 	import Base: size, getindex
 	
 	size(v::OneHotVector) = (v.len,)
+	# v[1]
 	getindex(v::OneHotVector, i::Integer) = Int(i == v.ind)
 end
 
@@ -307,7 +308,7 @@ a = [ random.random() for _ in range(42000) ]
 %timeit summed(a)
 ```
 
-> 1.31 ms ± 128 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+> 800 µs ± 32.2 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 """
 
 # ╔═╡ ec8aa40e-a6d4-46db-8d76-99e53f876fdd
@@ -323,7 +324,7 @@ n = 1000
 %timeit a.sum()
 ```
 
-> 17.6 µs ± 1.66 µs per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+> 7.87 µs ± 33.5 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 """
 
 # ╔═╡ c9be26cf-08d1-4927-b2da-a3cf4d1023ee
@@ -333,7 +334,7 @@ E se colocarmos paralelismo [SIMD](https://en.wikipedia.org/wiki/SIMD) pois as o
 
 # ╔═╡ d79ec91b-353f-4986-90a6-be613b20bff7
 md"""
-> OBS resposta original no meu computador é 17.6 μs (Python) vs 8.16 μs (Julia)
+> OBS resposta original no meu computador é 7.87 μs (Python) vs 2.65 μs (Julia)
 """
 
 # ╔═╡ d90ce98c-6538-4a6d-9b45-e3f5c8ae2bb3
@@ -349,7 +350,7 @@ md"""
 3. [A Administração Federal de Aviação dos EUA (FAA) está desenvolvendo um **Sistema de prevenção de colisão aerotransportada (ACAS-X)** usando Julia] (https://youtu.be/19zm1Fn0S9M). Soluções anteriores usavam Matlab para desenvolver os algoritmos e C ++ para uma implementação rápida. Agora, a FAA está usando uma linguagem para fazer tudo isso: Julia.
 
 
-4. [**Aceleração de 175x** para modelos de farmacologia da Pfizer usando GPUs em Julia] (https://juliacomputing.com/case-studies/pfizer/). Foi apresentado como um [pôster](https://chrisrackauckas.com/assets/Posters/ACoP11_Poster_Abstracts_2020.pdf) na 11ª Conferência Americana de Farmacometria (ACoP11) e [ganhou um prêmio de qualidade](https: //web.archive .org / web / 20210121164011 / https: //www.go-acop.org/abstract-awards).
+4. [**Aceleração de 175x** para modelos de farmacologia da Pfizer usando GPUs em Julia] (https://juliacomputing.com/case-studies/pfizer/). Foi apresentado como um [pôster](https://chrisrackauckas.com/assets/Posters/ACoP11_Poster_Abstracts_2020.pdf) na 11ª Conferência Americana de Farmacometria (ACoP11) e [ganhou um prêmio de qualidade](https://web.archive.org/web/20210121164011/https://www.go-acop.org/abstract-awards).
 
 
 5. [O simulador do Subsistema de Controle de Atitude e Órbita (AOCS) do satélite brasileiro Amazonia-1 é **escrito 100% em Julia**](https://discourse.julialang.org/t/julia-and-the-satellite -amazonia-1/57541) por [Ronan Arraes Jardim Chagas](https://ronanarraes.com/). Além disso, Julia é usada para inúmeras atividades relacionadas com a Análise de Missão do mesmo satélite.
@@ -565,7 +566,7 @@ md"""
 md"""
 Acho que este é a verdadeira pérola da linguagem Julia: a capacidade de definir o **comportamento da função em muitas combinações de tipos de argumento por meio de [despacho múltiplo](https://en.wikipedia.org/wiki/Multiple_dispatch)**.
 
-**Despacho múltiplo** é um recurso que permite que uma função ou método seja **despachado dinamicamente** com base no tipo de tempo de execução (dinâmico) ou, no caso mais geral, algum outro atributo de mais de um de seus argumentos.
+**Despacho múltiplo** é um recurso que permite que uma função ou método seja **despachado dinamicamente** com base no tipo, em tempo de execução (dinâmico) ou, no caso mais geral, algum outro atributo de mais de um de seus argumentos.
 
 Esta é uma generalização do **polimorfismo de despacho único**, em que uma função ou chamada de método é despachada dinamicamente com base no tipo derivado do objeto no qual o método foi chamado. O despacho múltiplo roteia o despacho dinâmico para a função ou método de implementação usando as características combinadas de um ou mais argumentos.
 """
@@ -698,6 +699,9 @@ Como representaríamos vetores one-hot em Julia?
 # ╔═╡ 7d03d2be-d9bd-4992-bb60-a8eb266a956c
 meu_hot = OneHotVector(3, 2)
 
+# ╔═╡ 76802530-0d2c-48ae-a68f-a1ca34f2a08b
+size(meu_hot)
+
 # ╔═╡ 20c73247-0555-4962-bd01-152a68b3b782
 meu_hot[2]
 
@@ -775,7 +779,8 @@ Agora vamos redefinir a multiplicação da matriz por `OneHotVector` com uma sel
 # ╔═╡ 8c7d2d8a-c547-45c1-bcf5-636584cdb3da
 begin
 	import Base:*
-	
+
+	# A * v
 	*(A::AbstractMatrix, v::OneHotVector) = A[:, v.ind]
 end
 
@@ -834,7 +839,7 @@ $$\begin{bmatrix}
 """
 
 # ╔═╡ fa434fbe-0999-4c45-8ae2-87f5652c1b52
-inner(v::OneHotVector, A, w::OneHotVector) = A[v.ind, w.ind]
+inner(v::OneHotVector, A::AbstractMatrix, w::OneHotVector) = A[v.ind, w.ind]
 
 # ╔═╡ ecdabab9-c2c4-4f89-bcef-a2ddc1e782d3
 function inner_sum(A, vs)
@@ -2823,6 +2828,7 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.ANSIColoredPrinters]]
@@ -2866,8 +2872,11 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -3130,6 +3139,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═8faf0fee-cad5-440f-bc2d-0fdb848ce42d
 # ╠═cb276e1e-1b81-4705-b28b-b7b3e08332bc
 # ╠═7d03d2be-d9bd-4992-bb60-a8eb266a956c
+# ╠═76802530-0d2c-48ae-a68f-a1ca34f2a08b
 # ╠═20c73247-0555-4962-bd01-152a68b3b782
 # ╟─2538921e-6b35-4f84-9e76-e246cd28ecd8
 # ╠═7bbbebc8-8a2b-45de-aa25-aa1bec443f43
