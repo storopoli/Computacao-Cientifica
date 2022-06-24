@@ -65,7 +65,7 @@ Ao completar essa disciplina, alunos estarão aptos à:
 
 ## Autor
 
-Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.github.io>
+Jose Storopoli, PhD - [*Lattes* CV](http://lattes.cnpq.br/2281909649311607) - [ORCID](https://orcid.org/0000-0002-0559-5176) - <https://storopoli.io>
 
 ## Como usar esse conteúdo?
 
