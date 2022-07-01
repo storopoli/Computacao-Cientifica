@@ -1,0 +1,4 @@
+Sitemap: https://storopoli.github.io/Computacao-Cientifica/sitemap.xml
+
+User-agent: *
+Disallow:
