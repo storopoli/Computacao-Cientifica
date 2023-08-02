@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/03_Parallel/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/02_BenchmarkTools/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/09_Turing/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/10_MLJ/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/11_Flux/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/References/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/07_Graphs/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/01_Julia/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/04_DataFrames/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/08_JuMP/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/05_TimeSeries/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://storopoli.github.io/Computacao-Cientifica/06_Plots/index.html</loc>
+    <lastmod>2023-08-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+</urlset>
